@@ -1,13 +1,20 @@
 {
-  "name": "core",
+  "name": "@zenith/core",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
+  "private": true,
+  "type": "module",
   "license": "ISC",
-  "type": "commonjs"
+  "exports": {
+    ".": {
+      "@zenith/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --build"
+  }
 }
