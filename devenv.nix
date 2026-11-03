@@ -7,7 +7,11 @@
 }:
 
 {
-  packages = [ pkgs.git ];
+  packages = [
+    pkgs.git
+    pkgs.bruno
+    pkgs.podman-compose
+  ];
 
   languages.javascript = {
     enable = true;
