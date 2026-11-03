@@ -22,5 +22,6 @@ RUN npm ci --omit=dev --workspace=@zenith/api \
  && npm cache clean --force
 COPY --from=build /app/packages/core/dist packages/core/dist
 COPY --from=build /app/apps/api/dist apps/api/dist
+COPY apps/api/drizzle apps/api/drizzle
 USER node
 CMD ["node", "apps/api/dist/server.js"]
