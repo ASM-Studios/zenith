@@ -1,8 +1,15 @@
 import Fastify from 'fastify';
+import { client } from './db/index.ts';
+import { authRoutes } from './modules/auth/auth.routes.ts';
 
 const app = Fastify({ logger: true });
 
 app.get('/ping', async () => 'pong');
+app.register(authRoutes);
+
+app.addHook('onClose', async () => {
+  await client.end();
+});
 
 for (const signal of ['SIGINT', 'SIGTERM'] as const) {
   process.once(signal, async () => {
