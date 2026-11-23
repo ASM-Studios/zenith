@@ -34,7 +34,21 @@ jobs:
         run: npm run format:check
 
       - name: Test
-        run: npm test
+        run: npm run test:coverage
+
+      - name: Coverage summary
+        if: ${{ !cancelled() }}
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node .github/scripts/coverage-summary.mjs
+
+      - name: Upload coverage report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage
+          path: coverage/
+          if-no-files-found: ignore
 
       - name: Build
         run: npm run build

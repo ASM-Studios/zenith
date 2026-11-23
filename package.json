@@ -28,10 +28,12 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check": "npm run lint && npm run format:check && npm test && npm run build"
+    "test:coverage": "vitest run --coverage",
+    "check": "npm run lint && npm run format:check && npm run test:coverage && npm run build"
   },
   "devDependencies": {
     "@types/node": "^24.19.2",
+    "@vitest/coverage-v8": "^5.1.1",
     "oxlint": "^1.94.0",
     "oxlint-tsgolint": "^7.0.2008",
     "prettier": "^3.10.1",
