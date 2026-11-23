@@ -41,6 +41,16 @@ Issue titles follow the same `type(scope): desc` convention.
 - Authors do not merge their own PR without approval.
 - CI must be green.
 
+### Review before commit (Claude Code)
+
+Every commit, docs-only included, needs a `zenith-review` of the staged diff (`git diff --cached`):
+
+1. Stage with `git add` (never `commit -a`), run the `zenith-review` skill and fix every Blocker and Major finding.
+2. `python3 .claude/hooks/review_stamp.py template` prints the report header for the staged tree. Complete it with the verdict `merge` and the remaining findings.
+3. `python3 .claude/hooks/review_stamp.py <report file>` installs the report. Calling it without a report does nothing.
+
+`git commit` is refused unless the installed report matches the staged tree: any later `git add` needs a new review. The report is checked, not trusted: it must name the staged tree and every staged file, carry the verdict `merge` and list no open Blocker or Major finding.
+
 ## Security
 
 Report vulnerabilities privately, as described in [SECURITY.md](SECURITY.md).

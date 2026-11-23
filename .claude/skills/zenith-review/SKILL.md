@@ -20,7 +20,13 @@ A review finds the defects a merge would ship: wrong behaviour, leaked secrets, 
 
 ## Self-review before a commit
 
-`zenith-pr` runs this skill on your own staged work, so steps 1 and 2 change: review `git diff --cached` in the current checkout (no worktree), and read the issue instead of a PR body. Steps 3 to 6 and the Report stay. Fix each Blocker and Major finding, restage and review again. When none is left, run `python3 .claude/hooks/review_stamp.py`: it stamps the staged tree, and `guard_git.py` refuses `git commit` on any other staged tree. Never stamp without having done the review.
+`zenith-pr` runs this skill on your own staged work, so steps 1 and 2 change: review `git diff --cached` in the current checkout (no worktree), and read the issue instead of a PR body. Steps 3 to 6 and the Report stay. Fix each Blocker and Major finding, restage and review again. When none is left, write the report and record it:
+
+1. `python3 .claude/hooks/review_stamp.py template` prints the header for the staged tree: its `Tree:` hash, a `Verdict:` line and every staged file under `Files reviewed:`.
+2. Save it to a scratch file, set the verdict to `merge`, and list the remaining Minor findings after `Findings:`, one per line in the Report format.
+3. `python3 .claude/hooks/review_stamp.py <report file>` installs it. It refuses a report for another tree, a verdict other than `merge`, a staged file missing from the list, or any open `[Blocker]` or `[Major]` line.
+
+`guard_git.py` refuses `git commit` unless the installed report matches the staged tree. Every change is reviewed, docs-only included, and the stamp is never called without a report.
 
 ## Checklist
 
