@@ -35,6 +35,7 @@
   "devDependencies": {
     "@types/node": "^26.6.6",
     "@vitest/coverage-v8": "^5.1.1",
+    "msw": "^3.0.7",
     "oxlint": "^1.94.0",
     "oxlint-tsgolint": "^7.0.2008",
     "prettier": "^3.10.1",
