@@ -10,7 +10,7 @@
   packages = [
     pkgs.git
     pkgs.bruno
-    pkgs.podman-compose
+    pkgs.openssl
   ];
 
   languages.javascript = {
