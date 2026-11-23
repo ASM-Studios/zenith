@@ -1,13 +1,35 @@
 import { defineConfig } from 'vitest/config';
+import { testEnv, unusedDatabaseUrl } from './apps/api/test/env.ts';
 
 export default defineConfig({
   resolve: {
     conditions: ['@zenith/source'],
   },
   test: {
-    include: ['{apps,packages}/*/{src,test}/**/*.test.ts', '.github/scripts/**/*.test.mjs'],
     environment: 'node',
     setupFiles: ['./vitest.setup.ts'],
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: 'unit',
+          include: ['{apps,packages}/*/{src,test}/**/*.test.ts', '.github/scripts/**/*.test.mjs'],
+          exclude: ['apps/api/test/db/**'],
+          env: { ...testEnv, DATABASE_URL: unusedDatabaseUrl },
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'db',
+          include: ['apps/api/test/db/**/*.test.ts'],
+          globalSetup: ['./apps/api/test/global-setup.ts'],
+          setupFiles: ['./apps/api/test/setup-env.ts'],
+          env: testEnv,
+          fileParallelism: false,
+        },
+      },
+    ],
     coverage: {
       provider: 'v8',
       include: ['{apps,packages}/*/src/**/*.ts'],
