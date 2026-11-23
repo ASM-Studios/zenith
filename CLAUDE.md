@@ -21,6 +21,18 @@ These guidelines replace the `lucy-guidelines` plugin, which is disabled for thi
 - Commit: `type(scope): desc`, one line, signed off. Types `feat fix docs evol test chore`; scopes `core api web mobile infra ci data docs`.
 - PR: into `dev`, title in the commit form, built from `.github/pull_request_template.md` with `Closes #<issue>`.
 
+## Key commands
+
+Run from the repo root or a worktree. Each prints a short report; prefer them to the raw commands.
+
+- `python3 .claude/scripts/worktree.py <issue> <desc>`: branch, worktree, `.env` and `npm ci` in one step.
+- `python3 .claude/scripts/check_summary.py`: `npm run check`, reduced to the result, the coverage gaps of changed files (`--all` for every file) or the first failing step's errors.
+- `python3 .claude/scripts/with_node.py <command>`: run any npm or node command on Node 24 when it is not on PATH.
+- `python3 .claude/scripts/env_file.py`: create `.env` with generated secrets.
+- `python3 .claude/scripts/smoke.py --expect <service>:<regex>`: start the compose stack, check health, log lines and graceful stops, tear down.
+- `python3 .claude/hooks/ci_local.py`: CI on the committed work, required before `git push`.
+- Hook `.claude/hooks/lint_ts.py` lints every `.ts` file after an edit and reports errors at once.
+
 ## Skills, agents, tools (all in `.claude/`)
 
 - `zenith-pr`: write, commit, open and merge a PR. Command `/pr-ready` lists the gaps on the current branch; `/pr-status` lists your open PRs.
@@ -30,4 +42,4 @@ These guidelines replace the `lucy-guidelines` plugin, which is disabled for thi
 - Agents `zenith-pr-scout` and `zenith-ci-triage` do read-only PR and CI lookups; `/ci-triage` runs the second.
 - Hook `.claude/hooks/guard_git.py` enforces the git and PR rules above. MCP server `zenith-gh` (`.mcp.json`) gives `zenith_pr_board` and `zenith_ci_failure`.
 - `.claude/hooks/ci_local.py` runs the CI locally and stamps the passing commit; `Dockerfile.ci` at the repo root is what it builds.
-- Tests for the hooks and the MCP server: `python3 -m unittest discover -s .claude/tests`.
+- Tests for the hooks, scripts and the MCP server: `python3 -m unittest discover -s .claude/tests`.
