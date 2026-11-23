@@ -38,9 +38,9 @@ Postgres has no published port: it is only reachable from containers on the comp
 
 2. `npm run db:generate -w @zenith/api -- --name <changes>` writes `drizzle/NNNN_<changes>.sql`.
 3. Read the SQL, then commit it together with the schema change.
-4. `podman compose up -d --build`. The `migrate` service applies pending migrations before `api` starts; `api` does not start if it fails.
+4. `docker compose up -d --build`. The `migrate` service applies pending migrations before `api` starts; `api` does not start if it fails.
 
-To apply without restarting everything: `podman compose run --rm --build migrate`.
+To apply without restarting everything: `docker compose run --rm --build migrate`.
 
 Rules:
 
@@ -66,8 +66,8 @@ Migrations on an empty database create everything, so "creating the database" an
 Start from an empty database (deletes all data):
 
 ```sh
-podman compose down -v
-podman compose up -d --build
+docker compose down -v
+docker compose up -d --build
 ```
 
 Squash the migration history into a single `0000`, only while no other database has applied the current migrations:
@@ -75,8 +75,8 @@ Squash the migration history into a single `0000`, only while no other database 
 ```sh
 rm -rf apps/api/drizzle                 # whole folder, meta/ included
 npm run db:generate -w @zenith/api
-podman compose down -v                  # required, the database must be empty
-podman compose up -d --build            # rebuild, the image embeds drizzle/
+docker compose down -v                  # required, the database must be empty
+docker compose up -d --build            # rebuild, the image embeds drizzle/
 ```
 
 Deleting `drizzle/` without `down -v` breaks startup: the new `0000` tries to create tables that already exist. Keeping `meta/` makes `db:generate` see no change. Once a teammate's or a deployed database has applied migrations, the history is never rewritten again; only new migrations are added.
