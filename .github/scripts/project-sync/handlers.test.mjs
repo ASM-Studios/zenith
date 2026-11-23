@@ -132,6 +132,22 @@ describe('onPullRequest', () => {
     expect(calls.some(([kind]) => kind === 'STATUS')).toBe(false);
   });
 
+  it('ignores upstream numbers quoted in a bot PR body', async () => {
+    const bot = { login: 'dependabot[bot]', type: 'Bot' };
+    await onPullRequest(
+      ctx(),
+      pr({ body: 'Fixed in <a href="x">#82</a>', head: { ref: 'dependabot/npm/x' }, user: bot }),
+    );
+    expect(calls).toEqual([]);
+  });
+
+  it('still syncs the branch issue of a bot PR', async () => {
+    const bot = { login: 'dependabot[bot]', type: 'Bot' };
+    await onPullRequest(ctx(), pr({ body: 'Fixed in #91', user: bot }));
+    expect(calls).toContainEqual(setTo('In review'));
+    expect(calls.some(([, path]) => path?.endsWith('/issues/91'))).toBe(false);
+  });
+
   it('skips closed issues', async () => {
     issues[82].state = 'closed';
     await onPullRequest(ctx(), pr());

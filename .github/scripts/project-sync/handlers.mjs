@@ -17,7 +17,8 @@ export async function onBranchCreated(ctx, event) {
 
 export async function onPullRequest(ctx, event) {
   const { pull_request: pr, action } = event;
-  const refs = uniqueRefs(issueRefsFromBranch(pr.head.ref), refsFromText(pr.body)).filter((n) => n !== pr.number);
+  const bodyRefs = pr.user.type === 'Bot' ? [] : refsFromText(pr.body);
+  const refs = uniqueRefs(issueRefsFromBranch(pr.head.ref), bodyRefs).filter((n) => n !== pr.number);
   const draft = pr.draft || action === 'converted_to_draft';
   const sync = async (number) => {
     const synced = await syncMention(ctx, number, pr.user.login);
