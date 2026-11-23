@@ -21,6 +21,7 @@
   ],
   "scripts": {
     "dev": "npm run dev --workspace=@zenith/api",
+    "dev:worker": "npm run worker:dev --workspace=@zenith/api",
     "build": "npm run build --workspaces --if-present",
     "lint": "oxlint --type-aware --deny-warnings",
     "lint:fix": "oxlint --type-aware --fix",

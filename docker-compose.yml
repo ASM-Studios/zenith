@@ -77,6 +77,23 @@ services:
       retries: 3
       start_period: 15s
 
+  worker:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    image: zenith-api:latest
+    restart: unless-stopped
+    init: true
+    command: ["node", "apps/api/dist/worker.js"]
+    environment:
+      REDIS_URL: redis://redis:6379
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    networks:
+      - backend
+    depends_on:
+      redis:
+        condition: service_healthy
+
 networks:
   backend:
 
