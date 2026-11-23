@@ -1,0 +1,88 @@
+name: Security
+
+on:
+  pull_request:
+  push:
+    branches: [dev, master]
+  schedule:
+    - cron: "17 4 * * 1"
+
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  ON_BRANCH: ${{ github.event_name != 'pull_request' }}
+
+jobs:
+  scan:
+    name: SBOM and vulnerability scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Workspace SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: cyclonedx-json
+          output-file: sbom-workspace.cdx.json
+          upload-artifact: false
+
+      - name: Build image
+        run: docker build -f apps/api/Dockerfile -t zenith-api:scan .
+
+      - name: Image SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          image: zenith-api:scan
+          format: cyclonedx-json
+          output-file: sbom-image.cdx.json
+          upload-artifact: false
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: sbom
+          path: sbom-*.cdx.json
+
+      - name: Scan workspace
+        uses: anchore/scan-action@v7
+        with:
+          sbom: sbom-workspace.cdx.json
+          only-fixed: true
+          severity-cutoff: high
+          fail-build: ${{ env.ON_BRANCH == 'true' }}
+          output-format: sarif
+          output-file: grype-workspace.sarif
+
+      - name: Scan image
+        if: ${{ !cancelled() }}
+        uses: anchore/scan-action@v7
+        with:
+          sbom: sbom-image.cdx.json
+          only-fixed: true
+          severity-cutoff: high
+          fail-build: ${{ env.ON_BRANCH == 'true' }}
+          output-format: sarif
+          output-file: grype-image.sarif
+
+      - name: Upload workspace findings
+        if: ${{ !cancelled() && env.ON_BRANCH == 'true' }}
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: grype-workspace.sarif
+          category: grype-workspace
+
+      - name: Upload image findings
+        if: ${{ !cancelled() && env.ON_BRANCH == 'true' }}
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: grype-image.sarif
+          category: grype-image
