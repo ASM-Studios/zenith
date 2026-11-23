@@ -1,4 +1,4 @@
-import { createInstance } from 'i18next';
+import { createInstance, type i18n } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { fallbackLanguage, type Language } from './languages.ts';
 import en from './locales/en.json';
@@ -19,4 +19,16 @@ export function createI18n(language: Language) {
     interpolation: { escapeValue: false },
   });
   return instance;
+}
+
+const instances = new Map<Language, i18n>();
+
+export function i18nFor(language: Language): i18n {
+  const existing = instances.get(language);
+  if (existing) {
+    return existing;
+  }
+  const created = createI18n(language);
+  instances.set(language, created);
+  return created;
 }

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { detectLanguage } from './languages.ts';
+import { detectLanguage, parseLanguage } from './languages.ts';
 
 describe('detectLanguage', () => {
   test('picks the first supported language, ignoring the region', () => {
@@ -17,5 +17,14 @@ describe('detectLanguage', () => {
 
   test('does not mistake a longer language code for a supported prefix', () => {
     expect(detectLanguage(['fro', 'fr'])).toBe('fr');
+  });
+});
+
+describe('parseLanguage', () => {
+  test('accepts only an exact supported language code', () => {
+    expect(parseLanguage('fr')).toBe('fr');
+    expect(parseLanguage('fr-FR')).toBeUndefined();
+    expect(parseLanguage('de')).toBeUndefined();
+    expect(parseLanguage(undefined)).toBeUndefined();
   });
 });

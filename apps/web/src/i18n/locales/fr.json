@@ -9,5 +9,8 @@
   "notFound": {
     "title": "Page introuvable",
     "backHome": "Retour à l'accueil"
+  },
+  "language": {
+    "label": "Langue"
   }
 }
