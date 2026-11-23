@@ -1,0 +1,13 @@
+{
+  "app": {
+    "name": "Zenith"
+  },
+  "home": {
+    "title": "When and where the sky is worth watching",
+    "tagline": "Aurora and night-sky forecasts from weather, space weather and light pollution."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "backHome": "Back to home"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "app": {
+    "name": "Zenith"
+  },
+  "home": {
+    "title": "Quand et où le ciel vaut le coup d'œil",
+    "tagline": "Prévisions d'aurores et de ciel nocturne à partir de la météo, de la météo spatiale et de la pollution lumineuse."
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "backHome": "Retour à l'accueil"
+  }
+}
