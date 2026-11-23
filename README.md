@@ -32,6 +32,7 @@ Planned:
 | Area | Technology |
 | --- | --- |
 | Language | TypeScript, Node.js 24 |
+| Web | React, Vite |
 | API | Fastify, Zod, Better Auth |
 | Data | PostgreSQL, Drizzle ORM, Redis |
 | Jobs | BullMQ worker |
@@ -43,6 +44,7 @@ Planned:
 | Path | Content |
 | --- | --- |
 | `apps/api` | HTTP API and scheduled-jobs worker |
+| `apps/web` | Web app (React, Vite) |
 | `packages/core` | Pure shared logic and types |
 | `docs` | Index methodology, database, references |
 
@@ -75,6 +77,7 @@ npm ci
 | Command | Purpose |
 | --- | --- |
 | `npm run dev` | Start the API in watch mode (needs Postgres and Redis) |
+| `npm run dev:web` | Start the web app on `http://localhost:5173` |
 | `npm run lint` | Lint with oxlint |
 | `npm run format:check` | Check formatting with Prettier |
 | `npm test` | Run the tests |

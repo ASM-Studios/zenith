@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["typescript", "unicorn", "oxc", "import", "node", "vitest"],
+  "plugins": ["typescript", "unicorn", "oxc", "react", "import", "node", "vitest"],
   "categories": {
     "correctness": "error",
     "suspicious": "error",
@@ -26,6 +26,15 @@
       "files": ["apps/api/src/db/migrate.ts", "scripts/**"],
       "rules": {
         "no-console": "off"
+      }
+    },
+    {
+      "files": ["apps/web/**"],
+      "env": {
+        "browser": true
+      },
+      "rules": {
+        "react/react-in-jsx-scope": "off"
       }
     }
   ]
