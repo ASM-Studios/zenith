@@ -11,6 +11,10 @@ export const databaseEnv = z.object({
   DATABASE_URL: z.url(),
 });
 
+export const redisEnv = z.object({
+  REDIS_URL: z.url(),
+});
+
 export const authEnv = z.object({
   PASSWORD_PEPPER: z.string().min(32),
   BETTER_AUTH_SECRET: z.string().min(32),
@@ -20,6 +24,7 @@ export const authEnv = z.object({
 const appEnv = z.object({
   ...serverEnv.shape,
   ...databaseEnv.shape,
+  ...redisEnv.shape,
   ...authEnv.shape,
 });
 
@@ -47,6 +52,7 @@ export function loadConfig(env: Env) {
       logLevel: parsed.LOG_LEVEL,
     },
     database: { url: parsed.DATABASE_URL },
+    redis: { url: parsed.REDIS_URL },
     auth: {
       passwordPepper: parsed.PASSWORD_PEPPER,
       secret: parsed.BETTER_AUTH_SECRET,

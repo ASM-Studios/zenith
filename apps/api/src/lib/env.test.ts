@@ -3,6 +3,7 @@ import { authEnv, ConfigError, databaseEnv, loadConfig, parseEnv } from './env.t
 
 const validEnv = {
   DATABASE_URL: 'postgres://zenith:zenith@db:5432/zenith',
+  REDIS_URL: 'redis://redis:6379',
   PASSWORD_PEPPER: 'p'.repeat(32),
   BETTER_AUTH_SECRET: 's'.repeat(32),
   BETTER_AUTH_URL: 'http://localhost:3000',
@@ -13,6 +14,7 @@ describe('loadConfig', () => {
     expect(loadConfig(validEnv)).toEqual({
       server: { env: 'development', host: '0.0.0.0', port: 3000, logLevel: 'info' },
       database: { url: validEnv.DATABASE_URL },
+      redis: { url: validEnv.REDIS_URL },
       auth: {
         passwordPepper: validEnv.PASSWORD_PEPPER,
         secret: validEnv.BETTER_AUTH_SECRET,
@@ -45,10 +47,10 @@ describe('loadConfig', () => {
   });
 
   it('reports every invalid variable in a single error', () => {
-    const { DATABASE_URL: _database, BETTER_AUTH_SECRET: _secret, ...partial } = validEnv;
+    const { REDIS_URL: _redis, BETTER_AUTH_SECRET: _secret, ...partial } = validEnv;
     const load = () => loadConfig({ ...partial, API_PORT: 'abc' });
     expect(load).toThrow(ConfigError);
-    expect(load).toThrow(/DATABASE_URL/);
+    expect(load).toThrow(/REDIS_URL/);
     expect(load).toThrow(/BETTER_AUTH_SECRET/);
     expect(load).toThrow(/API_PORT/);
   });
