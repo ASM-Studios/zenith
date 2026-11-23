@@ -115,6 +115,29 @@ class PrOpen(unittest.TestCase):
             self.assertEqual(pr_open.open_or_update("b", "t", "body", None), (pr, "created"))
         self.assertIn("dev", calls[0])
 
+    def test_creates_the_pr_as_a_draft(self):
+        pr = {"number": 6, "url": "u"}
+        calls = []
+        with mock.patch.object(pr_open, "find_pr", side_effect=[None, pr]), mock.patch.object(
+            pr_open, "gh", side_effect=lambda *a: calls.append(a) or done()
+        ):
+            pr_open.open_or_update("b", "t", "body", None)
+        self.assertIn("--draft", calls[0])
+
+    def test_marks_the_open_pr_ready_for_review(self):
+        calls = []
+        pr = {"number": 8, "url": "u"}
+        with mock.patch.object(pr_open, "find_pr", return_value=pr), mock.patch.object(
+            pr_open, "gh", side_effect=lambda *a: calls.append(a) or done()
+        ):
+            self.assertEqual(pr_open.mark_ready("b"), pr)
+        self.assertEqual(calls[0][:3], ("pr", "ready", "8"))
+
+    def test_refuses_to_mark_ready_without_an_open_pr(self):
+        with mock.patch.object(pr_open, "find_pr", return_value=None):
+            with self.assertRaises(SystemExit):
+                pr_open.mark_ready("b")
+
     def test_picks_up_a_pr_opened_by_automation_during_the_create(self):
         pr = {"number": 7, "url": "u"}
         with mock.patch.object(pr_open, "find_pr", side_effect=[None, pr]), mock.patch.object(

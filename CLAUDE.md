@@ -13,6 +13,7 @@ These guidelines replace the `lucy-guidelines` plugin, which is disabled for thi
 - **No AI attribution** in commits, PR titles, PR bodies, branch names or code: no `Co-Authored-By`, no "Generated with", no `claude/` branch. The `Signed-off-by` trailer from `git commit -s` stays.
 - **No em dash** in anything written for a PR or a review: code, docs, commit text, PR text.
 - **Never push** to `master` or `dev`, force-push, or skip hooks (`--no-verify`). Open a PR from your own branch and let the user run any force-push.
+- **Draft first.** `pr_open.py` opens every PR as a draft. At the hand-over, ask the user whether they reviewed it by hand and want it ready; only a yes runs `pr_open.py --ready`.
 - **Repo and PR links** are full URLs (`https://github.com/ASM-Studios/zenith/pull/<n>`). Only `Closes #<issue>` stays bare.
 
 ## Naming
