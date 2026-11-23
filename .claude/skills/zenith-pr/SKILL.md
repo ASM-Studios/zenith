@@ -53,6 +53,7 @@ Code follows the repo's oxlint rules: no `any`, `import type` for types, no impo
 
 - **Hooks.** `.claude/hooks/guard_git.py` blocks pushes to `master` and `dev`, force-pushes, `--no-verify`, commits that miss the format or the sign-off, bad branch names, and PR titles or bodies that break the rules above. Fix what it reports instead of working around it.
 - **Worktrees.** The hooks read the stamps of the directory a git command runs in (`cd <dir> &&` or `git -C <dir>`), so a worktree commits and pushes with its own review and CI stamps.
+- **Split PRs.** A PR too big to review becomes several: one sub-issue of the original issue per sub-PR (`issue_create.py --parent <n>`), each branch named after its sub-issue, each body with `Closes #<sub-issue>` and the parent only mentioned (`Part of #<n>`). The project sync then moves the sub-issues and leaves the parent until all of them are closed.
 - **Branch safety.** A PR's head branch keeps its name for life, and its base branch stays until the PR merges; renaming the head or deleting the base closes the PR.
 - **After a squash merge.** Rebase each dependent branch with `git rebase --onto origin/dev <old-base-sha>`, check each commit's subject and tree, then push with `--force-with-lease` (the user runs it).
 - **Missing CI run.** If a retarget skips the `pull_request` event, close and reopen the PR to trigger it.

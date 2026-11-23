@@ -6,6 +6,6 @@ export function nextStatus(current, target, force = false) {
   const to = STATUSES.indexOf(target);
   if (to < 0) throw new Error(`Unknown status: ${target}`);
   const from = STATUSES.indexOf(current ?? '');
-  if (from === to || from >= RELEASED) return null;
-  return to > from || force ? target : null;
+  if (to > from) return target;
+  return to < from && force && from < RELEASED ? target : null;
 }

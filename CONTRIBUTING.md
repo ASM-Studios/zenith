@@ -40,6 +40,7 @@ Issue titles follow the same `type(scope): desc` convention.
 - Every PR must be reviewed and approved by another team member before merge.
 - Authors do not merge their own PR without approval.
 - CI must be green.
+- A PR too big to review is split: open one sub-issue of the original issue per sub-PR, name each branch after its sub-issue and close it with `Closes #<sub-issue>`. The parent issue is only mentioned (`Part of #<issue>`).
 
 ### Review before commit (Claude Code)
 
@@ -101,9 +102,10 @@ Run it on committed work before every push. AI agents use `python3 .claude/hooks
 The `Project sync` workflow keeps the board in step with issues, branches and PRs. Built-in project workflows add new issues as Backlog and move closed ones to Done.
 
 - An issue gets an assignee: it moves to Ready.
-- A branch `<trigram>/#<issue>/<desc>` is pushed, or a PR mentions the issue: the issue moves to In progress and the first pusher is assigned if nobody is.
-- A PR leaves draft: the issue moves to In review. Back to draft: In progress.
-- The PR gets the issue's assignees and labels.
+- A branch `<trigram>/#<issue>/<desc>` is pushed: the issue moves to In progress and the first pusher is assigned if nobody is.
+- A PR is linked to an issue by its branch name or a closing keyword (`Closes #<issue>`). A draft PR moves the issue to In progress; a PR ready for review moves it to In review, and back to In progress when it returns to draft. An issue the PR only mentions is not moved.
+- An issue with sub-issues is never moved by a PR: its sub-issues are. Once all its sub-issues are closed, the parent moves to Done.
+- The PR gets the assignees and labels of every issue it mentions.
 - A status never moves backward on its own, except when a PR goes back to draft.
 
 Setup, once, by a project admin:

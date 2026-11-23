@@ -16,9 +16,13 @@ describe('nextStatus', () => {
     expect(nextStatus('In review', 'In progress', true)).toBe('In progress');
   });
 
-  it('leaves released and done items alone, even when forced', () => {
+  it('never moves a released or done item backward, even when forced', () => {
     expect(nextStatus('To release', 'In progress', true)).toBeNull();
     expect(nextStatus('Done', 'In review', true)).toBeNull();
+  });
+
+  it('moves a released item forward to Done', () => {
+    expect(nextStatus('To release', 'Done')).toBe('Done');
   });
 
   it('does nothing when the status is already the target', () => {

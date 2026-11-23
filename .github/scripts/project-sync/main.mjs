@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { createClient } from './github.mjs';
-import { onAssigned, onBranchCreated, onPullRequest } from './handlers.mjs';
+import { onBranchCreated, onIssue, onPullRequest } from './handlers.mjs';
 
 const { GITHUB_EVENT_NAME, GITHUB_EVENT_PATH, GITHUB_REPOSITORY, GH_TOKEN, PROJECT_TOKEN, PROJECT_NUMBER } =
   process.env;
@@ -15,5 +15,5 @@ const ctx = {
 };
 const event = JSON.parse(readFileSync(GITHUB_EVENT_PATH, 'utf8'));
 
-const handlers = { issues: onAssigned, push: onBranchCreated, pull_request: onPullRequest };
+const handlers = { issues: onIssue, push: onBranchCreated, pull_request: onPullRequest };
 await handlers[GITHUB_EVENT_NAME]?.(ctx, event);

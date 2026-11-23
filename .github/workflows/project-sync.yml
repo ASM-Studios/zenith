@@ -2,7 +2,7 @@ name: Project sync
 
 on:
   issues:
-    types: [assigned]
+    types: [assigned, closed]
   push:
     branches-ignore: [master, dev]
   pull_request:

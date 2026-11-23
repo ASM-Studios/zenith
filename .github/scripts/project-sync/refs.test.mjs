@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { issueRefsFromBranch, refsFromText, uniqueRefs } from './refs.mjs';
+import { closingRefsFromText, issueRefsFromBranch, refsFromText, uniqueRefs } from './refs.mjs';
 
 describe('issueRefsFromBranch', () => {
   it('reads the issue number of a branch named trigram, issue, description', () => {
@@ -24,6 +24,17 @@ describe('refsFromText', () => {
 
   it('handles an empty body', () => {
     expect(refsFromText(null)).toEqual([]);
+  });
+});
+
+describe('closingRefsFromText', () => {
+  it('finds the issues a closing keyword links, in any case and with an optional colon', () => {
+    expect(closingRefsFromText('Closes #76\nfixes: #80, Resolved #82')).toEqual([76, 80, 82]);
+  });
+
+  it('ignores plain mentions and empty bodies', () => {
+    expect(closingRefsFromText('Part of #19, see #20, prefix#21')).toEqual([]);
+    expect(closingRefsFromText(null)).toEqual([]);
   });
 });
 
