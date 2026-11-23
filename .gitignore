@@ -21,3 +21,6 @@ dist/
 
 # Coverage
 coverage/
+
+# Python
+__pycache__/
