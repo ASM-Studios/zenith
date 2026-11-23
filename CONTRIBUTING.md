@@ -84,10 +84,10 @@ Runs lint, tests and build. It must pass before opening a PR.
 
 ## Running CI locally
 
-`Dockerfile.ci` runs the CI check (`npm ci` then `npm run check`) from a clean copy of the repo, so it gives the same result on Linux, macOS and Windows:
+`Dockerfile.ci` holds a clean copy of the repo with its dependencies installed. `python3 .claude/hooks/ci_local.py` builds it, then runs `npm run check` in a container with the Docker socket mounted, which the database tests need to start Postgres with Testcontainers:
 
 ```
-docker build -f Dockerfile.ci --progress=plain .
+python3 .claude/hooks/ci_local.py
 ```
 
 Run it on committed work before every push. AI agents use `python3 .claude/hooks/ci_local.py` instead, which also unlocks their `git push` hook (see [CLAUDE.md](CLAUDE.md)).
