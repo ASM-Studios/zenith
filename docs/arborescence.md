@@ -51,6 +51,7 @@ meteo/
 │       │   ├── indicator/                # stargazing indicator
 │       │   ├── constellations/           # visibility, sky map projection
 │       │   ├── types/                    # shared types (HourlyForecast…)
+│       │   ├── providers/                # provider errors, coverage and offer
 │       │   └── index.ts
 │       ├── package.json
 │       └── tsconfig.json
