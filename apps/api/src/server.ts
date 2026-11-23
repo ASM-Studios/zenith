@@ -1,9 +1,12 @@
 import { config } from './lib/config.ts';
 import Fastify from 'fastify';
 import { client } from './db/index.ts';
+import { createLogger } from './lib/logger.ts';
 import { authRoutes } from './modules/auth/auth.routes.ts';
 
-const app = Fastify({ logger: { level: config.server.logLevel } });
+const logger = createLogger({ level: config.server.logLevel });
+
+const app = Fastify({ loggerInstance: logger });
 
 app.get('/ping', async () => 'pong');
 app.register(authRoutes);
