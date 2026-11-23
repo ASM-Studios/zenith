@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "license": "ISC",
+  "license": "GPL-3.0-or-later",
   "scripts": {
     "dev": "node --env-file-if-exists=../../.env --conditions=@zenith/source --watch src/server.ts",
     "build": "tsc --build",
