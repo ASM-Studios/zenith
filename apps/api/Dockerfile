@@ -13,13 +13,20 @@ COPY packages/core packages/core
 COPY apps/api apps/api
 RUN npm run build --workspace=@zenith/api
 
-FROM manifests AS runtime
+FROM manifests AS deps
+ENV NODE_ENV=production
+RUN npm ci --omit=dev --workspace=@zenith/api \
+ && npm cache clean --force \
+ && rm -rf node_modules/drizzle-kit node_modules/@esbuild-kit node_modules/esbuild node_modules/@esbuild node_modules/tsx node_modules/.bin/drizzle-kit node_modules/.bin/esbuild node_modules/.bin/tsx
+
+FROM base AS runtime
 ENV NODE_ENV=production
 RUN apt-get update \
  && apt-get install -y --no-install-recommends curl \
- && rm -rf /var/lib/apt/lists/*
-RUN npm ci --omit=dev --workspace=@zenith/api \
- && npm cache clean --force
+ && apt-get install -y --only-upgrade libc6 libc-bin \
+ && rm -rf /var/lib/apt/lists/* \
+ && rm -rf /usr/local/lib/node_modules /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
+COPY --from=deps /app ./
 COPY --from=build /app/packages/core/dist packages/core/dist
 COPY --from=build /app/apps/api/dist apps/api/dist
 COPY apps/api/drizzle apps/api/drizzle
