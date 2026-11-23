@@ -2,6 +2,7 @@ FROM docker.io/library/node:26-slim
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY apps/api/package.json apps/api/
+COPY apps/web/package.json apps/web/
 COPY packages/core/package.json packages/core/
 RUN npm ci
 COPY . .

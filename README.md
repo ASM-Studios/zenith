@@ -32,6 +32,7 @@ Planned:
 | Area | Technology |
 | --- | --- |
 | Language | TypeScript, Node.js 24 |
+| Web | React, Vite |
 | API | Fastify, Zod, Better Auth |
 | Data | PostgreSQL, Drizzle ORM, Redis |
 | Jobs | BullMQ worker |
@@ -43,6 +44,7 @@ Planned:
 | Path | Content |
 | --- | --- |
 | `apps/api` | HTTP API and scheduled-jobs worker |
+| `apps/web` | Web app (React, Vite) |
 | `packages/core` | Pure shared logic and types |
 | `docs` | Index methodology, database, references |
 
@@ -62,7 +64,7 @@ Fill `PASSWORD_PEPPER` and `BETTER_AUTH_SECRET` with `openssl rand -hex 32`; the
 docker compose up -d --build
 ```
 
-The API listens on `http://localhost:3000`. Rebuild after every code change. Stop with `docker compose down` (add `-v` to wipe the database).
+The web app is served on `http://localhost:8080` and the API listens on `http://localhost:3000`. Rebuild after every code change. Stop with `docker compose down` (add `-v` to wipe the database).
 
 For development tooling, install the dependencies once:
 
@@ -75,6 +77,7 @@ npm ci
 | Command | Purpose |
 | --- | --- |
 | `npm run dev` | Start the API in watch mode (needs Postgres and Redis) |
+| `npm run dev:web` | Start the web app on `http://localhost:5173` |
 | `npm run lint` | Lint with oxlint |
 | `npm run format:check` | Check formatting with Prettier |
 | `npm test` | Run the tests |

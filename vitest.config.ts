@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 import { testEnv, unusedDatabaseUrl } from './apps/api/test/env.ts';
 
 export default defineConfig({
@@ -14,7 +14,7 @@ export default defineConfig({
         test: {
           name: 'unit',
           include: ['{apps,packages}/*/{src,test}/**/*.test.ts', '.github/scripts/**/*.test.mjs'],
-          exclude: ['apps/api/test/db/**'],
+          exclude: [...configDefaults.exclude, 'apps/api/test/db/**', 'apps/web/**'],
           env: { ...testEnv, DATABASE_URL: unusedDatabaseUrl },
         },
       },
@@ -29,17 +29,19 @@ export default defineConfig({
           fileParallelism: false,
         },
       },
+      'apps/web',
     ],
     coverage: {
       provider: 'v8',
-      include: ['{apps,packages}/*/src/**/*.ts'],
+      include: ['{apps,packages}/*/src/**/*.{ts,tsx}'],
       exclude: [
-        '**/*.test.ts',
+        '**/*.test.{ts,tsx}',
         '**/*.d.ts',
         'apps/api/src/server.ts',
         'apps/api/src/worker.ts',
         'apps/api/src/db/migrate.ts',
         'apps/api/src/db/schema/**',
+        'apps/web/src/main.tsx',
       ],
       reporter: ['text', 'json', 'json-summary', 'html', 'lcov'],
       reportsDirectory: 'coverage',

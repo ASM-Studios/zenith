@@ -15,6 +15,7 @@ updates:
     directories:
       - /
       - /apps/api
+      - /apps/web
     schedule:
       interval: weekly
     commit-message:
