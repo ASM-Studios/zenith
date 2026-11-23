@@ -74,3 +74,20 @@ docker build -f Dockerfile.ci --progress=plain .
 ```
 
 Run it on committed work before every push. AI agents use `python3 .claude/hooks/ci_local.py` instead, which also unlocks their `git push` hook (see [CLAUDE.md](CLAUDE.md)).
+
+## Project board automation
+
+The `Project sync` workflow keeps the board in step with issues, branches and PRs. Built-in project workflows add new issues as Backlog and move closed ones to Done.
+
+- An issue gets an assignee: it moves to Ready.
+- A branch `<trigram>/#<issue>/<desc>` is pushed, or a PR mentions the issue: the issue moves to In progress and the first pusher is assigned if nobody is.
+- A PR leaves draft: the issue moves to In review. Back to draft: In progress.
+- The PR gets the issue's assignees and labels.
+- A status never moves backward on its own, except when a PR goes back to draft.
+
+Setup, once, by a project admin:
+
+1. Create a fine-grained token (GitHub, Settings, Developer settings, Personal access tokens) with resource owner `ASM-Studios`, access to the `zenith` repository, and the organization permission `Projects: Read and write`. A GitHub App with the same permissions works too.
+2. Add it as the repository secret `PROJECT_TOKEN` (repository Settings, Secrets and variables, Actions).
+
+Without the secret, the workflow still assigns people and copies labels, and logs that statuses were left as is.

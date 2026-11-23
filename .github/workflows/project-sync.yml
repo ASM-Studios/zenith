@@ -1,0 +1,32 @@
+name: Project sync
+
+on:
+  issues:
+    types: [assigned]
+  push:
+    branches-ignore: [master, dev]
+  pull_request:
+    types: [opened, reopened, edited, ready_for_review, converted_to_draft]
+
+concurrency:
+  group: project-sync-${{ github.event.issue.number || github.event.pull_request.number || github.ref }}
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  sync:
+    name: Sync issues, branches and PRs
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Sync
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PROJECT_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+          PROJECT_NUMBER: 26
+        run: node .github/scripts/project-sync/main.mjs

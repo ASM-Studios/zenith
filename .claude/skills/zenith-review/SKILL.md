@@ -18,6 +18,10 @@ A review finds the defects a merge would ship: wrong behaviour, leaked secrets, 
 7. **Report** (see Report). Post comments on GitHub only when the user says go.
 8. **Summarize for the PR comment** (see Summary). Always the last step: hand the user something short enough to paste as a review comment, not the full report.
 
+## Self-review before a commit
+
+`zenith-pr` runs this skill on your own staged work, so steps 1 and 2 change: review `git diff --cached` in the current checkout (no worktree), and read the issue instead of a PR body. Steps 3 to 6 and the Report stay. Fix each Blocker and Major finding, restage and review again. When none is left, run `python3 .claude/hooks/review_stamp.py`: it stamps the staged tree, and `guard_git.py` refuses `git commit` on any other staged tree. Never stamp without having done the review.
+
 ## Checklist
 
 - **Secrets and auth.** `PASSWORD_PEPPER`, `BETTER_AUTH_SECRET` and other env values never reach logs, responses or the repo; `.env.example` holds placeholders only. Session and password paths (`apps/api/src/lib/auth.ts`, `password.ts`) keep their guarantees.
