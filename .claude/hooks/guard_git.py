@@ -5,6 +5,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 import ci_stamp  # noqa: E402
+import review_stamp  # noqa: E402
 from gh_rules import check_pr  # noqa: E402
 from git_message import commit_messages, forbidden_in  # noqa: E402
 from hookio import RULES, block, command_of, read_payload, split_segments  # noqa: E402
@@ -54,7 +55,11 @@ def has_signoff(args):
     return any(a in ("-s", "--signoff") or (a.startswith("-") and not a.startswith("--") and "s" in a[1:]) for a in args)
 
 
-def check_commit(args):
+def stages_everything(args):
+    return any(a == "--all" or (a.startswith("-") and not a.startswith("--") and "a" in a[1:]) for a in args)
+
+
+def check_commit(args, cwd=""):
     if "--no-verify" in args or "-n" in args:
         return ("commit with --no-verify", "Fix what the hooks report.")
     for message in commit_messages(args):
@@ -68,6 +73,13 @@ def check_commit(args):
             return ("commit message format", "One line: `type(scope): desc`, no body, type in feat|fix|docs|evol|test|chore, scope in core|api|web|mobile|infra|ci|data|docs.")
     if not has_signoff(args):
         return ("commit without sign-off", "Add `-s` (git commit -s).")
+    if stages_everything(args):
+        return ("commit with -a", "Stage with `git add`, review the staged diff, then commit.")
+    if not review_stamp.is_fresh(cwd):
+        return (
+            "commit without a zenith-review of the staged diff",
+            "Run the `zenith-review` skill on `git diff --cached`, fix what it finds, then `python3 .claude/hooks/review_stamp.py`.",
+        )
     return None
 
 
@@ -90,7 +102,7 @@ def check_git(args, cwd):
     if sub == "push":
         return check_push(rest, cwd)
     if sub == "commit":
-        return check_commit(rest)
+        return check_commit(rest, cwd)
     name = new_branch_name(sub, rest)
     if name and not re.match(RULES["branch_pattern"], name):
         return ("branch name format", "Name it `<trigram>/#<issue>/<desc>`, e.g. `mbo/#11/ci-pipeline`.")

@@ -7,6 +7,7 @@ These guidelines replace the `lucy-guidelines` plugin, which is disabled for thi
 ## Always
 
 - **Quality gate.** `npm run check` (lint, format check, tests with coverage, build) is the CI. Run it locally while coding (devenv or Node 24), and run `python3 .claude/hooks/ci_local.py` on the committed work before every push: it runs the same CI in Docker on any platform, falls back to Node 24, and unlocks `git push` for that commit. The hook blocks a push without it. Details: `zenith-pr`, Where to run.
+- **Review before commit.** Stage, run `zenith-review` on `git diff --cached`, fix Blocker and Major findings, then `python3 .claude/hooks/review_stamp.py`. The hook blocks `git commit` (and `commit -a`) without it.
 - **Small code.** Files stay under ~200 lines, one responsibility each. Names carry the meaning; no comments or docstrings. New non-trivial logic gets a test whose name states the behaviour it checks.
 - **Tests never hit the network.** External APIs (weather, space weather) are mocked.
 - **No AI attribution** in commits, PR titles, PR bodies, branch names or code: no `Co-Authored-By`, no "Generated with", no `claude/` branch. The `Signed-off-by` trailer from `git commit -s` stays.

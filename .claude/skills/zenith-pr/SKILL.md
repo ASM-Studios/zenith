@@ -13,10 +13,11 @@ Every PR is one *reviewable* topic tied to one issue: small, green in CI, easy t
 2. **Branch from `dev`.** One branch per issue, named `<trigram>/#<issue>/<desc>` (see Naming). `master` only receives merges from `dev`. Use a worktree (`git worktree add -b <branch> ../wt_<short> origin/dev`) when the main checkout is in use.
 3. **Write small code.** Done when every file you created or grew stays under ~200 lines and every module has one responsibility (SRP). New behaviour lands in a new module named after that responsibility, imported by the existing entry point. Names carry the meaning; the code has no comments or docstrings. New non-trivial logic gets a test whose name states the behaviour it checks.
 4. **Verify while coding.** Run `npm run check` (lint, format check, tests with coverage, build) in the dev environment (see Where to run). Done when it passes. External APIs (weather, space weather, ...) are mocked: tests never hit the network. Check added lines against Style (below) before committing.
-5. **Commit** (see Naming): `git commit -s`, one line, no body. The commit fixes or adds something by itself.
-6. **Run CI locally, then push.** With everything committed, run `python3 .claude/hooks/ci_local.py` (`python` on Windows). It runs the CI check from a clean checkout in Docker, or natively on Node 24 when Docker is missing, and stamps the passing commit tree. Done when it prints `local CI passed`; the hook refuses `git push` until then, and any new commit needs a new run. A red run is fixed, never bypassed.
-7. **Push and open the PR** into `dev` once the user has said go for this work. Fill in `.github/pull_request_template.md`: `Closes #<issue>`, the type of change, the checklist. Title and body: see Naming and Descriptions.
-8. **Watch CI** (read a red run with the `zenith-ci-triage` agent) until it is green; a red PR is not ready for review. Read the coverage summary too: each file it lists as uncovered gets anti-regression tests that pin real behaviour (break the code once to see the test fail), not tests that only run lines. Name what stays uncovered, and why, in the hand-over. Then hand over: the PR URL, and any force-push the user must run.
+5. **Review before committing.** Stage the work (`git add`, never `commit -a`), then run the `zenith-review` skill on `git diff --cached` (self-review mode). Fix every Blocker and Major finding, restage, and review again. Done when the report holds none, and `python3 .claude/hooks/review_stamp.py` has stamped the staged tree. The hook refuses `git commit` until then, and any later change to the staged tree needs a new review.
+6. **Commit** (see Naming): `git commit -s`, one line, no body. The commit fixes or adds something by itself.
+7. **Run CI locally, then push.** With everything committed, run `python3 .claude/hooks/ci_local.py` (`python` on Windows). It runs the CI check from a clean checkout in Docker, or natively on Node 24 when Docker is missing, and stamps the passing commit tree. Done when it prints `local CI passed`; the hook refuses `git push` until then, and any new commit needs a new run. A red run is fixed, never bypassed.
+8. **Push and open the PR** into `dev` once the user has said go for this work. Fill in `.github/pull_request_template.md`: `Closes #<issue>`, the type of change, the checklist. Title and body: see Naming and Descriptions.
+9. **Watch CI** (read a red run with the `zenith-ci-triage` agent) until it is green; a red PR is not ready for review. Read the coverage summary too: each file it lists as uncovered gets anti-regression tests that pin real behaviour (break the code once to see the test fail), not tests that only run lines. Name what stays uncovered, and why, in the hand-over. Then hand over: the PR URL, and any force-push the user must run.
 
 ## Naming
 
@@ -62,4 +63,5 @@ Code follows the repo's oxlint rules: no `any`, `import type` for types, no impo
 
 Corrections from the team, newest first. `zenith-guidelines` adds to it.
 
+- Run `zenith-review` on the staged diff before every commit; the hook enforces it.
 - PRs are mentioned by URL, Codecov or coverage gaps get real tests, lint before pushing, files stay small and single-purpose, a big PR in review stays closed to new commits, no em dash, no AI mention.
