@@ -64,7 +64,7 @@ Fill `PASSWORD_PEPPER` and `BETTER_AUTH_SECRET` with `openssl rand -hex 32`; the
 docker compose up -d --build
 ```
 
-The API listens on `http://localhost:3000`. Rebuild after every code change. Stop with `docker compose down` (add `-v` to wipe the database).
+The web app is served on `http://localhost:8080` and the API listens on `http://localhost:3000`. Rebuild after every code change. Stop with `docker compose down` (add `-v` to wipe the database).
 
 For development tooling, install the dependencies once:
 

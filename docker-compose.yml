@@ -69,6 +69,7 @@ services:
       - "${API_PORT:-3000}:${API_PORT:-3000}"
     networks:
       - backend
+      - frontend
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -80,6 +81,28 @@ services:
       timeout: 5s
       retries: 3
       start_period: 15s
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    image: zenith-web:latest
+    restart: unless-stopped
+    environment:
+      API_UPSTREAM: http://api:${API_PORT:-3000}
+    ports:
+      - "${WEB_PORT:-8080}:8080"
+    networks:
+      - frontend
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:8080/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   worker:
     build:
@@ -100,6 +123,7 @@ services:
 
 networks:
   backend:
+  frontend:
 
 volumes:
   pgdata:

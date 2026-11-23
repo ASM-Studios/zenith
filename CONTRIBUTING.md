@@ -68,6 +68,8 @@ Report vulnerabilities privately, as described in [SECURITY.md](SECURITY.md).
    ```
    `--build` is needed after every code change, otherwise the previous image is reused. Migrations are applied by the `migrate` service before `api` starts (see [docs/database.md](docs/database.md)).
 
+The `web` service serves the built web app on `http://localhost:8080` (`WEB_PORT`) and forwards `/api` and `/ping` to the API. Outside Docker, `npm run dev:web` starts it on `http://localhost:5173` with the same forwarding to the API on port 3000.
+
 The `worker` service runs the scheduled jobs (`apps/api/src/jobs/`) on a BullMQ queue in Redis. Outside Docker, start it with `npm run dev:worker`.
 
 ## Quality gates
