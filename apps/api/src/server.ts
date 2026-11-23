@@ -1,8 +1,9 @@
+import { config } from './lib/config.ts';
 import Fastify from 'fastify';
 import { client } from './db/index.ts';
 import { authRoutes } from './modules/auth/auth.routes.ts';
 
-const app = Fastify({ logger: true });
+const app = Fastify({ logger: { level: config.server.logLevel } });
 
 app.get('/ping', async () => 'pong');
 app.register(authRoutes);
@@ -18,7 +19,7 @@ for (const signal of ['SIGINT', 'SIGTERM'] as const) {
 }
 
 try {
-  await app.listen({ host: process.env.HOST ?? '0.0.0.0', port: Number(process.env.API_PORT ?? 3000) });
+  await app.listen({ host: config.server.host, port: config.server.port });
 } catch (error) {
   app.log.fatal(error);
   process.exit(1);
