@@ -1,6 +1,7 @@
 import { config } from './lib/config.ts';
 import Fastify from 'fastify';
 import { client } from './db/index.ts';
+import { createCache } from './lib/cache.ts';
 import { createLogger } from './lib/logger.ts';
 import { createRedis } from './lib/redis.ts';
 import { authRoutes } from './modules/auth/auth.routes.ts';
@@ -10,6 +11,7 @@ const redis = createRedis(config.redis.url, logger);
 
 const app = Fastify({ loggerInstance: logger });
 
+app.decorate('cache', createCache(redis, { logger: logger.child({ module: 'cache' }) }));
 app.get('/ping', async () => 'pong');
 app.register(authRoutes);
 
