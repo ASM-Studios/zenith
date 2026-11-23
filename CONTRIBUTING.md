@@ -1,0 +1,64 @@
+# Contributing to Zenith
+
+## Workflow
+
+1. Every unit of work is a GitHub issue on the **Zenith** project board. Open one (feature, bug or task template) before starting.
+2. Create one branch per issue.
+3. Open a pull request into `dev`.
+4. `master` only receives merges from `dev`.
+
+## Branch naming
+
+```
+<trigram>/#<issue-number>/<desc>
+```
+
+- `trigram`: the author's three-letter trigram.
+- `desc`: short kebab-case description.
+
+Example: `mbo/#11/ci-pipeline`
+
+## Commits
+
+```
+type(scope): desc
+```
+
+- Types: `feat`, `fix`, `docs`, `evol` (evolution or refactor of existing code), and optionally `test`, `chore`.
+- Scopes: `core`, `api`, `web`, `mobile`, `infra`, `ci`, `data`, `docs`.
+- Commits are signed off: `git commit -s`.
+
+Example: `feat(api): add Kp index endpoint`
+
+Issue titles follow the same `type(scope): desc` convention.
+
+## Pull requests and review
+
+- Fill in the PR template and link the issue with `Closes #<issue>`.
+- Every PR must be reviewed and approved by another team member before merge.
+- Authors do not merge their own PR without approval.
+- CI must be green.
+
+## Local setup
+
+1. Install [devenv](https://devenv.sh), [direnv](https://direnv.net) and [Docker](https://docs.docker.com/get-docker/) with the Compose plugin, then run `direnv allow`. This provides Node 24 and the npm dependencies.
+2. Copy the environment file, then fill in `PASSWORD_PEPPER` and `BETTER_AUTH_SECRET` with the command given above each one; the API refuses to start without them:
+   ```
+   cp .env.example .env
+   ```
+3. Start the stack:
+   ```
+   docker compose up -d --build
+   ```
+   `--build` is needed after every code change, otherwise the previous image is reused. Migrations are applied by the `migrate` service before `api` starts (see [docs/database.md](docs/database.md)).
+
+## Quality gates
+
+```
+npm run check
+```
+
+Runs lint, tests and build. It must pass before opening a PR.
+
+- Tests are required for new code and bug fixes.
+- External APIs (weather, space weather, etc.) must be mocked in tests; tests never hit the network.

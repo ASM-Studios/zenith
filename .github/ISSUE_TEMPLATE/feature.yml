@@ -1,0 +1,30 @@
+name: Feature
+description: A new capability for Zenith
+title: "feat(scope): "
+labels: ["feat"]
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Why is this needed? What problem does it solve?
+    validations:
+      required: true
+  - type: textarea
+    id: tasks
+    attributes:
+      label: Tasks
+      description: Break the work down into a checklist.
+      value: |
+        - [ ] 
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: What must be true for this issue to be considered done?
+      value: |
+        - [ ] 
+    validations:
+      required: true
