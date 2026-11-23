@@ -1,3 +1,4 @@
+import subprocess
 import sys
 from pathlib import Path
 
@@ -5,9 +6,17 @@ HOOKS = Path(__file__).resolve().parent.parent / "hooks"
 sys.path.insert(0, str(HOOKS))
 
 from ci_stamp import git  # noqa: E402
+from gh_rules import check_pr  # noqa: E402
+from git_message import forbidden_in  # noqa: E402
 from hookio import RULES  # noqa: E402
 
-__all__ = ["RULES", "git", "main_checkout", "toplevel"]
+REPO = "ASM-Studios/zenith"
+
+__all__ = ["REPO", "RULES", "check_pr", "forbidden_in", "gh", "git", "main_checkout", "toplevel"]
+
+
+def gh(*args):
+    return subprocess.run(["gh", *args], capture_output=True, text=True)
 
 
 def toplevel(cwd="."):
