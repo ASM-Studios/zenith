@@ -17,13 +17,14 @@ FROM manifests AS deps
 ENV NODE_ENV=production
 RUN npm ci --omit=dev --workspace=@zenith/api \
  && npm cache clean --force \
- && rm -rf node_modules/drizzle-kit node_modules/@esbuild-kit node_modules/esbuild node_modules/@esbuild node_modules/tsx node_modules/.bin/drizzle-kit node_modules/.bin/esbuild node_modules/.bin/tsx
+ && cd node_modules \
+ && rm -rf .bin drizzle-kit @esbuild-kit esbuild @esbuild tsx typescript @typescript vitest @vitest msw @mswjs
 
 FROM base AS runtime
 ENV NODE_ENV=production
 RUN apt-get update \
  && apt-get install -y --no-install-recommends curl \
- && apt-get install -y --only-upgrade libc6 libc-bin \
+ && apt-get install -y --only-upgrade libc6 libc-bin zlib1g \
  && rm -rf /var/lib/apt/lists/* \
  && rm -rf /usr/local/lib/node_modules /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
 COPY --from=deps /app ./
