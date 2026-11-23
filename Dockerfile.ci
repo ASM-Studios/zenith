@@ -1,4 +1,4 @@
-FROM docker.io/library/node:24-slim
+FROM docker.io/library/node:26-slim
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY apps/api/package.json apps/api/
