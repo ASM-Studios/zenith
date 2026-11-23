@@ -15,10 +15,9 @@ RUN npm run build --workspace=@zenith/api
 
 FROM manifests AS deps
 ENV NODE_ENV=production
-RUN npm ci --omit=dev --workspace=@zenith/api \
- && npm cache clean --force \
- && cd node_modules \
- && rm -rf .bin drizzle-kit @esbuild-kit esbuild @esbuild tsx typescript @typescript vitest @vitest msw @mswjs
+RUN node -e "for (const f of ['package.json','apps/api/package.json','packages/core/package.json']) { const p = JSON.parse(fs.readFileSync(f)); delete p.devDependencies; fs.writeFileSync(f, JSON.stringify(p)); }" \
+ && npm install --omit=dev --workspace=@zenith/api \
+ && npm cache clean --force
 
 FROM base AS runtime
 ENV NODE_ENV=production
