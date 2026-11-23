@@ -8,6 +8,8 @@
     "dev": "node --env-file-if-exists=../../.env --conditions=@zenith/source --watch src/server.ts",
     "build": "tsc --build",
     "start": "node dist/server.js",
+    "worker:dev": "node --env-file-if-exists=../../.env --conditions=@zenith/source --watch src/worker.ts",
+    "worker:start": "node dist/worker.js",
     "db:generate": "drizzle-kit generate",
     "auth:generate": "DATABASE_URL=postgres://unused@localhost/unused PASSWORD_PEPPER=placeholder-only-used-to-load-the-config auth generate --config src/lib/auth.ts --output src/db/schema/auth.ts --yes && prettier --write src/db/schema/auth.ts"
   },
@@ -15,6 +17,7 @@
     "@node-rs/argon2": "^2.2.2",
     "@zenith/core": "^1.0.0",
     "better-auth": "^1.7.15",
+    "bullmq": "^6.7.8",
     "drizzle-orm": "^0.45.4",
     "fastify": "^5.12.8",
     "ioredis": "^6.1.0",

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { authEnv, ConfigError, databaseEnv, loadConfig, parseEnv } from './env.ts';
+import { authEnv, ConfigError, databaseEnv, loadConfig, loadWorkerConfig, parseEnv } from './env.ts';
 
 const validEnv = {
   DATABASE_URL: 'postgres://zenith:zenith@db:5432/zenith',
@@ -53,6 +53,24 @@ describe('loadConfig', () => {
     expect(load).toThrow(/REDIS_URL/);
     expect(load).toThrow(/BETTER_AUTH_SECRET/);
     expect(load).toThrow(/API_PORT/);
+  });
+});
+
+describe('loadWorkerConfig', () => {
+  it('needs only the Redis URL', () => {
+    expect(loadWorkerConfig({ REDIS_URL: validEnv.REDIS_URL })).toEqual({
+      server: { env: 'development', logLevel: 'info' },
+      redis: { url: validEnv.REDIS_URL },
+    });
+  });
+
+  it('reads NODE_ENV and LOG_LEVEL', () => {
+    const config = loadWorkerConfig({ REDIS_URL: validEnv.REDIS_URL, NODE_ENV: 'production', LOG_LEVEL: 'warn' });
+    expect(config.server).toEqual({ env: 'production', logLevel: 'warn' });
+  });
+
+  it('rejects a missing REDIS_URL', () => {
+    expect(() => loadWorkerConfig({})).toThrow(/REDIS_URL/);
   });
 });
 

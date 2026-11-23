@@ -62,3 +62,16 @@ export function loadConfig(env: Env) {
 }
 
 export type Config = ReturnType<typeof loadConfig>;
+
+const workerEnv = z.object({
+  ...serverEnv.pick({ NODE_ENV: true, LOG_LEVEL: true }).shape,
+  ...redisEnv.shape,
+});
+
+export function loadWorkerConfig(env: Env) {
+  const parsed = parseEnv(workerEnv, env);
+  return {
+    server: { env: parsed.NODE_ENV, logLevel: parsed.LOG_LEVEL },
+    redis: { url: parsed.REDIS_URL },
+  };
+}

@@ -58,6 +58,8 @@ Report vulnerabilities privately, as described in [SECURITY.md](SECURITY.md).
    ```
    `--build` is needed after every code change, otherwise the previous image is reused. Migrations are applied by the `migrate` service before `api` starts (see [docs/database.md](docs/database.md)).
 
+The `worker` service runs the scheduled jobs (`apps/api/src/jobs/`) on a BullMQ queue in Redis. Outside Docker, start it with `npm run dev:worker`.
+
 ## Quality gates
 
 ```
