@@ -5,7 +5,7 @@ export default defineConfig({
     conditions: ['@zenith/source'],
   },
   test: {
-    include: ['{apps,packages}/*/{src,test}/**/*.test.ts'],
+    include: ['{apps,packages}/*/{src,test}/**/*.test.ts', '.github/scripts/**/*.test.mjs'],
     environment: 'node',
     coverage: {
       provider: 'v8',
