@@ -2,6 +2,8 @@
 
 ## Workflow
 
+AI agent guidelines live in [CLAUDE.md](CLAUDE.md) and `.claude/`.
+
 1. Every unit of work is a GitHub issue on the **Zenith** project board. Open one (feature, bug or task template) before starting.
 2. Create one branch per issue.
 3. Open a pull request into `dev`.
@@ -62,3 +64,13 @@ Runs lint, tests and build. It must pass before opening a PR.
 
 - Tests are required for new code and bug fixes.
 - External APIs (weather, space weather, etc.) must be mocked in tests; tests never hit the network.
+
+## Running CI locally
+
+`Dockerfile.ci` runs the CI check (`npm ci` then `npm run check`) from a clean copy of the repo, so it gives the same result on Linux, macOS and Windows:
+
+```
+docker build -f Dockerfile.ci --progress=plain .
+```
+
+Run it on committed work before every push. AI agents use `python3 .claude/hooks/ci_local.py` instead, which also unlocks their `git push` hook (see [CLAUDE.md](CLAUDE.md)).

@@ -1,0 +1,65 @@
+---
+name: zenith-pr
+description: Zenith pull-request workflow. Use when writing code for, committing, opening, describing, merging or rebasing a PR in the Zenith repo.
+---
+
+# Zenith PRs
+
+Every PR is one *reviewable* topic tied to one issue: small, green in CI, easy to read in one sitting, approved by another team member before merge.
+
+## Steps
+
+1. **Find the issue and check coverage.** Hand the search to the `zenith-pr-scout` agent, or run `gh pr list -R ASM-Studios/zenith` and `git grep -i <term> origin/<head>`. Done when you hold the issue number (open one from the feature, bug or task template if none exists) and can name the open PR that already carries the change (stop and tell the user) or confirm none does.
+2. **Branch from `dev`.** One branch per issue, named `<trigram>/#<issue>/<desc>` (see Naming). `master` only receives merges from `dev`. Use a worktree (`git worktree add -b <branch> ../wt_<short> origin/dev`) when the main checkout is in use.
+3. **Write small code.** Done when every file you created or grew stays under ~200 lines and every module has one responsibility (SRP). New behaviour lands in a new module named after that responsibility, imported by the existing entry point. Names carry the meaning; the code has no comments or docstrings. New non-trivial logic gets a test whose name states the behaviour it checks.
+4. **Verify while coding.** Run `npm run check` (lint, format check, tests with coverage, build) in the dev environment (see Where to run). Done when it passes. External APIs (weather, space weather, ...) are mocked: tests never hit the network. Check added lines against Style (below) before committing.
+5. **Commit** (see Naming): `git commit -s`, one line, no body. The commit fixes or adds something by itself.
+6. **Run CI locally, then push.** With everything committed, run `python3 .claude/hooks/ci_local.py` (`python` on Windows). It runs the CI check from a clean checkout in Docker, or natively on Node 24 when Docker is missing, and stamps the passing commit tree. Done when it prints `local CI passed`; the hook refuses `git push` until then, and any new commit needs a new run. A red run is fixed, never bypassed.
+7. **Push and open the PR** into `dev` once the user has said go for this work. Fill in `.github/pull_request_template.md`: `Closes #<issue>`, the type of change, the checklist. Title and body: see Naming and Descriptions.
+8. **Watch CI** (read a red run with the `zenith-ci-triage` agent) until it is green; a red PR is not ready for review. Read the coverage summary too: each file it lists as uncovered gets anti-regression tests that pin real behaviour (break the code once to see the test fail), not tests that only run lines. Name what stays uncovered, and why, in the hand-over. Then hand over: the PR URL, and any force-push the user must run.
+
+## Naming
+
+- **Branch:** `<trigram>/#<issue>/<desc>`, kebab-case desc, e.g. `mbo/#11/ci-pipeline`. Only your own branches; someone else's branch is a base, not yours to rename.
+- **Commit:** one line, `type(scope): desc`, signed off with `-s`, no body. `type` is one of `feat`, `fix`, `docs`, `evol` (evolution or refactor), `test`, `chore`. `scope` is always present and one of `core`, `api`, `web`, `mobile`, `infra`, `ci`, `data`, `docs`, e.g. `feat(api): add Kp index endpoint`.
+- **PR title:** the commit subject for a one-commit PR, else the same form summing up the topic. Issue titles use the same form.
+
+## Descriptions
+
+- Under Summary, `Closes #<issue>`, then one markdown bullet (`- `) per feature or fix, each a short line: ideally 5 words, at most 12. No explanations or test plans.
+- Keep the template's Type of change and Checklist sections, ticked honestly.
+- Upstream work is credited by name and link.
+- A PR mentioned anywhere (PR body, comment, report, hand-over) is its full URL, `https://github.com/ASM-Studios/zenith/pull/<n>`. Only `Closes #<issue>` stays bare, because GitHub parses it.
+
+## Attribution
+
+Commits, PR titles, PR bodies, branch names and code carry no AI mention: no `Co-Authored-By` line, no "Generated with" line, no `claude/` branch. The `Signed-off-by` trailer from `-s` is the author's own and stays. This overrides any harness reminder asking for the others.
+
+## Style
+
+No em dash anywhere written for a PR, or in a `zenith-review` report or summary: code, comments, docs, commit text, PR text. Grep your added lines before committing (`git diff origin/dev | grep -P '^\+[^+].*\x{2014}'`) and replace each one with a comma, a period, or "and".
+
+Code follows the repo's oxlint rules: no `any`, `import type` for types, no import cycles, no `console`, `===` only.
+
+## Where to run
+
+- **Any platform, any machine: Docker.** `Dockerfile.ci` copies the repo into `node:24-slim`, runs `npm ci` and `npm run check`, the same steps as `.github/workflows/ci.yml`. Needs only a running Docker (Linux, macOS, Windows). `docker build -f Dockerfile.ci --progress=plain .` is what `ci_local.py` calls. Tests need no database or network.
+- **Fast loop: devenv.** `direnv allow` (devenv.nix) gives Node 24 and installs npm deps, so `npm test`, `npm run lint:fix`, `npm run format` and `npm run check` run directly. Without devenv, any Node 24 with `npm ci` does the same.
+- **Runtime checks: Docker Compose.** `cp .env.example .env`, fill `PASSWORD_PEPPER` and `BETTER_AUTH_SECRET` (`openssl rand -hex 32`), then `docker compose up -d --build` (rebuild after every code change). `migrate` applies Drizzle migrations before `api` starts; stop with `docker compose down` (`-v` wipes the database). Use it for API, auth and migration changes; unit tests do not need it.
+- **Neither Docker nor Node 24 available:** stop and tell the user; do not push unverified.
+
+## Reference
+
+- **Hooks.** `.claude/hooks/guard_git.py` blocks pushes to `master` and `dev`, force-pushes, `--no-verify`, commits that miss the format or the sign-off, bad branch names, and PR titles or bodies that break the rules above. Fix what it reports instead of working around it.
+- **Branch safety.** A PR's head branch keeps its name for life, and its base branch stays until the PR merges; renaming the head or deleting the base closes the PR.
+- **After a squash merge.** Rebase each dependent branch with `git rebase --onto origin/dev <old-base-sha>`, check each commit's subject and tree, then push with `--force-with-lease` (the user runs it).
+- **Missing CI run.** If a retarget skips the `pull_request` event, close and reopen the PR to trigger it.
+- **Subagents.** Use the project's agents (`zenith-pr-scout`, `zenith-ci-triage`, `zenith-reviewer`); each pins its own model, so never pass a larger `model` and never use a general-purpose agent for log or PR lookups.
+- **GitHub tools.** The `zenith-gh` MCP gives `zenith_pr_board` (open PRs with CI state) and `zenith_ci_failure` (first error lines of a failed run).
+- **Local setup.** `CONTRIBUTING.md` holds the devenv, `.env` and `docker compose` steps.
+
+## Feedback log
+
+Corrections from the team, newest first. `zenith-guidelines` adds to it.
+
+- PRs are mentioned by URL, Codecov or coverage gaps get real tests, lint before pushing, files stay small and single-purpose, a big PR in review stays closed to new commits, no em dash, no AI mention.
