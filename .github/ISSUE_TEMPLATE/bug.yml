@@ -1,0 +1,47 @@
+name: Bug
+description: Something does not work as expected
+title: "fix(scope): "
+labels: ["fix(bug)"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What is happening, and where (core, api, web, mobile, infra, data)?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      value: |
+        1. 
+        2. 
+        3. 
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include logs, stack traces or screenshots if relevant.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Node version, browser or device, branch or commit.
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: How do we know the bug is fixed? A regression test is expected.
+      value: |
+        - [ ] 
