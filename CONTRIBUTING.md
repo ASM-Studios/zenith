@@ -41,6 +41,10 @@ Issue titles follow the same `type(scope): desc` convention.
 - Authors do not merge their own PR without approval.
 - CI must be green.
 
+## Security
+
+Report vulnerabilities privately, as described in [SECURITY.md](SECURITY.md).
+
 ## Local setup
 
 1. Install [devenv](https://devenv.sh), [direnv](https://direnv.net) and [Docker](https://docs.docker.com/get-docker/) with the Compose plugin, then run `direnv allow`. This provides Node 24 and the npm dependencies.
