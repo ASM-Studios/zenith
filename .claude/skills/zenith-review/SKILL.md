@@ -10,6 +10,7 @@ A review finds the defects a merge would ship: wrong behaviour, leaked secrets, 
 ## Steps
 
 1. **Check out the PR away from the user's checkout.** Fetch the head (`git fetch origin pull/<n>/head:review/pr-<n>`) into a worktree (`git worktree add <dir> review/pr-<n>`). Done when `git log --oneline origin/dev..HEAD` lists the PR's commits.
+   Start with `python3 .claude/scripts/review_pr.py <n>...`: per PR it prints the diffstat and the commit, title and body format findings, flags em dashes and AI attribution on added lines, and reports merge conflicts between the PRs given. It checks conventions only; the hunt for bugs stays yours.
 2. **Read the intent.** Read the title, the body, the linked issue and every commit subject (`gh pr view <n> -R ASM-Studios/zenith`). Done when you can say in one line what the PR should do and what it must not break.
 3. **Read the whole diff, then the code around it.** Use `git diff <merge-base>..HEAD`, file by file. For each changed function, open its callers and callees. Done when every changed file has been read and every changed public name (export, route, config key, env var, DB column) has been traced to all its users with `git grep`.
 4. **Hunt by category** (see Checklist). Write each suspicion down with its file and line.

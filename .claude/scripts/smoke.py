@@ -10,6 +10,7 @@ from repo import toplevel
 
 POLL_SECONDS = 2
 STOP_LIMIT_MS = 5000
+LOG_LINES = 15
 
 
 def parse_ps(text):
@@ -67,6 +68,24 @@ class Stack:
         return {name: set(spec.get("depends_on") or {}) for name, spec in services.items()}
 
 
+def last_lines(text, count=LOG_LINES):
+    return [line for line in text.splitlines() if line.strip()][-count:]
+
+
+def stuck_services(containers):
+    return sorted(
+        name
+        for name, container in containers.items()
+        if container.get("State") == "restarting" or container_state(container) == "failed"
+    )
+
+
+def print_logs(stack, services):
+    for service in services:
+        print(f"logs {service}:")
+        print("\n".join(last_lines(stack.run("logs", "--no-color", service).stdout)))
+
+
 def wait_ready(stack, deadline):
     while True:
         states = {name: container_state(c) for name, c in stack.containers().items()}
@@ -115,6 +134,8 @@ def main():
     up = stack.run("up", "-d", *([] if args.no_build else ["--build"]))
     if up.returncode != 0:
         print("\n".join((up.stdout + up.stderr).splitlines()[-20:]))
+        print_logs(stack, stuck_services(stack.containers()))
+        stack.run("down", "-v")
         sys.exit("docker compose up failed")
     try:
         services, failed, waiting = wait_ready(stack, time.monotonic() + args.timeout)
@@ -126,6 +147,7 @@ def main():
             line = wait_log(stack, service, pattern, time.monotonic() + args.timeout)
             print(f"log {service}: {line}" if line else f"log {service}: no line matches {pattern.pattern!r}")
             missing += [] if line else [service]
+        print_logs(stack, sorted(set(failed + waiting + missing)))
         problems = failed + waiting + missing + ([] if args.keep else check_stops(stack))
     finally:
         if not args.keep:

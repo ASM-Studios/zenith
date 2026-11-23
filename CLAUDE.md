@@ -30,6 +30,10 @@ Run from the repo root or a worktree. Each prints a short report; prefer them to
 - `python3 .claude/scripts/with_node.py <command>`: run any npm or node command on Node 24 when it is not on PATH.
 - `python3 .claude/scripts/env_file.py`: create `.env` with generated secrets.
 - `python3 .claude/scripts/smoke.py --expect <service>:<regex>`: start the compose stack, check health, log lines and graceful stops, tear down.
+- `python3 .claude/scripts/issue_create.py "<type(scope): desc>" --body-file <file> --label <label> [--parent <n>]`: create an issue (sub-issue with `--parent`) and check how its body rendered. Always give bodies as files, never inline.
+- `python3 .claude/scripts/prepare_commit.py`: `check_summary.py`, stage, scan the staged lines for em dashes and AI attribution, print the stat.
+- `python3 .claude/scripts/pr_open.py [--body-file <file>]`: open the PR of the current branch into `dev`, or update its body when it already exists, then wait for the checks and print the result.
+- `python3 .claude/scripts/review_pr.py <n>...`: mechanical review pass over PRs (stat, commit and title format, forbidden text, merge conflicts between the PRs).
 - `python3 .claude/hooks/ci_local.py`: CI on the committed work, required before `git push`.
 - Hook `.claude/hooks/lint_ts.py` lints every `.ts` file after an edit and reports errors at once.
 
