@@ -6,7 +6,20 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 import ci_stamp  # noqa: E402
 
-DOCKER_CI = ["docker", "build", "-f", "Dockerfile.ci", "--progress=plain", "-t", "zenith-ci", "."]
+DOCKER_BUILD = ["docker", "build", "-f", "Dockerfile.ci", "--progress=plain", "-t", "zenith-ci", "."]
+DOCKER_SOCKET = ["-v", "/var/run/docker.sock:/var/run/docker.sock", "-e", "TESTCONTAINERS_RYUK_DISABLED=true"]
+LINUX_NETWORK = ["--network", "host", "-e", "TESTCONTAINERS_HOST_OVERRIDE=localhost"]
+DESKTOP_NETWORK = [
+    "--add-host", "host.docker.internal:host-gateway",
+    "-e", "TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal",
+]
+
+
+def docker_run():
+    network = LINUX_NETWORK if sys.platform.startswith("linux") else DESKTOP_NETWORK
+    return ["docker", "run", "--rm", *DOCKER_SOCKET, *network, "zenith-ci"]
+
+
 NATIVE_CI = [["npm", "ci"], ["npm", "run", "check"]]
 
 
@@ -34,7 +47,7 @@ def main():
     if ci_stamp.git(root, "status", "--porcelain"):
         sys.exit("working tree is not clean: commit or stash first, the stamp covers the committed tree")
     if docker_ready(root):
-        passed = run(DOCKER_CI, root)
+        passed = run(DOCKER_BUILD, root) and run(docker_run(), root)
     elif node_ready():
         passed = all(run(step, root) for step in NATIVE_CI)
     else:

@@ -31,3 +31,18 @@ Each workspace keeps its test data under `<workspace>/test`:
 ## Where tests live
 
 Unit tests sit next to the code (`src/**/*.test.ts`). Tests that need fixtures or mocks sit in `<workspace>/test/`.
+
+## Database tests
+
+Tests that need Postgres live in `apps/api/test/db/` and run in the `db` Vitest project. The other tests run in the `unit` project and never start Docker.
+
+- `apps/api/test/global-setup.ts` starts one `postgres:17` container per run with Testcontainers, applies the migrations from `apps/api/drizzle` and provides the URL as `databaseUrl`.
+- `apps/api/test/setup-env.ts` sets `DATABASE_URL` from it. Static values (pepper, auth secret and URL) live in `apps/api/test/env.ts`.
+- Better Auth uses the module-level `db`, so a rollback per test is not possible. Call `resetDb()` from `apps/api/test/helpers/reset-db.ts` in `beforeEach`: it truncates every table.
+- `buildTestApp()` in `apps/api/test/helpers/build-test-app.ts` returns the Fastify app without listening or Redis, ready for `app.inject(...)`.
+
+Docker must be running to execute the `db` project. To run only the Docker-free tests:
+
+```
+npx vitest run --project unit
+```

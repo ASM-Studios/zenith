@@ -5,4 +5,4 @@ COPY apps/api/package.json apps/api/
 COPY packages/core/package.json packages/core/
 RUN npm ci
 COPY . .
-RUN npm run check
+CMD ["npm", "run", "check"]

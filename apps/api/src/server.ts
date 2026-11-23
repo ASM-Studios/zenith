@@ -1,19 +1,17 @@
 import { config } from './lib/config.ts';
-import Fastify from 'fastify';
 import { client } from './db/index.ts';
+import { buildApp } from './app.ts';
 import { createCache } from './lib/cache.ts';
 import { createLogger } from './lib/logger.ts';
 import { createRedis } from './lib/redis.ts';
-import { authRoutes } from './modules/auth/auth.routes.ts';
 
 const logger = createLogger({ level: config.server.logLevel });
 const redis = createRedis(config.redis.url, logger);
 
-const app = Fastify({ loggerInstance: logger });
-
-app.decorate('cache', createCache(redis, { logger: logger.child({ module: 'cache' }) }));
-app.get('/ping', async () => 'pong');
-app.register(authRoutes);
+const app = buildApp({
+  logger,
+  cache: createCache(redis, { logger: logger.child({ module: 'cache' }) }),
+});
 
 app.addHook('onClose', async () => {
   await Promise.allSettled([client.end(), redis.quit()]);
