@@ -40,7 +40,7 @@ Run from the repo root or a worktree. Each prints a short report; prefer them to
 
 ## Skills, agents, tools (all in `.claude/`)
 
-- `zenith-pr`: write, commit, open and merge a PR. Command `/pr-ready` lists the gaps on the current branch; `/pr-status` lists your open PRs.
+- `zenith-pr`: plan, delegate, review, commit, open and merge a PR. Command `/pr-ready` lists the gaps on the current branch; `/pr-status` lists your open PRs.
 - `zenith-review`: review a PR or diff; `zenith-reviewer` agent for one area of a big PR.
 - `zenith-dev-fix`: fix a break on `dev` with a test that is red before and green after.
 - `zenith-guidelines`: record a correction as a lasting rule. Use it whenever someone states a rule or repeats a request.
