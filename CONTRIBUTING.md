@@ -90,6 +90,8 @@ Runs lint, tests and build. It must pass before opening a PR.
 python3 .claude/hooks/ci_local.py
 ```
 
+The container uses host networking on Linux. On macOS and Windows it reaches Postgres through `host.docker.internal`, which is not verified yet.
+
 Run it on committed work before every push. AI agents use `python3 .claude/hooks/ci_local.py` instead, which also unlocks their `git push` hook (see [CLAUDE.md](CLAUDE.md)).
 
 ## Project board automation

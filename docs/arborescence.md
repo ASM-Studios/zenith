@@ -12,8 +12,10 @@ meteo/
 │   │   │   ├── jobs/                     # scheduled jobs (BullMQ)
 │   │   │   ├── db/                       # Drizzle schema, migrations, demo seed
 │   │   │   ├── lib/                      # Redis cache, config, logger
+│   │   │   ├── app.ts                    # Fastify app factory (buildApp)
 │   │   │   ├── server.ts                 # API entry point
 │   │   │   └── worker.ts                 # worker entry point
+│   │   ├── test/                         # fixtures/<provider>, mocks/, db/ (Testcontainers), helpers/
 │   │   ├── Dockerfile
 │   │   ├── package.json
 │   │   └── tsconfig.json
@@ -66,6 +68,9 @@ meteo/
 ├── docker-compose.yml                    # postgres, redis, api, worker, web
 ├── devenv.nix                            # development environment (Nix)
 ├── package.json                          # npm workspaces root
+├── vitest.config.ts                      # unit and db test projects
+├── vitest.setup.ts                       # msw server, shared by all tests
+├── test/                                 # shared test helpers (msw server)
 ├── package-lock.json                     # single lockfile, at the root
 ├── .gitignore
 ├── ATTRIBUTIONS.md                       # data sources and licenses
