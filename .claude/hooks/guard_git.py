@@ -9,16 +9,10 @@ import review_stamp  # noqa: E402
 from gh_rules import check_pr  # noqa: E402
 from git_message import commit_messages, forbidden_in  # noqa: E402
 from hookio import RULES, block, command_of, read_payload, split_segments  # noqa: E402
+from shell_text import command_text  # noqa: E402
+from workdir import git_directory, resolve, strip_global_options  # noqa: E402
 
 PROTECTED = RULES["protected_branches"]
-GIT_VALUE_OPTIONS = {"-C", "-c", "--git-dir", "--work-tree"}
-
-
-def strip_global_options(args):
-    i = 0
-    while i < len(args) and args[i].startswith("-"):
-        i += 2 if args[i] in GIT_VALUE_OPTIONS else 1
-    return args[i:]
 
 
 def current_branch(cwd):
@@ -95,6 +89,7 @@ def new_branch_name(sub, args):
 
 
 def check_git(args, cwd):
+    cwd = git_directory(args, cwd)
     args = strip_global_options(args)
     if not args:
         return None
@@ -110,7 +105,10 @@ def check_git(args, cwd):
 
 
 def check(command, cwd=""):
-    for segment in split_segments(command):
+    for segment in split_segments(command_text(command)):
+        if segment[0] == "cd" and len(segment) > 1:
+            cwd = resolve(cwd, segment[1])
+            continue
         if segment[0] == "git":
             verdict = check_git(segment[1:], cwd)
         elif segment[0] == "gh" and segment[1:3] in (["pr", "create"], ["pr", "edit"]):
