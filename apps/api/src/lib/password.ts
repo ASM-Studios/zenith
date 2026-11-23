@@ -1,10 +1,8 @@
 import { hash, verify } from '@node-rs/argon2';
+import { authEnv, parseEnv } from './env.ts';
 
-const pepper = process.env.PASSWORD_PEPPER;
-if (!pepper || pepper.length < 32) {
-  throw new Error('PASSWORD_PEPPER must be set to at least 32 characters');
-}
-const secret = Buffer.from(pepper);
+const { PASSWORD_PEPPER } = parseEnv(authEnv.pick({ PASSWORD_PEPPER: true }), process.env);
+const secret = Buffer.from(PASSWORD_PEPPER);
 
 export function hashPassword(password: string): Promise<string> {
   return hash(password, { secret });
