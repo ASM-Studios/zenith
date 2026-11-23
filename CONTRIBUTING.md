@@ -80,6 +80,7 @@ Runs lint, tests and build. It must pass before opening a PR.
 
 - Tests are required for new code and bug fixes.
 - External APIs (weather, space weather, etc.) must be mocked in tests; tests never hit the network.
+- Fixtures and HTTP mocking conventions: [docs/testing.md](docs/testing.md).
 
 ## Running CI locally
 

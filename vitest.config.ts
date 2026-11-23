@@ -7,6 +7,7 @@ export default defineConfig({
   test: {
     include: ['{apps,packages}/*/{src,test}/**/*.test.ts', '.github/scripts/**/*.test.mjs'],
     environment: 'node',
+    setupFiles: ['./vitest.setup.ts'],
     coverage: {
       provider: 'v8',
       include: ['{apps,packages}/*/src/**/*.ts'],
