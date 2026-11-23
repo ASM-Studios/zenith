@@ -17,7 +17,7 @@ export default defineConfig({
         'apps/api/src/db/migrate.ts',
         'apps/api/src/db/schema/**',
       ],
-      reporter: ['text', 'json', 'json-summary', 'html'],
+      reporter: ['text', 'json', 'json-summary', 'html', 'lcov'],
       reportsDirectory: 'coverage',
       thresholds: {
         'packages/core/src/**': {
