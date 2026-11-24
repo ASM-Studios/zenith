@@ -1,0 +1,19 @@
+{
+  "current": {
+    "time": "2026-11-24T16:45",
+    "temperature_2m": 6.3,
+    "apparent_temperature": 2.6,
+    "relative_humidity_2m": 80,
+    "dew_point_2m": 3.1,
+    "weather_code": 3,
+    "pressure_msl": 1015.1,
+    "wind_speed_10m": 14.0,
+    "wind_gusts_10m": 29.2,
+    "wind_direction_10m": 108,
+    "precipitation": 0.0,
+    "cloud_cover": 95,
+    "visibility": 30640.0,
+    "uv_index": 0.0,
+    "is_day": 0
+  }
+}
