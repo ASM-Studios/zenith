@@ -86,4 +86,16 @@ export function createExampleProvider(baseUrl: string): WeatherProvider {
 }
 ```
 
-Here `fetchOrThrow` turns an abort, a network error, a 5xx and a 429 into the errors above, and `mapCurrent` converts the source response to `CurrentConditions` or throws `ProviderInvalidResponseError`. Tests mock the HTTP calls with msw (see [testing.md](testing.md)).
+Here `fetchOrThrow` (`apps/api/src/modules/weather/providers/fetch-or-throw.ts`) turns an abort, a network error, a 5xx and a 429 into the errors above, and `mapCurrent` converts the source response to `CurrentConditions` or throws `ProviderInvalidResponseError`. Tests mock the HTTP calls with msw (see [testing.md](testing.md)).
+
+## Open-Meteo
+
+`createOpenMeteoProvider` (`apps/api/src/modules/weather/providers/open-meteo/`) is the first real provider. It needs no API key and is published under CC BY 4.0.
+
+- Id `open-meteo`, global coverage, data types `current`, `hourly` (48 hours), `daily` (7 days), `airQuality` and `pollen`. Open-Meteo has no alerts, so `getAlerts` is absent.
+- Forecast data comes from `https://api.open-meteo.com/v1/forecast`, air quality and pollen from `https://air-quality-api.open-meteo.com/v1/air-quality`. Both URLs can be overridden in the options, which the tests use to target a mocked host.
+- Requests ask for `timeformat=unixtime&timezone=auto`. Instants are built from the unix seconds, and daily dates from the local midnight shifted by `utc_offset_seconds`.
+- WMO weather codes map to `WEATHER_CONDITIONS`. No WMO code reports `sleet`, and an unknown code throws `ProviderInvalidResponseError`.
+- `index` of the air quality is the European index, else the US index, else `null`.
+- Pollen is only available in Europe. Elsewhere Open-Meteo returns nothing and every species is `null`.
+- Fixtures under `apps/api/test/fixtures/open-meteo/` are real responses for Paris and New York, trimmed to the requested fields.
