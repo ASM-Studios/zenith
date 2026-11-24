@@ -1,0 +1,38 @@
+info:
+  name: "Sign up a user to delete"
+  type: http
+  seq: 11
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/auth/sign-up/email"
+  headers:
+    - name: Origin
+      value: "{{origin}}"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "{{emailDelete}}",
+        "password": "{{password}}",
+        "name": "Zenith Tester"
+      }
+
+runtime:
+  scripts:
+    - type: before-request
+      code: |-
+        bru.setVar("emailDelete", `zenith-delete-${Date.now()}@example.com`);
+        await bru.sleep(10500);
+    - type: tests
+      code: |-
+        test("returns the user to delete", function () {
+          expect(res.body.user.email).to.equal(bru.getVar("emailDelete"));
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+
+settings:
+  encodeUrl: true
