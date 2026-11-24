@@ -1,4 +1,4 @@
-FROM docker.io/library/node:24-slim AS base
+FROM docker.io/library/node:24-slim@sha256:873f586f3794f52281bd039bf02c048a0be08fde619338f9941bad1eb6b34530 AS base
 WORKDIR /app
 
 FROM base AS manifests
@@ -19,7 +19,7 @@ RUN node -e "for (const f of ['package.json','apps/api/package.json','packages/c
  && npm install --omit=dev --workspace=@zenith/api \
  && npm cache clean --force
 
-FROM gcr.io/distroless/nodejs24-debian13:nonroot AS runtime
+FROM gcr.io/distroless/nodejs24-debian13:nonroot@sha256:39b0407357c9fadf1a9708d22088f02de21f0e1e8a688474eea2d8701e7d5693 AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=deps /app ./
