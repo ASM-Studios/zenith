@@ -11,7 +11,9 @@ declare module 'vitest' {
 }
 
 export default async function setup(project: TestProject) {
-  const container = await new PostgreSqlContainer('postgres:17').start();
+  const container = await new PostgreSqlContainer(
+    'postgres:17@sha256:87c8b42f423b45d5247e6aa8fdb2e7762fec164c68a50fe3eb07e7bfcaf4dbcf',
+  ).start();
   const url = container.getConnectionUri();
 
   try {
