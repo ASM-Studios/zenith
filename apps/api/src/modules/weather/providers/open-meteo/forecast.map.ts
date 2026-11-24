@@ -20,7 +20,7 @@ function conditionOf(code: number): WeatherCondition {
 
 function mapMeasurements(row: MeasurementsRow): WeatherMeasurements {
   return {
-    time: `${row.time}:00Z`,
+    time: row.time,
     condition: conditionOf(row.weather_code),
     temperatureCelsius: row.temperature_2m,
     apparentTemperatureCelsius: row.apparent_temperature,

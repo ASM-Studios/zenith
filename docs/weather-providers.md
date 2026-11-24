@@ -124,7 +124,9 @@ export function createExampleProvider(baseUrl: string): WeatherProvider {
 
 `createOpenMeteoProvider` (`apps/api/src/modules/weather/providers/open-meteo`) needs no API key. Its data is under CC BY 4.0.
 
-- Global coverage, data types `current`, `hourly` (48 hours) and `daily` (7 days).
-- `current` and `hourly` are requested in GMT, `daily` in the local timezone of the location. Daily dates are read as they come, without applying a UTC offset.
+- Global coverage, data types `current`, `hourly` (48 hours), `daily` (7 days), `airQuality` and `pollen`.
+- `airQuality` gives the European index, else the US index, else `null`.
+- `pollen` covers Europe only: elsewhere every species is `null`, and the answer is cached like any other.
+- `current`, `hourly`, `airQuality` and `pollen` are requested in GMT, `daily` in the local timezone of the location. Daily dates are read as they come, without applying a UTC offset.
 - The requested variables are the keys of the row schemas, so a field is added in one place.
 - WMO weather codes map to `WEATHER_CONDITIONS`. No code reports `sleet`, and an unknown code is an `invalid-response`.

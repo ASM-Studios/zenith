@@ -1,11 +1,8 @@
 import { z } from 'zod';
-
-const optionalNumber = z.number().nullable().default(null);
-
-const MinuteSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/);
+import { GmtMinuteSchema, optionalNumber } from './scalars.ts';
 
 const MeasurementsRowSchema = z.object({
-  time: MinuteSchema,
+  time: GmtMinuteSchema,
   temperature_2m: z.number(),
   weather_code: z.number(),
   apparent_temperature: optionalNumber,
