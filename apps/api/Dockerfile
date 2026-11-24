@@ -1,4 +1,4 @@
-FROM docker.io/library/node:26-slim AS base
+FROM docker.io/library/node:24-slim AS base
 WORKDIR /app
 
 FROM base AS manifests
@@ -19,16 +19,11 @@ RUN node -e "for (const f of ['package.json','apps/api/package.json','packages/c
  && npm install --omit=dev --workspace=@zenith/api \
  && npm cache clean --force
 
-FROM base AS runtime
+FROM gcr.io/distroless/nodejs24-debian13:nonroot AS runtime
+WORKDIR /app
 ENV NODE_ENV=production
-RUN apt-get update \
- && apt-get install -y --no-install-recommends curl \
- && apt-get install -y --only-upgrade libc6 libc-bin zlib1g \
- && rm -rf /var/lib/apt/lists/* \
- && rm -rf /usr/local/lib/node_modules /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
 COPY --from=deps /app ./
 COPY --from=build /app/packages/core/dist packages/core/dist
 COPY --from=build /app/apps/api/dist apps/api/dist
 COPY apps/api/drizzle apps/api/drizzle
-USER node
-CMD ["node", "apps/api/dist/server.js"]
+CMD ["apps/api/dist/server.js"]
