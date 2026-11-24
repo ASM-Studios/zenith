@@ -9,10 +9,11 @@ from ci_stamp import git  # noqa: E402
 from gh_rules import check_pr  # noqa: E402
 from git_message import forbidden_in  # noqa: E402
 from hookio import RULES  # noqa: E402
+from size_rules import size_problems  # noqa: E402
 
 REPO = "ASM-Studios/zenith"
 
-__all__ = ["REPO", "RULES", "check_pr", "forbidden_in", "gh", "git", "main_checkout", "toplevel"]
+__all__ = ["REPO", "RULES", "check_pr", "forbidden_in", "gh", "git", "main_checkout", "size_problems", "toplevel"]
 
 
 def gh(*args):

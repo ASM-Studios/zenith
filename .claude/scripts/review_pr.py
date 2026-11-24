@@ -6,7 +6,7 @@ import sys
 from itertools import combinations
 
 from diff_scan import forbidden_hits, message_hits
-from repo import REPO, RULES, check_pr, gh, git, toplevel
+from repo import REPO, RULES, check_pr, gh, git, size_problems, toplevel
 
 
 def fetch(root, number):
@@ -54,6 +54,7 @@ def inspect(root, number, ref, base):
     rule = check_pr(["--title", meta["title"], "--body", meta["body"] or ""])
     problems += [f"{rule[0]}. {rule[1]}"] if rule else []
     problems += forbidden_hits(git(root, "diff", f"{base}...{ref}") or "")
+    problems += [f"{rule}. {fix}" for rule, fix in size_problems(root, [f"{base}...{ref}"], ref)]
     stat = git(root, "diff", "--shortstat", f"{base}...{ref}") or "no diff"
     print(f"#{number} {meta['title']}: {len(subjects)} commits, {stat}")
     for problem in problems or ["no finding"]:
