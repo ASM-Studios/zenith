@@ -28,3 +28,4 @@ __pycache__/
 # Expo
 .expo/
 .android/
+local.properties

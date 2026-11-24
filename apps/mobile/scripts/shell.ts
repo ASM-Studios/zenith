@@ -5,8 +5,8 @@ export function hasCommand(name: string): boolean {
   return spawnSync(name, ['--version'], { stdio: 'ignore' }).error === undefined;
 }
 
-export function capture(command: string, args: string[]): string {
-  const result = spawnSync(command, args, { encoding: 'utf8' });
+export function capture(command: string, args: string[], env: NodeJS.ProcessEnv = process.env): string {
+  const result = spawnSync(command, args, { encoding: 'utf8', env });
   return result.stdout ?? '';
 }
 
