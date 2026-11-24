@@ -4,6 +4,7 @@ import { buildApp } from './app.ts';
 import { createCache } from './lib/cache.ts';
 import { createLogger } from './lib/logger.ts';
 import { createRedis } from './lib/redis.ts';
+import { createOpenMeteoProvider } from './modules/weather/providers/open-meteo/provider.ts';
 
 const logger = createLogger({ level: config.server.logLevel });
 const redis = createRedis(config.redis.url, logger);
@@ -11,7 +12,7 @@ const redis = createRedis(config.redis.url, logger);
 const app = buildApp({
   logger,
   cache: createCache(redis, { logger: logger.child({ module: 'cache' }) }),
-  weatherProviders: [],
+  weatherProviders: [createOpenMeteoProvider()],
 });
 
 app.addHook('onClose', async () => {

@@ -55,7 +55,7 @@ Every error extends `ProviderError` and carries the `providerId`. The API reads 
 
 `apps/api/src/modules/weather` serves the providers to the clients. It depends only on `WeatherProvider`, so a new source needs no change there.
 
-- **Registration.** `buildApp` takes `weatherProviders`, the list built at app start in `server.ts`. The order of the list is the default order of selection. No real provider is registered yet: Open-Meteo is added once it lands.
+- **Registration.** `buildApp` takes `weatherProviders`, the list built at app start in `server.ts`. The order of the list is the default order of selection. Open-Meteo is the only registered provider.
 - **Selection.** For each request, the first provider for which `offersDataType` holds wins, trying first the `provider` query parameter, then the signed-in user's source preference for the data type (`sourcePreferences.current`, `sourcePreferences.airQuality`...), then their `sourcePreferences.weather`, then the registration order. An unknown or unfit preference is skipped.
 - **Cache.** Entries live in the Redis cache under `weather:<provider id>:<data type>:<latitude>:<longitude>`, the location rounded to 2 decimals (about 1 km); the provider is queried at that rounded location. A second request in the same cell inside the freshness TTL does not call the provider.
 - **Freshness.** `current` 10 min, `hourly` 30 min, `daily` 3 h, `airQuality` 1 h, `pollen` 3 h, `alerts` 5 min. Redis keeps each entry 24 h longer so it can be served stale.
@@ -111,11 +111,20 @@ export function createExampleProvider(baseUrl: string): WeatherProvider {
     attribution: { name: 'Example', url: baseUrl, licence: 'CC BY 4.0', licenceUrl: 'https://creativecommons.org/licenses/by/4.0/' },
     capabilities: { coverage: { kind: 'global' }, dataTypes: ['current'] },
     getCurrent: async ({ location, signal }) => {
-      const response = await fetchOrThrow(id, `${baseUrl}?lat=${location.latitude}&lon=${location.longitude}`, signal);
-      return mapCurrent(id, await response.json());
+      const url = new URL(`${baseUrl}?lat=${location.latitude}&lon=${location.longitude}`);
+      return mapCurrent(await fetchJson({ providerId: id, url, schema: ExampleResponseSchema, signal }));
     },
   };
 }
 ```
 
-Here `fetchOrThrow` turns an abort, a network error, a 5xx and a 429 into the errors above, and `mapCurrent` converts the source response to `CurrentConditions` or throws `ProviderInvalidResponseError`. Tests mock the HTTP calls with msw (see [testing.md](testing.md)).
+`fetchJson` (`apps/api/src/modules/weather/providers/fetch-json.ts`) validates the body with the schema and turns every failure into the errors above, an unexpected 4xx being an `invalid-response`. `mapCurrent` converts the validated response to `CurrentConditions`. Tests mock the HTTP calls with msw (see [testing.md](testing.md)).
+
+## Open-Meteo
+
+`createOpenMeteoProvider` (`apps/api/src/modules/weather/providers/open-meteo`) needs no API key. Its data is under CC BY 4.0.
+
+- Global coverage, data types `current`, `hourly` (48 hours) and `daily` (7 days).
+- `current` and `hourly` are requested in GMT, `daily` in the local timezone of the location. Daily dates are read as they come, without applying a UTC offset.
+- The requested variables are the keys of the row schemas, so a field is added in one place.
+- WMO weather codes map to `WEATHER_CONDITIONS`. No code reports `sleet`, and an unknown code is an `invalid-response`.
