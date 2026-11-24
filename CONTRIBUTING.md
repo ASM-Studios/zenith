@@ -40,7 +40,7 @@ Issue titles follow the same `type(scope): desc` convention.
 - Every PR must be reviewed and approved by another team member before merge.
 - Authors do not merge their own PR without approval.
 - CI must be green.
-- A PR too big to review is split: open one sub-issue of the original issue per sub-PR, name each branch after its sub-issue and close it with `Closes #<sub-issue>`. The parent issue is only mentioned (`Part of #<issue>`).
+- A PR too big to review is split: open one sub-issue of the original issue per sub-PR, name each branch after its sub-issue and close it with `Closes #<sub-issue>`. The parent issue is only mentioned (`Part of #<issue>`). Too big means more than 1000 changed lines (added plus removed, lockfiles and Drizzle output excluded) or a created or grown code file above 200 lines.
 
 ### Review before commit (Claude Code)
 
