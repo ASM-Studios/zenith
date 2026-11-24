@@ -1,0 +1,25 @@
+info:
+  name: "Reject a latitude above 90"
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/weather/current?latitude=91&longitude=2.3522"
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("rejects the query and names the field", function () {
+          expect(res.body.error).to.equal("invalid_query");
+          expect(res.body.message).to.match(/^latitude: /);
+          expect(res.body.issues[0].path.join(".")).to.equal("latitude");
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "400"
+
+settings:
+  encodeUrl: true
