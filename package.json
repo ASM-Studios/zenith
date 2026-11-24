@@ -45,5 +45,16 @@
     "testcontainers": "^12.2.2",
     "typescript": "^7.0.2",
     "vitest": "^5.1.1"
+  },
+  "allowScripts": {
+    "esbuild": true,
+    "msgpackr-extract": true,
+    "protobufjs": true,
+    "ssh2": false,
+    "cpu-features": false
+  },
+  "overrides": {
+    "archiver": "^8.0.0",
+    "readdir-glob": "^4.0.0"
   }
 }
