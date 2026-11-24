@@ -6,12 +6,20 @@ export function getIssue(ctx, number) {
   return ctx.repoClient.rest('GET', `/repos/${ctx.owner}/${ctx.repo}/issues/${number}`);
 }
 
+const isAlreadyAssigned = (error) => String(error?.message).includes('Assignee has already been taken');
+
 export async function assignIfNone(ctx, number, logins) {
   const current = await getIssue(ctx, number);
   if (current.assignees.length > 0 || logins.length === 0) return current.assignees.map((user) => user.login);
-  await ctx.repoClient.rest('POST', `/repos/${ctx.owner}/${ctx.repo}/issues/${number}/assignees`, {
-    assignees: logins,
-  });
+  try {
+    await ctx.repoClient.rest('POST', `/repos/${ctx.owner}/${ctx.repo}/issues/${number}/assignees`, {
+      assignees: logins,
+    });
+  } catch (error) {
+    if (!isAlreadyAssigned(error)) throw error;
+    log(`#${number}: already assigned`);
+    return logins;
+  }
   log(`#${number}: assigned ${logins.join(', ')}`);
   return logins;
 }
