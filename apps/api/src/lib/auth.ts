@@ -14,5 +14,6 @@ export const auth = betterAuth({
       verify: ({ hash, password }) => verifyPassword(hash, password),
     },
   },
+  user: { deleteUser: { enabled: true } },
   plugins: [username()],
 });
