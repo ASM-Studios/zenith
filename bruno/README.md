@@ -1,6 +1,6 @@
 # Zenith API collection
 
-Bruno collection in the OpenCollection YAML format. It covers `/ping`, `/api/auth/*`, `/api/me/locations` and `/api/me/preferences`.
+Bruno collection in the OpenCollection YAML format. It covers `/ping`, `/api/auth/*`, `/api/me/locations`, `/api/me/preferences` and the request validation of `/api/weather/*`.
 
 ## Run
 

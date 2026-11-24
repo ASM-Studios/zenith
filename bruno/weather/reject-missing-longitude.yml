@@ -1,0 +1,24 @@
+info:
+  name: "Reject a missing longitude"
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/weather/hourly?latitude=48.8566"
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("rejects the query and names the field", function () {
+          expect(res.body.error).to.equal("invalid_query");
+          expect(res.body.issues[0].path.join(".")).to.equal("longitude");
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "400"
+
+settings:
+  encodeUrl: true
