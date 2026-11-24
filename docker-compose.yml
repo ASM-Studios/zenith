@@ -42,7 +42,7 @@ services:
       context: .
       dockerfile: apps/api/Dockerfile
     image: zenith-api:latest
-    command: ["node", "apps/api/dist/db/migrate.js"]
+    command: ["apps/api/dist/db/migrate.js"]
     environment:
       DATABASE_URL: *database-url
     networks:
@@ -76,7 +76,13 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:$${API_PORT}/ping"]
+      test:
+        [
+          "CMD",
+          "/nodejs/bin/node",
+          "-e",
+          "fetch('http://localhost:' + process.env.API_PORT + '/ping').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))",
+        ]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -111,7 +117,7 @@ services:
     image: zenith-api:latest
     restart: unless-stopped
     init: true
-    command: ["node", "apps/api/dist/worker.js"]
+    command: ["apps/api/dist/worker.js"]
     environment:
       REDIS_URL: *redis-url
       LOG_LEVEL: ${LOG_LEVEL:-info}

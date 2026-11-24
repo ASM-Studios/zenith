@@ -73,6 +73,8 @@ The `web` service serves the built web app on `http://localhost:8080` (`WEB_PORT
 
 The `worker` service runs the scheduled jobs (`apps/api/src/jobs/`) on a BullMQ queue in Redis. Outside Docker, start it with `npm run dev:worker`.
 
+The API image is distroless: it has no shell, no package manager and no `curl`, so `docker compose exec api sh` fails. Read logs with `docker compose logs api`. To get a shell, run the debug variant next to the stack: `docker run --rm -it --entrypoint sh gcr.io/distroless/nodejs24-debian13:debug-nonroot`. The `api` healthcheck is a Node `fetch` of `/ping` for the same reason.
+
 ## Quality gates
 
 ```
