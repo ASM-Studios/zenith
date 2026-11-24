@@ -1,0 +1,38 @@
+info:
+  name: "User B adds coordinates user A already stored"
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/me/locations"
+  body:
+    type: json
+    data: |-
+      {
+        "locations": [
+          {
+            "name": "Tokyo (B)",
+            "latitude": 35.6762,
+            "longitude": 139.6503
+          }
+        ]
+      }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("lists 1 location(s)", function () {
+          expect(res.body.locations).to.have.lengthOf(1);
+        });
+        test("is stored under another id", function () {
+          expect(res.body.locations[0].id).to.not.equal(bru.getVar("tokyoId"));
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+
+settings:
+  encodeUrl: true

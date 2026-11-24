@@ -1,0 +1,28 @@
+info:
+  name: "Reject a body without sourcePreferences"
+  type: http
+  seq: 6
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/api/me/preferences"
+  body:
+    type: json
+    data: |-
+      {}
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("rejects the body and names the field", function () {
+          expect(res.body.error).to.equal("invalid_body");
+          expect(res.body.issues[0].path.join(".")).to.equal("sourcePreferences");
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "400"
+
+settings:
+  encodeUrl: true

@@ -1,0 +1,23 @@
+info:
+  name: "Get session of user A"
+  type: http
+  seq: 7
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/auth/get-session"
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("returns user A", function () {
+          expect(res.body.user.email).to.equal(bru.getVar("emailA"));
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+
+settings:
+  encodeUrl: true

@@ -1,0 +1,32 @@
+info:
+  name: "Reject a number as a source"
+  type: http
+  seq: 5
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/api/me/preferences"
+  body:
+    type: json
+    data: |-
+      {
+        "sourcePreferences": {
+          "weather": 42
+        }
+      }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("rejects the body and names the field", function () {
+          expect(res.body.error).to.equal("invalid_body");
+          expect(res.body.issues[0].path.join(".")).to.equal("sourcePreferences.weather");
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "400"
+
+settings:
+  encodeUrl: true

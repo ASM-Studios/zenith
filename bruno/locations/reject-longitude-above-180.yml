@@ -1,0 +1,36 @@
+info:
+  name: "Reject a longitude above 180"
+  type: http
+  seq: 9
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/me/locations"
+  body:
+    type: json
+    data: |-
+      {
+        "locations": [
+          {
+            "name": "Paris",
+            "latitude": 48.8566,
+            "longitude": 181
+          }
+        ]
+      }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("rejects the body and names the field", function () {
+          expect(res.body.error).to.equal("invalid_body");
+          expect(res.body.issues[0].path.join(".")).to.equal("locations.0.longitude");
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "400"
+
+settings:
+  encodeUrl: true

@@ -1,0 +1,31 @@
+info:
+  name: "Put preferences without session"
+  type: http
+  seq: 5
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/api/me/preferences"
+  body:
+    type: json
+    data: |-
+      {
+        "sourcePreferences": {
+          "weather": "metno"
+        }
+      }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("answers unauthorized", function () {
+          expect(res.body.message).to.equal("unauthorized");
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "401"
+
+settings:
+  encodeUrl: true

@@ -1,0 +1,31 @@
+info:
+  name: "Saving again replaces the previous value"
+  type: http
+  seq: 4
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/api/me/preferences"
+  body:
+    type: json
+    data: |-
+      {
+        "sourcePreferences": {
+          "weather": "metno"
+        }
+      }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("keeps only the new value", function () {
+          expect(res.body.sourcePreferences).to.eql({ weather: "metno" });
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+
+settings:
+  encodeUrl: true

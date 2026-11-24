@@ -1,0 +1,25 @@
+info:
+  name: "Save preferences again for the isolation checks"
+  type: http
+  seq: 11
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/api/me/preferences"
+  body:
+    type: json
+    data: |-
+      {
+        "sourcePreferences": {
+          "weather": "metno"
+        }
+      }
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+
+settings:
+  encodeUrl: true

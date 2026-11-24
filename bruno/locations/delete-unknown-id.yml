@@ -1,0 +1,17 @@
+info:
+  name: "Delete an unknown uuid"
+  type: http
+  seq: 20
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/api/me/locations/00000000-0000-4000-8000-000000000000"
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "404"
+
+settings:
+  encodeUrl: true

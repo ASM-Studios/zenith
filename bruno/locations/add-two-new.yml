@@ -1,0 +1,40 @@
+info:
+  name: "Add two new locations in one request"
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/me/locations"
+  body:
+    type: json
+    data: |-
+      {
+        "locations": [
+          {
+            "name": "Tokyo",
+            "latitude": 35.6762,
+            "longitude": 139.6503
+          },
+          {
+            "name": "Reykjavik",
+            "latitude": 64.1466,
+            "longitude": -21.9426
+          }
+        ]
+      }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("lists 3 location(s)", function () {
+          expect(res.body.locations).to.have.lengthOf(3);
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+
+settings:
+  encodeUrl: true

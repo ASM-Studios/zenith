@@ -1,0 +1,35 @@
+info:
+  name: "Accept the coordinate boundaries"
+  type: http
+  seq: 15
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/me/locations"
+  body:
+    type: json
+    data: |-
+      {
+        "locations": [
+          {
+            "name": "Boundary",
+            "latitude": 90,
+            "longitude": -180
+          }
+        ]
+      }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("lists 5 location(s)", function () {
+          expect(res.body.locations).to.have.lengthOf(5);
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+
+settings:
+  encodeUrl: true
