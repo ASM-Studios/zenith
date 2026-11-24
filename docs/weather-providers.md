@@ -51,6 +51,38 @@ A provider throws only the errors from `@zenith/core`, keeping the original fail
 
 Every error extends `ProviderError` and carries the `providerId`. The API reads `kind` to choose between serving stale cache and reporting the source as unavailable.
 
+## Serving weather data
+
+`apps/api/src/modules/weather` serves the providers to the clients. It depends only on `WeatherProvider`, so a new source needs no change there.
+
+- **Registration.** `buildApp` takes `weatherProviders`, the list built at app start in `server.ts`. The order of the list is the default order of selection. No real provider is registered yet: Open-Meteo is added once it lands.
+- **Selection.** For each request, the first provider for which `offersDataType` holds wins, trying first the `provider` query parameter, then the signed-in user's source preference for the data type (`sourcePreferences.current`, `sourcePreferences.airQuality`...), then their `sourcePreferences.weather`, then the registration order. An unknown or unfit preference is skipped.
+- **Cache.** Entries live in the Redis cache under `weather:<provider id>:<data type>:<latitude>:<longitude>`, the location rounded to 2 decimals (about 1 km); the provider is queried at that rounded location. A second request in the same cell inside the freshness TTL does not call the provider.
+- **Freshness.** `current` 10 min, `hourly` 30 min, `daily` 3 h, `airQuality` 1 h, `pollen` 3 h, `alerts` 5 min. Redis keeps each entry 24 h longer so it can be served stale.
+- **Timeout.** Each provider call gets an `AbortSignal` that fires after 10 s.
+
+### Routes
+
+`GET /api/weather/{current,hourly,daily,air-quality,pollen,alerts}?latitude=&longitude=[&provider=]`, open to anonymous clients. The answer is:
+
+```json
+{ "data": {}, "provider": { "id": "open-meteo", "attribution": {} }, "updatedAt": "2026-11-24T12:00:00.000Z", "stale": false }
+```
+
+`data` follows the schema of the data type. `updatedAt` is when the provider answered, not when the client asked.
+
+### Errors
+
+| Case | Answer |
+|---|---|
+| Missing or out of range `latitude` / `longitude`, empty `provider` | `400 { error: "invalid_query", message: "latitude: ...", issues }` |
+| No registered provider offers the data type at the location | `404 { error: "no_provider", dataType }` |
+| `timeout`, `unavailable`, `quota`, `invalid-response` with a cached entry | `200` with the cached data, its `updatedAt` and `stale: true` |
+| `timeout`, `unavailable`, `quota`, `invalid-response` without a cached entry | `503 { error: "source_unavailable", provider, reason: <kind> }`, plus `Retry-After` on a quota error that gives one |
+| `unsupported`, cached or not | `404 { error: "not_supported", provider }`: the source says it does not serve this, so an old value is not served |
+
+A provider response that does not match the data schema counts as `invalid-response` and is never cached.
+
 ## Example provider
 
 `@zenith/core/testing` exports `createStubWeatherProvider`, a complete provider with fixed data. It is the reference implementation and the provider to use in tests and in demo mode. It is not exported from `@zenith/core`, so the web and mobile bundles never include it.

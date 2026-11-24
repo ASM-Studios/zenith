@@ -5,6 +5,9 @@ export default defineConfig({
   resolve: {
     conditions: ['@zenith/source'],
   },
+  ssr: {
+    resolve: { conditions: ['@zenith/source'] },
+  },
   test: {
     environment: 'node',
     setupFiles: ['./vitest.setup.ts'],

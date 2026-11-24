@@ -11,6 +11,7 @@ const redis = createRedis(config.redis.url, logger);
 const app = buildApp({
   logger,
   cache: createCache(redis, { logger: logger.child({ module: 'cache' }) }),
+  weatherProviders: [],
 });
 
 app.addHook('onClose', async () => {
