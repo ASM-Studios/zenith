@@ -1,0 +1,32 @@
+info:
+  name: "Delete the account with the right password"
+  type: http
+  seq: 13
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/auth/delete-user"
+  headers:
+    - name: Origin
+      value: "{{origin}}"
+  body:
+    type: json
+    data: |-
+      {
+        "password": "{{password}}"
+      }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("reports the deletion", function () {
+          expect(res.body.success).to.equal(true);
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+
+settings:
+  encodeUrl: true
