@@ -27,3 +27,4 @@ __pycache__/
 
 # Expo
 .expo/
+.android/

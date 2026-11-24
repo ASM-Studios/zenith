@@ -39,7 +39,9 @@ zenith/
 │       │   ├── features/                 # same split as web, own screens
 │       │   ├── components/               # React Native components
 │       │   ├── navigation/               # React Navigation stack
-│       │   └── api/                      # HTTP client for apps/api
+│       │   ├── api/                      # HTTP client for apps/api
+│       │   └── dev/                      # adb parsing for the android:* commands
+│       ├── scripts/                      # android:emulator and android:phone runners (docs/mobile-setup.md)
 │       ├── App.tsx
 │       ├── app.json
 │       ├── metro.config.cjs                  # resolves @zenith/core from source

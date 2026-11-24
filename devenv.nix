@@ -24,6 +24,19 @@
 
   dotenv.enable = true;
 
+  profiles.android.module = {
+    android = {
+      enable = true;
+      platforms.version = [ "36" ];
+      abis = [ "x86_64" ];
+      systemImageTypes = [ "google_apis_playstore" ];
+      ndk.enable = false;
+      sources.enable = false;
+      googleTVAddOns.enable = false;
+      extras = [ ];
+    };
+  };
+
   enterShell = ''
     echo "node $(node --version) / npm $(npm --version)"
   '';
