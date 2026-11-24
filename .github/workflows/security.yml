@@ -86,3 +86,8 @@ jobs:
         with:
           sarif_file: grype-image.sarif
           category: grype-image
+
+      - name: Report npm audit
+        if: ${{ !cancelled() && github.event_name == 'schedule' }}
+        continue-on-error: true
+        run: npm audit --omit=dev --audit-level=high
