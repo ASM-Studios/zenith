@@ -16,7 +16,10 @@ for (const port of [metroPort, apiPort]) {
     fail(`adb reverse failed for port ${port}.`);
   }
 }
-startExpo({
-  ANDROID_SERIAL: choice.serial,
-  EXPO_PUBLIC_API_URL: `http://localhost:${apiPort}`,
-});
+startExpo(
+  {
+    ANDROID_SERIAL: choice.serial,
+    EXPO_PUBLIC_API_URL: `http://localhost:${apiPort}`,
+  },
+  ['--localhost'],
+);

@@ -29,7 +29,7 @@ The emulator needs hardware virtualization: `/dev/kvm` must exist and your user 
 3. Plug the phone in with a data cable, unlock it and accept the "Allow USB debugging" prompt.
 4. Run `npm run android:phone`.
 
-The command checks that exactly one authorized phone is connected, then runs `adb reverse tcp:8081 tcp:8081` and `adb reverse tcp:3000 tcp:3000`. Reverse forwarding makes `localhost` on the phone reach Metro and the API on this machine through the cable. No firewall rule, no shared Wi-Fi and no tunnel service are needed.
+The command checks that exactly one authorized phone is connected, then runs `adb reverse tcp:8081 tcp:8081` and `adb reverse tcp:3000 tcp:3000`. Reverse forwarding makes `localhost` on the phone reach Metro and the API on this machine through the cable. No firewall rule, no shared Wi-Fi and no tunnel service are needed. Expo starts with `--localhost`, so Expo Go opens `exp://localhost:8081` instead of the LAN address, which the phone cannot reach without the same Wi-Fi.
 
 ## Troubleshooting
 
