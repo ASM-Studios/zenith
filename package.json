@@ -18,7 +18,8 @@
   "workspaces": [
     "packages/core",
     "apps/api",
-    "apps/web"
+    "apps/web",
+    "apps/mobile"
   ],
   "scripts": {
     "dev": "npm run dev --workspace=@zenith/api",
@@ -32,7 +33,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "check": "npm run lint && npm run format:check && npm run test:coverage && npm run build"
+    "check": "npm run lint && npm run format:check && npm run test:coverage && npm run build",
+    "dev:mobile": "npm run start --workspace=@zenith/mobile"
   },
   "devDependencies": {
     "@testcontainers/postgresql": "^12.2.2",

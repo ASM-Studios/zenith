@@ -1,6 +1,6 @@
-meteo/
+zenith/
 ├── apps/
-│   ├── api/                              # BACKEND · @meteo/api (Node.js + Fastify)
+│   ├── api/                              # BACKEND · @zenith/api (Node.js + Fastify)
 │   │   ├── src/
 │   │   │   ├── modules/
 │   │   │   │   ├── weather/              # terrestrial weather
@@ -20,11 +20,11 @@ meteo/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── web/                              # FRONTEND · @meteo/web (React + Vite)
+│   ├── web/                              # FRONTEND · @zenith/web (React + Vite)
 │   │   ├── public/
 │   │   ├── src/
 │   │   │   ├── features/                 # weather, space, sky, favorites, notifications
-│   │   │   ├── components/               # shared UI components
+│   │   │   ├── components/               # web UI components
 │   │   │   ├── api/                      # HTTP client for apps/api
 │   │   │   └── main.tsx
 │   │   ├── index.html
@@ -33,19 +33,21 @@ meteo/
 │   │   ├── tsconfig.json
 │   │   └── vite.config.ts
 │   │
-│   └── mobile/                           # FRONTEND · @meteo/mobile (Expo / React Native)
+│   └── mobile/                           # FRONTEND · @zenith/mobile (Expo / React Native)
 │       ├── assets/
 │       ├── src/
-│       │   ├── features/                 # same split as web
-│       │   ├── components/
-│       │   └── api/
+│       │   ├── features/                 # same split as web, own screens
+│       │   ├── components/               # React Native components
+│       │   ├── navigation/               # React Navigation stack
+│       │   └── api/                      # HTTP client for apps/api
 │       ├── App.tsx
 │       ├── app.json
+│       ├── metro.config.cjs                  # resolves @zenith/core from source
 │       ├── package.json
 │       └── tsconfig.json
 │
 ├── packages/
-│   └── core/                             # SHARED · @meteo/core (pure computations)
+│   └── core/                             # SHARED · @zenith/core (pure computations, the only code shared by web and mobile)
 │       ├── src/
 │       │   ├── ephemeris/                # Sun, Moon, twilights (Astronomy Engine)
 │       │   ├── indicator/                # stargazing indicator

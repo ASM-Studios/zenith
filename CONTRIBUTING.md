@@ -75,6 +75,12 @@ The `worker` service runs the scheduled jobs (`apps/api/src/jobs/`) on a BullMQ 
 
 The API image is distroless: it has no shell, no package manager and no `curl`, so `docker compose exec api sh` fails. Read logs with `docker compose logs api`. To get a shell, run the debug variant next to the stack: `docker run --rm -it --entrypoint sh gcr.io/distroless/nodejs24-debian13:debug-nonroot`. The `api` healthcheck is a Node `fetch` of `/ping` for the same reason.
 
+## Web and mobile
+
+Only computation code is shared between the web and mobile apps, through `@zenith/core` (see `docs/project.md`, section Stack Technique). Ephemerides, indicators, types and weather providers go in `packages/core`. Screens, components, navigation and the HTTP client stay in each app, because the web renders DOM and mobile renders React Native views.
+
+Run the mobile app with `npm run dev:mobile`, then press `a` for an Android emulator. The emulator reaches the API on the host at `http://10.0.2.2:3000`; override it with `EXPO_PUBLIC_API_URL`.
+
 ## Quality gates
 
 ```

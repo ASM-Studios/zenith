@@ -45,6 +45,7 @@ export default defineConfig({
         'apps/api/src/db/migrate.ts',
         'apps/api/src/db/schema/**',
         'apps/web/src/main.tsx',
+        'apps/mobile/src/**/*.tsx',
       ],
       reporter: ['text', 'json', 'json-summary', 'html', 'lcov'],
       reportsDirectory: 'coverage',

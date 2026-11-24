@@ -36,6 +36,12 @@
       "rules": {
         "react/react-in-jsx-scope": "off"
       }
+    },
+    {
+      "files": ["apps/mobile/**"],
+      "rules": {
+        "react/react-in-jsx-scope": "off"
+      }
     }
   ]
 }

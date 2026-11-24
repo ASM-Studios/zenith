@@ -1,0 +1,9 @@
+{
+  "expo": {
+    "name": "Zenith",
+    "slug": "zenith",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "android": { "package": "org.zenith.mobile" }
+  }
+}
