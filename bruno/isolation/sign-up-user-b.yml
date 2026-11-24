@@ -1,0 +1,34 @@
+info:
+  name: "Sign up user B"
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/auth/sign-up/email"
+  headers:
+    - name: Origin
+      value: "{{origin}}"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "{{emailB}}",
+        "password": "{{password}}",
+        "name": "Zenith Tester"
+      }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("returns user B", function () {
+          expect(res.body.user.email).to.equal(bru.getVar("emailB"));
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+
+settings:
+  encodeUrl: true

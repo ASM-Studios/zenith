@@ -1,0 +1,17 @@
+info:
+  name: "User B deletes a location of user A"
+  type: http
+  seq: 4
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/api/me/locations/{{tokyoId}}"
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "404"
+
+settings:
+  encodeUrl: true

@@ -1,0 +1,29 @@
+info:
+  name: "Accept an empty object"
+  type: http
+  seq: 10
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/api/me/preferences"
+  body:
+    type: json
+    data: |-
+      {
+        "sourcePreferences": {}
+      }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("clears the preferences", function () {
+          expect(res.body.sourcePreferences).to.eql({});
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+
+settings:
+  encodeUrl: true

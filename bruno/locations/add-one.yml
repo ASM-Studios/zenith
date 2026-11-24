@@ -1,0 +1,48 @@
+info:
+  name: Add one location
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/me/locations"
+  body:
+    type: json
+    data: |-
+      {
+        "locations": [
+          {
+            "name": "Paris",
+            "latitude": 48.8566,
+            "longitude": 2.3522
+          }
+        ]
+      }
+
+runtime:
+  scripts:
+    - type: after-response
+      code: bru.setVar("parisId", res.body.locations[0].id);
+    - type: tests
+      code: |-
+        test("lists 1 location(s)", function () {
+          expect(res.body.locations).to.have.lengthOf(1);
+        });
+        test("returns the stored fields", function () {
+          const [stored] = res.body.locations;
+          expect(stored.id).to.be.a("string");
+          expect(stored.name).to.equal("Paris");
+          expect(stored.latitude).to.equal(48.8566);
+          expect(stored.longitude).to.equal(2.3522);
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

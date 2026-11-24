@@ -1,0 +1,33 @@
+info:
+  name: "Sign in with an unknown user"
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/auth/sign-in/email"
+  headers:
+    - name: Origin
+      value: "{{origin}}"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "nobody-{{emailShort}}",
+        "password": "{{password}}"
+      }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("answers like a wrong password", function () {
+          expect(res.body.code).to.equal("INVALID_EMAIL_OR_PASSWORD");
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "401"
+
+settings:
+  encodeUrl: true

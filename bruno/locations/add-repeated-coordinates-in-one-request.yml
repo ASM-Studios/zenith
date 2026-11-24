@@ -1,0 +1,45 @@
+info:
+  name: "Add the same coordinates twice in one request"
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/me/locations"
+  body:
+    type: json
+    data: |-
+      {
+        "locations": [
+          {
+            "name": "Old name",
+            "latitude": 59.9139,
+            "longitude": 10.7522
+          },
+          {
+            "name": "Oslo",
+            "latitude": 59.9139,
+            "longitude": 10.7522
+          }
+        ]
+      }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("lists 4 location(s)", function () {
+          expect(res.body.locations).to.have.lengthOf(4);
+        });
+        test("keeps the last name", function () {
+          const oslo = res.body.locations.filter((l) => l.latitude === 59.9139);
+          expect(oslo).to.have.lengthOf(1);
+          expect(oslo[0].name).to.equal("Oslo");
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+
+settings:
+  encodeUrl: true

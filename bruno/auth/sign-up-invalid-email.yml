@@ -1,0 +1,32 @@
+info:
+  name: "Sign up with an invalid email"
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/auth/sign-up/email"
+  headers:
+    - name: Origin
+      value: "{{origin}}"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "not-an-email",
+        "password": "{{password}}",
+        "name": "Zenith Tester"
+      }
+
+runtime:
+  scripts:
+    - type: before-request
+      code: |-
+        await bru.sleep(10500);
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "400"
+
+settings:
+  encodeUrl: true

@@ -1,0 +1,23 @@
+info:
+  name: "List locations after sign out"
+  type: http
+  seq: 9
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/me/locations"
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("answers unauthorized", function () {
+          expect(res.body.message).to.equal("unauthorized");
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "401"
+
+settings:
+  encodeUrl: true

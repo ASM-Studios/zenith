@@ -1,0 +1,17 @@
+info:
+  name: "Delete with an id that is not a uuid"
+  type: http
+  seq: 19
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/api/me/locations/not-a-uuid"
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "404"
+
+settings:
+  encodeUrl: true

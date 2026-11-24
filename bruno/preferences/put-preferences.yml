@@ -1,0 +1,32 @@
+info:
+  name: "Save preferences"
+  type: http
+  seq: 2
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/api/me/preferences"
+  body:
+    type: json
+    data: |-
+      {
+        "sourcePreferences": {
+          "weather": "open-meteo",
+          "aurora": "noaa"
+        }
+      }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("echoes what was saved", function () {
+          expect(res.body.sourcePreferences).to.eql({ weather: "open-meteo", aurora: "noaa" });
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+
+settings:
+  encodeUrl: true

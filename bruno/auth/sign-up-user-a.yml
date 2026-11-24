@@ -1,0 +1,42 @@
+info:
+  name: "Sign up user A"
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/auth/sign-up/email"
+  headers:
+    - name: Origin
+      value: "{{origin}}"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "{{emailA}}",
+        "password": "{{password}}",
+        "name": "Zenith Tester"
+      }
+
+runtime:
+  scripts:
+    - type: before-request
+      code: |-
+        const stamp = Date.now();
+        bru.setVar("emailA", `zenith-a-${stamp}@example.com`);
+        bru.setVar("emailB", `zenith-b-${stamp}@example.com`);
+        bru.setVar("emailShort", `zenith-short-${stamp}@example.com`);
+        await bru.sleep(10500);
+    - type: tests
+      code: |-
+        test("returns a token and the user", function () {
+          expect(res.body.token).to.be.a("string");
+          expect(res.body.user.email).to.equal(bru.getVar("emailA"));
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+
+settings:
+  encodeUrl: true

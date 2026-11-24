@@ -1,0 +1,39 @@
+info:
+  name: "Reject more than 200 locations"
+  type: http
+  seq: 14
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/me/locations"
+  body:
+    type: json
+    data: |-
+      {
+        "locations": [
+          {
+            "name": "Paris",
+            "latitude": 48.8566,
+            "longitude": 2.3522
+          }
+        ]
+      }
+
+runtime:
+  scripts:
+    - type: before-request
+      code: |-
+        req.setBody({ locations: Array.from({ length: 201 }, (_, i) => ({ name: `p${i}`, latitude: i / 10, longitude: 0 })) });
+    - type: tests
+      code: |-
+        test("rejects the body and names the field", function () {
+          expect(res.body.error).to.equal("invalid_body");
+          expect(res.body.issues[0].path.join(".")).to.equal("locations");
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "400"
+
+settings:
+  encodeUrl: true

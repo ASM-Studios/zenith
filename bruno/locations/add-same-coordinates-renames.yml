@@ -1,0 +1,39 @@
+info:
+  name: "Add the same coordinates with a new name"
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/me/locations"
+  body:
+    type: json
+    data: |-
+      {
+        "locations": [
+          {
+            "name": "Paris, France",
+            "latitude": 48.8566,
+            "longitude": 2.3522
+          }
+        ]
+      }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("lists 1 location(s)", function () {
+          expect(res.body.locations).to.have.lengthOf(1);
+        });
+        test("keeps the id and updates the name", function () {
+          expect(res.body.locations[0].id).to.equal(bru.getVar("parisId"));
+          expect(res.body.locations[0].name).to.equal("Paris, France");
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+
+settings:
+  encodeUrl: true

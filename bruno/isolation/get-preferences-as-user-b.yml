@@ -1,0 +1,23 @@
+info:
+  name: "User B gets preferences"
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/me/preferences"
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("is empty", function () {
+          expect(res.body.sourcePreferences).to.eql({});
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+
+settings:
+  encodeUrl: true

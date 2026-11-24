@@ -1,0 +1,23 @@
+info:
+  name: "List locations of a new user"
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/me/locations"
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("lists 0 location(s)", function () {
+          expect(res.body.locations).to.have.lengthOf(0);
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+
+settings:
+  encodeUrl: true

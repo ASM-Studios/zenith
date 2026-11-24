@@ -1,0 +1,34 @@
+info:
+  name: "Sign up with an email already registered"
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/auth/sign-up/email"
+  headers:
+    - name: Origin
+      value: "{{origin}}"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "{{emailA}}",
+        "password": "{{password}}",
+        "name": "Zenith Tester"
+      }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("names the duplicate", function () {
+          expect(res.body.code).to.equal("USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL");
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "422"
+
+settings:
+  encodeUrl: true
