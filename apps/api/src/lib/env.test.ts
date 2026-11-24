@@ -7,6 +7,8 @@ const validEnv = {
   PASSWORD_PEPPER: 'p'.repeat(32),
   BETTER_AUTH_SECRET: 's'.repeat(32),
   BETTER_AUTH_URL: 'http://localhost:3000',
+  SMTP_URL: 'smtp://mail:1025',
+  MAIL_FROM: 'Zenith <no-reply@zenith.example>',
 };
 
 describe('loadConfig', () => {
@@ -21,6 +23,7 @@ describe('loadConfig', () => {
         url: validEnv.BETTER_AUTH_URL,
       },
       weather: { metNorwayContact: 'https://github.com/ASM-Studios/zenith' },
+      mail: { smtpUrl: validEnv.SMTP_URL, from: validEnv.MAIL_FROM },
     });
   });
 
@@ -28,6 +31,20 @@ describe('loadConfig', () => {
     const config = loadConfig({ ...validEnv, MET_NORWAY_CONTACT: 'ops@example.org' });
 
     expect(config.weather.metNorwayContact).toBe('ops@example.org');
+  });
+
+  it.each(['http://mail:1025', 'not a url', ''])('rejects SMTP_URL=%s', (smtpUrl) => {
+    expect(() => loadConfig({ ...validEnv, SMTP_URL: smtpUrl })).toThrow(/SMTP_URL/);
+  });
+
+  it('accepts an smtps SMTP_URL with credentials', () => {
+    const smtpUrl = 'smtps://user:secret@smtp.example.com:465';
+    expect(loadConfig({ ...validEnv, SMTP_URL: smtpUrl }).mail.smtpUrl).toBe(smtpUrl);
+  });
+
+  it('rejects a missing MAIL_FROM', () => {
+    const { MAIL_FROM: _from, ...partial } = validEnv;
+    expect(() => loadConfig(partial)).toThrow(/MAIL_FROM/);
   });
 
   it('coerces API_PORT and reads optional server settings', () => {

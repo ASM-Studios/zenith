@@ -63,6 +63,7 @@ Report vulnerabilities privately, as described in [SECURITY.md](SECURITY.md).
    ```
    cp .env.example .env
    ```
+   `SMTP_URL` and `MAIL_FROM` point to an SMTP server (Mailpit locally, a provider relay in production), where sign-up sends its verification link.
 3. Start the stack:
    ```
    docker compose up -d --build

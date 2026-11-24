@@ -25,12 +25,18 @@ export const weatherEnv = z.object({
   MET_NORWAY_CONTACT: z.string().min(1).default('https://github.com/ASM-Studios/zenith'),
 });
 
+export const mailEnv = z.object({
+  SMTP_URL: z.url({ protocol: /^smtps?$/ }),
+  MAIL_FROM: z.string().min(3),
+});
+
 const appEnv = z.object({
   ...serverEnv.shape,
   ...databaseEnv.shape,
   ...redisEnv.shape,
   ...authEnv.shape,
   ...weatherEnv.shape,
+  ...mailEnv.shape,
 });
 
 export type Env = Record<string, string | undefined>;
@@ -64,6 +70,7 @@ export function loadConfig(env: Env) {
       url: parsed.BETTER_AUTH_URL,
     },
     weather: { metNorwayContact: parsed.MET_NORWAY_CONTACT },
+    mail: { smtpUrl: parsed.SMTP_URL, from: parsed.MAIL_FROM },
   };
 }
 

@@ -13,5 +13,8 @@ export async function requireSession(request: FastifyRequest) {
   if (!session) {
     throw Object.assign(new Error('unauthorized'), { statusCode: 401 });
   }
+  if (!session.user.emailVerified) {
+    throw Object.assign(new Error('email not verified'), { statusCode: 403 });
+  }
   request.userId = session.user.id;
 }
