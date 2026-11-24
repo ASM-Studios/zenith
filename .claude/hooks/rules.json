@@ -4,5 +4,8 @@
   "commit_pattern": "^(feat|fix|docs|evol|test|chore)\\((core|api|web|mobile|infra|ci|data|docs)\\): \\S.*$",
   "pr_title_pattern": "^(feat|fix|docs|evol|test|chore)\\((core|api|web|mobile|infra|ci|data|docs)\\): \\S.*$",
   "max_bullet_words": 12,
+  "max_pr_lines": 1000,
+  "max_file_lines": 200,
+  "size_exempt": ["*package-lock.json", "apps/api/drizzle/*"],
   "forbidden_text": ["Co-Authored-By", "Generated with", "\u2014"]
 }

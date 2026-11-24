@@ -12,6 +12,7 @@ sys.path.insert(0, str(HOOKS))
 import ci_stamp  # noqa: E402
 import guard_git  # noqa: E402
 import review_stamp  # noqa: E402
+import size_rules  # noqa: E402
 
 GOOD_COMMIT = 'git commit -s -m "fix(api): bind the session to the user"'
 GOOD_BODY = "## Summary\n\nCloses #12\n\n- Bind the session\n\n## Checklist\n\n- [ ] `npm run check` passes"
@@ -25,6 +26,9 @@ class GitGuard(unittest.TestCase):
         reviewed = mock.patch.object(review_stamp, "is_fresh", return_value=True)
         reviewed.start()
         self.addCleanup(reviewed.stop)
+        sizes = mock.patch.object(size_rules, "size_problems", return_value=[])
+        self.sizes = sizes.start()
+        self.addCleanup(sizes.stop)
 
     def blocked(self, command):
         self.assertIsNotNone(guard_git.check(command, ""), command)
@@ -36,6 +40,15 @@ class GitGuard(unittest.TestCase):
         self.blocked("git push origin master")
         self.blocked("git push origin HEAD:dev")
         self.blocked("git push origin refs/heads/dev")
+
+    def test_push_of_an_oversized_branch_is_blocked_with_the_split_fix(self):
+        self.sizes.return_value = [("diff of 1200 lines, limit 1000", size_rules.SPLIT_FIX)]
+        verdict = guard_git.check("git push origin cma/#1/big", "")
+        self.assertIn("1200 lines", verdict[0])
+        self.assertIn("sub-issue", verdict[1])
+
+    def test_push_within_the_size_limits_is_allowed(self):
+        self.allowed("git push origin cma/#1/small")
 
     def test_force_push_is_blocked_in_every_spelling(self):
         for flag in ("-f", "--force", "--force-with-lease"):

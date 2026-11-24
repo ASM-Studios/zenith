@@ -6,6 +6,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 import ci_stamp  # noqa: E402
 import review_stamp  # noqa: E402
+import size_rules  # noqa: E402
 from gh_rules import check_pr  # noqa: E402
 from git_message import commit_messages, forbidden_in  # noqa: E402
 from hookio import RULES, block, command_of, read_payload, split_segments  # noqa: E402
@@ -37,6 +38,9 @@ def check_push(args, cwd):
         return ("force-push", "Hand the force-push to the user in your report.")
     if any(t in PROTECTED for t in targets) or (not targets and current_branch(cwd) in PROTECTED):
         return ("push to a protected branch", "Push your own branch and open a PR.")
+    oversized = size_rules.size_problems(cwd, ["origin/dev...HEAD"], "HEAD")
+    if oversized:
+        return oversized[0]
     if not ci_stamp.is_fresh(cwd):
         return (
             "push without a passing local CI run on this commit",

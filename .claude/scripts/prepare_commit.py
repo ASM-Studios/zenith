@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 from diff_scan import forbidden_hits
-from repo import git, toplevel
+from repo import git, size_problems, toplevel
 
 CHECK = Path(__file__).with_name("check_summary.py")
 
@@ -27,7 +27,10 @@ def main():
     hits = forbidden_hits(diff)
     for hit in hits:
         print(f"forbidden text: {hit}")
-    if hits:
+    oversized = size_problems(root, ["--cached"])
+    for rule, fix in oversized:
+        print(f"size: {rule}. {fix}")
+    if hits or oversized:
         sys.exit(1)
     print("next: zenith-review on `git diff --cached`, then python3 .claude/hooks/review_stamp.py <report file>")
 
