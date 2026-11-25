@@ -9,9 +9,18 @@ SPLIT_FIX = "Split it: one sub-issue of the issue per sub-PR (issue_create.py --
 
 
 def parse_numstat(text):
+    fields = text.split("\0")
     entries = []
-    for line in text.splitlines():
-        added, removed, path = line.split("\t", 2)
+    index = 0
+    while index < len(fields):
+        record = fields[index]
+        index += 1
+        if not record:
+            continue
+        added, removed, path = record.split("\t", 2)
+        if not path:
+            path = fields[index + 1]
+            index += 2
         if added != "-":
             entries.append((int(added), int(removed), path))
     return entries
@@ -35,7 +44,7 @@ def line_count(cwd, tree, path):
 
 
 def size_problems(cwd, diff_args, tree=""):
-    numstat = git(cwd, "diff", "--numstat", "--no-renames", *diff_args)
+    numstat = git(cwd, "diff", "--numstat", "-z", "-M", *diff_args)
     entries = counted(parse_numstat(numstat or ""))
     problems = []
     if total_lines(entries) > RULES["max_pr_lines"]:
