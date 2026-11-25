@@ -11,6 +11,8 @@
     pkgs.git
     pkgs.bruno
     pkgs.openssl
+    pkgs.actionlint
+    pkgs.shellcheck
   ];
 
   languages.javascript = {

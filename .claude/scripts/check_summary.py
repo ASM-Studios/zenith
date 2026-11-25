@@ -5,7 +5,7 @@ import sys
 from repo import git, toplevel
 from with_node import run
 
-STEPS = ["lint", "format:check", "test:coverage", "build"]
+STEPS = ["lint", "lint:workflows", "format:check", "test:coverage", "build"]
 ANSI = re.compile(r"\x1b\[[0-9;]*m")
 SIGNAL = re.compile(r"error|fail|warn|expected|received|✗|×", re.IGNORECASE)
 TESTS = re.compile(r"^\s*Tests\s+\d.*$", re.MULTILINE)
