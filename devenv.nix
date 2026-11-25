@@ -28,7 +28,10 @@
     android = {
       enable = true;
       platforms.version = [ "36" ];
-      abis = [ "x86_64" ];
+      abis = [
+        "x86_64"
+        "arm64-v8a"
+      ];
       systemImageTypes = [ "google_apis_playstore" ];
       ndk.enable = false;
       sources.enable = false;
