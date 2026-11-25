@@ -2,7 +2,7 @@
   "mcpServers": {
     "zenith-gh": {
       "command": "python3",
-      "args": ["${CLAUDE_PROJECT_DIR}/.claude/mcp/zenith_gh.py"]
+      "args": ["${CLAUDE_PROJECT_DIR:-.}/.claude/mcp/zenith_gh.py"]
     }
   }
 }
