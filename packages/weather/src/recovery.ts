@@ -23,7 +23,7 @@ export function recoverFromProviderError(
     throw error;
   }
   if (cached && STALE_SERVED_ON.has(error.kind)) {
-    return toWeatherReading(provider, cached, true);
+    return toWeatherReading(provider, cached, 'stale');
   }
   throw new WeatherSourceError(provider.id, error.kind, retryAfterSeconds(error), error);
 }

@@ -4,5 +4,7 @@ export * from './data.ts';
 export * from './errors.ts';
 export * from './providers/met-norway/provider.ts';
 export * from './providers/open-meteo/provider.ts';
+export * from './quota.ts';
 export * from './reading.ts';
+export * from './retry.ts';
 export * from './service.ts';

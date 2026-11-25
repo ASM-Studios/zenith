@@ -15,7 +15,7 @@ describe('weather service', () => {
       data: stubCurrentConditions,
       provider: { id: 'stub', attribution: stubAttribution },
       updatedAt: clock.now(),
-      stale: false,
+      status: 'fresh',
     });
   });
 

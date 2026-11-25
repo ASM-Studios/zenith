@@ -11,6 +11,7 @@ export class NoWeatherProviderError extends Error {
 }
 
 export class WeatherSourceError extends Error {
+  readonly status = 'unavailable' as const;
   readonly providerId: string;
   readonly kind: ProviderErrorKind;
   readonly retryAfterSeconds: number | null;

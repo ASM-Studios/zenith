@@ -60,6 +60,10 @@ Every error extends `ProviderError` and carries the `providerId`. The API reads 
 - **Cache.** Entries live in the Redis cache under `weather:<provider id>:<data type>:<latitude>:<longitude>`, the location rounded to 2 decimals (about 1 km); the provider is queried at that rounded location. A second request in the same cell inside the freshness TTL does not call the provider.
 - **Freshness.** `current` 10 min, `hourly` 30 min, `daily` 3 h, `airQuality` 1 h, `pollen` 3 h, `alerts` 5 min. Redis keeps each entry 24 h longer so it can be served stale.
 - **Timeout.** Each provider call gets an `AbortSignal` that fires after 10 s.
+- **Retries.** A `timeout` or `unavailable` error is retried twice, after 200 ms then 400 ms, each attempt with its own 10 s signal. Other kinds are never retried. Only then does the stale entry serve, or the source count as unavailable.
+- **Quota.** A `quota` error blocks the provider for its `retryAfterSeconds` (60 s when it gives none). While blocked no call leaves for it: the stale entry serves, or the answer is `quota` with the remaining seconds. The block lives in the cache, so every instance shares it.
+- **Usage.** Each upstream call counts toward a daily counter per provider, and a warning is logged when it reaches 8000.
+- **Status.** A reading is `fresh` or `stale`, and an unavailable source is an error carrying `status: "unavailable"`.
 
 ### Routes
 

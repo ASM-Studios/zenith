@@ -6,7 +6,7 @@ export function readingBody(reading: WeatherReading) {
     data: reading.data,
     provider: reading.provider,
     updatedAt: reading.updatedAt.toISOString(),
-    stale: reading.stale,
+    stale: reading.status === 'stale',
   };
 }
 
