@@ -49,13 +49,22 @@ zenith/
 │       └── tsconfig.json
 │
 ├── packages/
-│   └── core/                             # SHARED · @zenith/core (pure computations, the only code shared by web and mobile)
+│   ├── core/                             # SHARED · @zenith/core (pure computations, shared by web and mobile)
 │       ├── src/
 │       │   ├── ephemeris/                # Sun, Moon, twilights (Astronomy Engine)
 │       │   ├── indicator/                # stargazing indicator
 │       │   ├── constellations/           # visibility, sky map projection
 │       │   ├── types/                    # shared types (HourlyForecast…)
 │       │   └── index.ts
+│       ├── package.json
+│       └── tsconfig.json
+│   │
+│   └── weather/                          # SHARED · @zenith/weather (providers, cache, retries, stale serving; used by api, web and mobile)
+│       ├── src/
+│       │   ├── providers/                # Open-Meteo and the other sources, fetch-json
+│       │   ├── service.ts                # cache, fallback and stale logic over a CacheStore
+│       │   └── testing/                  # weather setup shared by the tests
+│       ├── test/                         # provider tests, fixtures, msw handlers
 │       ├── package.json
 │       └── tsconfig.json
 │

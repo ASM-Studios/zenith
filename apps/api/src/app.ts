@@ -1,13 +1,12 @@
 import type { WeatherProvider } from '@zenith/core';
 import Fastify from 'fastify';
 import type { Logger } from 'pino';
-import type { Cache } from './lib/cache.ts';
 import { authRoutes } from './modules/auth/auth.routes.ts';
 import { locationRoutes } from './modules/favorites/locations.routes.ts';
 import { preferenceRoutes } from './modules/preferences/preferences.routes.ts';
 import { sessionSourcePreferences } from './modules/weather/weather.preferences.ts';
 import { weatherRoutes } from './modules/weather/weather.routes.ts';
-import { createWeatherService } from './modules/weather/weather.service.ts';
+import { createWeatherService, type Cache } from '@zenith/weather';
 
 export interface AppDependencies {
   logger: Logger;

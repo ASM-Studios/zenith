@@ -1,11 +1,5 @@
 import { z } from 'zod';
 
-declare module 'fastify' {
-  interface FastifyInstance {
-    cache: Cache;
-  }
-}
-
 export interface CacheStore {
   get(key: string): Promise<string | null>;
   set(key: string, value: string, mode: 'EX', seconds: number): Promise<unknown>;

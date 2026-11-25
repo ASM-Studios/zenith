@@ -20,6 +20,7 @@ COPY apps/api/package.json apps/api/
 COPY apps/web/package.json apps/web/
 COPY apps/mobile/package.json apps/mobile/
 COPY packages/core/package.json packages/core/
+COPY packages/weather/package.json packages/weather/
 RUN npm ci
 COPY . .
 CMD ["npm", "run", "check"]

@@ -7,7 +7,7 @@ import {
   roundLocation,
   STALE_RETENTION_SECONDS,
   weatherCacheKey,
-} from './weather.cache-policy.ts';
+} from './cache-policy.ts';
 
 describe('weather cache policy', () => {
   it('rounds a location to two decimals', () => {

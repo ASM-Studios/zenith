@@ -10,9 +10,9 @@ import {
 import { createStubWeatherProvider } from '@zenith/core/testing';
 import Fastify from 'fastify';
 import { afterEach, describe, expect, it } from 'vitest';
-import { FRESH_TTL_SECONDS } from '../../src/modules/weather/weather.cache-policy.ts';
+import { FRESH_TTL_SECONDS } from '@zenith/weather';
 import { weatherRoutes } from '../../src/modules/weather/weather.routes.ts';
-import { weatherSetup } from '../helpers/weather.ts';
+import { weatherSetup } from '@zenith/weather/testing';
 
 const url = '/api/weather/current?latitude=48.85&longitude=2.35';
 const apps: { close(): Promise<unknown> }[] = [];

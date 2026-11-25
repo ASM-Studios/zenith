@@ -1,8 +1,8 @@
 import { ProviderInvalidResponseError, ProviderUnsupportedError } from '@zenith/core';
 import { createStubWeatherProvider, stubCurrentConditions, stubHourlyForecast } from '@zenith/core/testing';
 import { describe, expect, it } from 'vitest';
-import { weatherDataSchemas } from './weather.data.ts';
-import { fetchWeatherData } from './weather.fetch.ts';
+import { weatherDataSchemas } from './data.ts';
+import { fetchWeatherData } from './fetch.ts';
 
 const query = { location: { latitude: 48.85, longitude: 2.35 } };
 

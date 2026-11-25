@@ -26,7 +26,7 @@ Each workspace keeps its test data under `<workspace>/test`:
 - `<provider>.handlers.ts` builds msw handlers from the fixtures and exports one handler per scenario plus the URL.
 - Tests import the handlers and pass them to `server.use(...)`.
 
-`apps/api/test/example-provider.test.ts` shows the pattern. Replace it with real providers as they land.
+`packages/weather/test/example-provider.test.ts` shows the pattern. Replace it with real providers as they land.
 
 ## Where tests live
 

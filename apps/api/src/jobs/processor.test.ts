@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createCache } from '../lib/cache.ts';
+import { createCache } from '@zenith/weather';
 import type { JobContext, JobDefinition } from './job.ts';
 import { createProcessor, UnknownJobError } from './processor.ts';
 

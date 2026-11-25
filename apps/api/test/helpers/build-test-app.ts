@@ -1,6 +1,6 @@
 import type { WeatherProvider } from '@zenith/core';
 import { buildApp } from '../../src/app.ts';
-import { createCache } from '../../src/lib/cache.ts';
+import { createCache } from '@zenith/weather';
 import { createLogger } from '../../src/lib/logger.ts';
 
 export function buildTestApp({ weatherProviders }: { weatherProviders?: WeatherProvider[] } = {}) {

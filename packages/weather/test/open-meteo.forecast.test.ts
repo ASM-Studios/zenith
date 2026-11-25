@@ -2,7 +2,7 @@ import { CurrentConditionsSchema, DailyForecastSchema, HourlyForecastSchema, off
 import { http, HttpResponse } from 'msw';
 import { describe, expect, it } from 'vitest';
 import { server } from '../../../test/msw-server.js';
-import { createOpenMeteoProvider } from '../src/modules/weather/providers/open-meteo/provider.ts';
+import { createOpenMeteoProvider } from '../src/providers/open-meteo/provider.ts';
 import {
   currentOkHandler,
   dailyOkHandler,

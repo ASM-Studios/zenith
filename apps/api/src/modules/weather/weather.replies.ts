@@ -1,6 +1,5 @@
 import type { FastifyReply } from 'fastify';
-import { NoWeatherProviderError, WeatherSourceError } from './weather.errors.ts';
-import type { WeatherReading } from './weather.reading.ts';
+import { NoWeatherProviderError, WeatherSourceError, type WeatherReading } from '@zenith/weather';
 
 export function readingBody(reading: WeatherReading) {
   return {

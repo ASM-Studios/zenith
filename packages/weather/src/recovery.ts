@@ -1,7 +1,7 @@
 import { ProviderError, ProviderQuotaError, type ProviderErrorKind, type WeatherProvider } from '@zenith/core';
-import type { CacheEntry } from '../../lib/cache.ts';
-import { WeatherSourceError } from './weather.errors.ts';
-import { toWeatherReading, type WeatherReading } from './weather.reading.ts';
+import type { CacheEntry } from './cache.ts';
+import { WeatherSourceError } from './errors.ts';
+import { toWeatherReading, type WeatherReading } from './reading.ts';
 
 export const STALE_SERVED_ON: ReadonlySet<ProviderErrorKind> = new Set([
   'timeout',

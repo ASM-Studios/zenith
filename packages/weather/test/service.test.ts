@@ -1,11 +1,11 @@
 import { ProviderTimeoutError, type WeatherQuery } from '@zenith/core';
 import { createStubWeatherProvider, stubAttribution, stubCurrentConditions } from '@zenith/core/testing';
 import { describe, expect, it } from 'vitest';
-import { createCache } from '../../src/lib/cache.ts';
-import { FRESH_TTL_SECONDS, retentionSeconds } from '../../src/modules/weather/weather.cache-policy.ts';
-import { NoWeatherProviderError, WeatherSourceError } from '../../src/modules/weather/weather.errors.ts';
-import { createWeatherService } from '../../src/modules/weather/weather.service.ts';
-import { countCalls, memoryStore, paris, weatherSetup } from '../helpers/weather.ts';
+import { createCache } from '../src/cache.ts';
+import { FRESH_TTL_SECONDS, retentionSeconds } from '../src/cache-policy.ts';
+import { NoWeatherProviderError, WeatherSourceError } from '../src/errors.ts';
+import { createWeatherService } from '../src/service.ts';
+import { countCalls, memoryStore, paris, weatherSetup } from '../src/testing/weather-setup.ts';
 
 describe('weather service', () => {
   it('returns provider data with its attribution and updatedAt', async () => {
