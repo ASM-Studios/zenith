@@ -24,7 +24,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: ["ubuntu:24.04", "fedora:42"]
+        include:
+          - image: ubuntu:24.04
+            platform: android-ubuntu
+          - image: fedora:42
+            platform: android-fedora
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
@@ -35,7 +39,22 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Boot the emulator on a clean ${{ matrix.image }}
-        run: bash apps/mobile/scripts/dev-env/run-in-docker.sh ${{ matrix.image }}
+        run: bash apps/mobile/scripts/dev-env/run-in-docker.sh ${{ matrix.image }} "$RUNNER_TEMP/${{ matrix.platform }}-home.png"
+
+      - name: Keep ${{ matrix.platform }}-home.png
+        id: screenshot
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          path: ${{ runner.temp }}/${{ matrix.platform }}-home.png
+          archive: false
+          if-no-files-found: ignore
+
+      - name: Link the screenshot
+        if: ${{ !cancelled() }}
+        env:
+          SCREENSHOT_URL: ${{ steps.screenshot.outputs.artifact-url }}
+        run: bash .github/scripts/link-screenshots.sh "${{ matrix.platform }}-home.png" "$SCREENSHOT_URL"
 
   ios-simulator:
     name: iOS simulator on macOS
@@ -53,12 +72,19 @@ jobs:
         run: npm ci
 
       - name: Open the app in the iOS simulator
-        run: bash apps/mobile/scripts/dev-env/ios-check.sh "$RUNNER_TEMP/ios-simulator.png"
+        run: bash apps/mobile/scripts/dev-env/ios-check.sh "$RUNNER_TEMP/ios-home.png"
 
-      - name: Keep the simulator screenshot
-        if: always()
+      - name: Keep ios-home.png
+        id: screenshot
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
-          name: ios-simulator
-          path: ${{ runner.temp }}/ios-simulator.png
+          path: ${{ runner.temp }}/ios-home.png
+          archive: false
           if-no-files-found: ignore
+
+      - name: Link the screenshot
+        if: ${{ !cancelled() }}
+        env:
+          SCREENSHOT_URL: ${{ steps.screenshot.outputs.artifact-url }}
+        run: bash .github/scripts/link-screenshots.sh ios-home.png "$SCREENSHOT_URL"

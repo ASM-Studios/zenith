@@ -37,3 +37,8 @@ export PATH="$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform
 
 cd "$repo"
 node apps/mobile/scripts/emulator.ts --headless
+
+if [[ -n "${SCREENSHOT:-}" ]]; then
+  sleep 20
+  adb exec-out screencap -p > "$SCREENSHOT"
+fi
