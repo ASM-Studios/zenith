@@ -1,4 +1,5 @@
 export * from './cache.ts';
+export * from './client.ts';
 export * from './cache-policy.ts';
 export * from './data.ts';
 export * from './errors.ts';
@@ -7,4 +8,6 @@ export * from './providers/open-meteo/provider.ts';
 export * from './quota.ts';
 export * from './reading.ts';
 export * from './retry.ts';
+export * from './routes.ts';
 export * from './service.ts';
+export * from './storage-store.ts';

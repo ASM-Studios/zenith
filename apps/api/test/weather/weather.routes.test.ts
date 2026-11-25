@@ -4,7 +4,7 @@ import Fastify from 'fastify';
 import { afterEach, describe, expect, it } from 'vitest';
 import { weatherDataSchemas } from '@zenith/weather';
 import { weatherRoutes } from '../../src/modules/weather/weather.routes.ts';
-import { WEATHER_ROUTE_PATHS } from '../../src/modules/weather/weather.schema.ts';
+import { WEATHER_ROUTE_PATHS } from '@zenith/weather';
 import { buildTestApp } from '../helpers/build-test-app.ts';
 import { weatherSetup } from '@zenith/weather/testing';
 

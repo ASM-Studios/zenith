@@ -87,6 +87,12 @@ Every error extends `ProviderError` and carries the `providerId`. The API reads 
 
 A provider response that does not match the data schema counts as `invalid-response` and is never cached.
 
+### Clients without the server
+
+`createWeatherClient({ apiBaseUrl, direct })` asks the API first. On a network error, a non-2xx answer or a body it cannot read, it calls `direct`, a `WeatherService` built in the app over the same providers, with the same timeout, retries, quota block and stale rules. The reading has the same shape either way: `data`, `provider`, `updatedAt`, `status`.
+
+`createStorageStore(storage)` turns a `getItem`/`setItem` storage (`localStorage` on web, AsyncStorage on mobile) into the `CacheStore` that `direct` needs, with expiry. Readings fetched through `direct` stay in that storage, so the last data survives with its `updatedAt` while every source is down.
+
 ## Example provider
 
 `@zenith/core/testing` exports `createStubWeatherProvider`, a complete provider with fixed data. It is the reference implementation and the provider to use in tests and in demo mode. It is not exported from `@zenith/core`, so the web and mobile bundles never include it.
