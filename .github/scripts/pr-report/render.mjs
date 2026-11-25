@@ -31,6 +31,22 @@ function jobsTable(workflow) {
   return [`### ${plain(workflow.name)}`, '', '| Job | Status |', '| --- | --- |', ...rows].join('\n');
 }
 
+const IMAGE_WIDTH = 220;
+
+function screenshotCell(artifact, url) {
+  const link = `<a href="${url}">${artifact.name}</a>`;
+  if (artifact.imageUrl === undefined) return link;
+  const image = `<img src="${artifact.imageUrl}" alt="${artifact.name}" width="${IMAGE_WIDTH}">`;
+  return `<a href="${url}">${image}</a><br>${link}`;
+}
+
+function screenshotTable(entries) {
+  const cells = entries
+    .toSorted((a, b) => a.name.localeCompare(b.name))
+    .map(({ cell }) => `<td align="center">${cell}</td>`);
+  return `<table><tr>${cells.join('')}</tr></table>`;
+}
+
 function screenshotLinks(repo, workflows) {
   const byPlatform = new Map();
   for (const workflow of workflows) {
@@ -38,13 +54,13 @@ function screenshotLinks(repo, workflows) {
       const platform = SCREENSHOT.exec(artifact.name)?.[1];
       if (platform === undefined) continue;
       const url = `https://github.com/${repo}/actions/runs/${workflow.runId}/artifacts/${artifact.id}`;
-      const image = artifact.imageUrl === undefined ? '' : `\n\n  ![${artifact.name}](${artifact.imageUrl})`;
-      byPlatform.set(platform, [...(byPlatform.get(platform) ?? []), `- [${artifact.name}](${url})${image}`]);
+      const cell = screenshotCell(artifact, url);
+      byPlatform.set(platform, [...(byPlatform.get(platform) ?? []), { name: artifact.name, cell }]);
     }
   }
   return Object.entries(PLATFORMS)
     .filter(([platform]) => byPlatform.has(platform))
-    .map(([platform, label]) => `**${label}**\n\n${byPlatform.get(platform).toSorted().join('\n')}`);
+    .map(([platform, label]) => `**${label}**\n\n${screenshotTable(byPlatform.get(platform))}`);
 }
 
 export function renderReport({ repo, sha, workflows }) {

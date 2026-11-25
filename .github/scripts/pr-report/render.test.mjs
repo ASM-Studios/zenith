@@ -69,8 +69,15 @@ describe('renderReport', () => {
   it('embeds the screenshot image when it has a public url', () => {
     const shot = { id: 5, name: 'web-home.png', imageUrl: 'https://assets.test/web-home.png' };
     const report = render([{ name: 'CI', runId: 9, jobs: [], artifacts: [shot, artifact(6, 'web-home-fr.png')] }]);
-    expect(report).toContain('![web-home.png](https://assets.test/web-home.png)');
-    expect(report.match(/!\[/g)).toHaveLength(1);
+    expect(report).toContain('<img src="https://assets.test/web-home.png" alt="web-home.png" width="220">');
+    expect(report.match(/<img /g)).toHaveLength(1);
+  });
+
+  it('boxes the screenshots of a platform side by side in one table', () => {
+    const shots = [artifact(5, 'web-home.png'), artifact(6, 'web-home-fr.png')];
+    const report = render([{ name: 'CI', runId: 9, jobs: [], artifacts: shots }]);
+    expect(report.match(/<table>/g)).toHaveLength(1);
+    expect(report.match(/<td /g)).toHaveLength(2);
   });
 
   it('leaves out the screenshots section when there is none', () => {
