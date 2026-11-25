@@ -15,11 +15,15 @@ def lines(count):
 
 class ParseNumstat(unittest.TestCase):
     def test_parse_numstat_reads_added_removed_and_path(self):
-        self.assertEqual(size_rules.parse_numstat("3\t1\tsrc/a.ts\n"), [(3, 1, "src/a.ts")])
+        self.assertEqual(size_rules.parse_numstat("3\t1\tsrc/a.ts\0"), [(3, 1, "src/a.ts")])
 
     def test_parse_numstat_skips_binary_files(self):
-        text = "-\t-\tlogo.png\n2\t0\tsrc/a.ts"
+        text = "-\t-\tlogo.png\x002\t0\tsrc/a.ts\0"
         self.assertEqual(size_rules.parse_numstat(text), [(2, 0, "src/a.ts")])
+
+    def test_parse_numstat_reads_a_rename_as_its_new_path_with_its_edited_lines(self):
+        text = "0\t0\t\0old/a.ts\0new/a.ts\x001\t2\t\0b.ts\0c.ts\0"
+        self.assertEqual(size_rules.parse_numstat(text), [(0, 0, "new/a.ts"), (1, 2, "c.ts")])
 
 
 class Counted(unittest.TestCase):
@@ -87,15 +91,18 @@ class SizeProblems(unittest.TestCase):
         self.assertEqual(self.problems("0\t5\tsrc/a.ts", lines(300)), [])
 
     def test_size_problems_gives_every_problem_a_split_fix(self):
-        found = self.problems("600\t401\tsrc/a.ts\n5\t0\tsrc/b.ts", lines(201))
+        found = self.problems("600\t401\tsrc/a.ts\x005\t0\tsrc/b.ts\0", lines(201))
         self.assertEqual(len(found), 3)
         for _, fix in found:
             self.assertIn("Split it", fix)
 
-    def test_size_problems_passes_no_renames_to_the_diff_call(self):
-        stub = self.stub_git("1\t0\tsrc/a.ts", lines(10))
+    def test_size_problems_asks_git_to_detect_renames(self):
+        stub = self.stub_git("1\t0\tsrc/a.ts\0", lines(10))
         size_rules.size_problems("/repo", ["dev...HEAD"])
-        self.assertIn("--no-renames", stub.call_args_list[0].args)
+        self.assertIn("-M", stub.call_args_list[0].args)
+
+    def test_size_problems_counts_a_pure_rename_of_a_big_file_as_zero_lines(self):
+        self.assertEqual(self.problems("0\t0\t\0old/a.ts\0new/a.ts\0", lines(10)), [])
 
     def test_size_problems_reports_nothing_when_git_returns_none(self):
         self.stub_git(None)
