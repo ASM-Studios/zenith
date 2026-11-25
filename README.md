@@ -50,6 +50,10 @@ Planned:
 
 The full target tree is in [docs/arborescence.md](docs/arborescence.md).
 
+## Data sources and licences
+
+Weather, space weather, map, star and light-pollution data come from third parties under their own licences. The licence and required attribution of each source are listed in [ATTRIBUTIONS.md](ATTRIBUTIONS.md).
+
 ## Getting started
 
 Prerequisites: [Docker](https://docs.docker.com/get-docker/) with the Compose plugin, and Node.js 24 (or [devenv](https://devenv.sh) with [direnv](https://direnv.net), which provides it).
