@@ -46,3 +46,11 @@ Docker must be running to execute the `db` project. To run only the Docker-free 
 ```
 npx vitest run --project unit
 ```
+
+## CI report on pull requests
+
+Each run of `CI` and of `Dev environment` ends with a `PR report` job. It posts a new comment on the pull request with the status of every job and a link to each screenshot, grouped by platform, then deletes the earlier report comments. Pull requests from forks get no comment, because their token cannot write.
+
+- Screenshots are named `<platform>-<screen>.png` (`web`, `android`, `ios`) and uploaded one by one with `archive: false`, so a link opens the image and not a zip. The links need a GitHub login.
+- `.github/scripts/pr-report/` holds the code: `collect.mjs` reads the runs of the commit, `render.mjs` builds the markdown, `comments.mjs` posts and deletes. Its tests run with the unit project and use no network.
+- The report only deletes comments written by a bot that carry its marker, and only older ones, so two reports finishing together leave one.
