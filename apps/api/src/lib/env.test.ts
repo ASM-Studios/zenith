@@ -20,7 +20,14 @@ describe('loadConfig', () => {
         secret: validEnv.BETTER_AUTH_SECRET,
         url: validEnv.BETTER_AUTH_URL,
       },
+      weather: { metNorwayContact: 'https://github.com/ASM-Studios/zenith' },
     });
+  });
+
+  it('reads the MET Norway contact from MET_NORWAY_CONTACT', () => {
+    const config = loadConfig({ ...validEnv, MET_NORWAY_CONTACT: 'ops@example.org' });
+
+    expect(config.weather.metNorwayContact).toBe('ops@example.org');
   });
 
   it('coerces API_PORT and reads optional server settings', () => {
