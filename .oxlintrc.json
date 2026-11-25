@@ -23,7 +23,7 @@
   "ignorePatterns": ["**/dist/**", "**/drizzle/**", "**/node_modules/**", "**/coverage/**"],
   "overrides": [
     {
-      "files": ["apps/api/src/db/migrate.ts", "scripts/**"],
+      "files": ["apps/api/src/db/migrate.ts", "scripts/**", "apps/mobile/scripts/**"],
       "rules": {
         "no-console": "off"
       }
@@ -33,6 +33,12 @@
       "env": {
         "browser": true
       },
+      "rules": {
+        "react/react-in-jsx-scope": "off"
+      }
+    },
+    {
+      "files": ["apps/mobile/**"],
       "rules": {
         "react/react-in-jsx-scope": "off"
       }
