@@ -23,5 +23,6 @@ process.stdout.write(`Waiting for the ${simulator.name} simulator to boot...\n`)
 if (run('xcrun', ['simctl', 'bootstatus', simulator.udid, '-b'], { stdio: 'ignore' }) !== 0) {
   fail(`Could not boot the ${simulator.name} simulator.`);
 }
+run('xcrun', ['simctl', 'terminate', simulator.udid, 'host.exp.Exponent'], { stdio: 'ignore' });
 run('open', ['-a', 'Simulator']);
 startExpo('ios', {}, ['--localhost']);
