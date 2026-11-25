@@ -43,7 +43,7 @@ describe('weather routes on a provider error', () => {
     const response = await failing.inject({ method: 'GET', url });
 
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toMatchObject({ provider: { id: 'stub' }, updatedAt: cachedAt, stale: true });
+    expect(response.json()).toMatchObject({ provider: { id: 'stub' }, updatedAt: cachedAt, status: 'stale' });
   });
 
   it.each([
@@ -54,7 +54,12 @@ describe('weather routes on a provider error', () => {
     const response = await failingWith(error).inject({ method: 'GET', url });
 
     expect(response.statusCode).toBe(503);
-    expect(response.json()).toEqual({ error: 'source_unavailable', provider: 'stub', reason: kind });
+    expect(response.json()).toEqual({
+      error: 'source_unavailable',
+      provider: 'stub',
+      reason: kind,
+      status: 'unavailable',
+    });
     expect(response.headers['retry-after']).toBeUndefined();
   });
 
@@ -64,8 +69,26 @@ describe('weather routes on a provider error', () => {
     const response = await failingWith(quota).inject({ method: 'GET', url });
 
     expect(response.statusCode).toBe(503);
-    expect(response.json()).toEqual({ error: 'source_unavailable', provider: 'stub', reason: 'quota' });
+    expect(response.json()).toEqual({
+      error: 'source_unavailable',
+      provider: 'stub',
+      reason: 'quota',
+      status: 'unavailable',
+    });
     expect(response.headers['retry-after']).toBe('90');
+  });
+
+  it('answers 503 with the remaining delay while the provider is blocked after a quota error', async () => {
+    const setup = weatherSetup();
+    const quota = new ProviderQuotaError('stub', 'HTTP 429', { retryAfterSeconds: 90 });
+    const app = appOn(setup, [createStubWeatherProvider({ error: quota })]);
+    await app.inject({ method: 'GET', url });
+    setup.clock.advanceSeconds(30);
+
+    const response = await app.inject({ method: 'GET', url });
+
+    expect(response.statusCode).toBe(503);
+    expect(response.headers['retry-after']).toBe('60');
   });
 
   it('answers 503 without Retry-After on quota with no known delay', async () => {

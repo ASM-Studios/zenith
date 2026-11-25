@@ -70,10 +70,10 @@ Every error extends `ProviderError` and carries the `providerId`. The API reads 
 `GET /api/weather/{current,hourly,daily,air-quality,pollen,alerts}?latitude=&longitude=[&provider=]`, open to anonymous clients. The answer is:
 
 ```json
-{ "data": {}, "provider": { "id": "open-meteo", "attribution": {} }, "updatedAt": "2026-11-24T12:00:00.000Z", "stale": false }
+{ "data": {}, "provider": { "id": "open-meteo", "attribution": {} }, "updatedAt": "2026-11-24T12:00:00.000Z", "status": "fresh" }
 ```
 
-`data` follows the schema of the data type. `updatedAt` is when the provider answered, not when the client asked.
+`data` follows the schema of the data type. `updatedAt` is when the provider answered, not when the client asked. `status` is `fresh`, or `stale` when the provider failed and the cached value is served instead.
 
 ### Errors
 
@@ -81,8 +81,8 @@ Every error extends `ProviderError` and carries the `providerId`. The API reads 
 |---|---|
 | Missing or out of range `latitude` / `longitude`, empty `provider` | `400 { error: "invalid_query", message: "latitude: ...", issues }` |
 | No registered provider offers the data type at the location | `404 { error: "no_provider", dataType }` |
-| `timeout`, `unavailable`, `quota`, `invalid-response` with a cached entry | `200` with the cached data, its `updatedAt` and `stale: true` |
-| `timeout`, `unavailable`, `quota`, `invalid-response` without a cached entry | `503 { error: "source_unavailable", provider, reason: <kind> }`, plus `Retry-After` on a quota error that gives one |
+| `timeout`, `unavailable`, `quota`, `invalid-response` with a cached entry | `200` with the cached data, its `updatedAt` and `status: "stale"` |
+| `timeout`, `unavailable`, `quota`, `invalid-response` without a cached entry | `503 { error: "source_unavailable", provider, reason: <kind>, status: "unavailable" }`, plus `Retry-After` on a quota error that gives one |
 | `unsupported`, cached or not | `404 { error: "not_supported", provider }`: the source says it does not serve this, so an old value is not served |
 
 A provider response that does not match the data schema counts as `invalid-response` and is never cached.
