@@ -36,9 +36,8 @@ bash "$here/install-sdk.sh"
 export PATH="$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator"
 
 cd "$repo"
-node apps/mobile/scripts/emulator.ts --headless
-
 if [[ -n "${SCREENSHOT:-}" ]]; then
-  sleep 20
-  adb exec-out screencap -p > "$SCREENSHOT"
+  bash "$here/android-check.sh" "$SCREENSHOT"
+else
+  node apps/mobile/scripts/emulator.ts --headless
 fi

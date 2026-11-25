@@ -84,7 +84,7 @@ if (!emulatorIsReady()) {
   launchEmulator();
 }
 await waitForBoot(Date.now() + bootTimeoutMs);
-if (headless) {
+if (headless && !process.argv.includes('--expo')) {
   process.stdout.write('The emulator booted.\n');
   process.exit(0);
 }
