@@ -1,14 +1,8 @@
-const PAGE_SIZE = 100;
-
-async function listComments(client, repo, pr, page = 1) {
-  const batch = await client.rest('GET', `/repos/${repo}/issues/${pr}/comments?per_page=${PAGE_SIZE}&page=${page}`);
-  if (batch.length < PAGE_SIZE) return batch;
-  return [...batch, ...(await listComments(client, repo, pr, page + 1))];
-}
+import { listAll } from './paginate.mjs';
 
 export async function repostComment(client, { repo, pr, marker, body }) {
   const posted = await client.rest('POST', `/repos/${repo}/issues/${pr}/comments`, { body });
-  const comments = await listComments(client, repo, pr);
+  const comments = await listAll(client, `/repos/${repo}/issues/${pr}/comments`);
   const stale = comments.filter(
     (comment) => comment.id < posted.id && comment.user?.type === 'Bot' && comment.body?.includes(marker),
   );

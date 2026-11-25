@@ -53,4 +53,5 @@ Each run of `CI` and of `Dev environment` ends with a `PR report` job. It posts 
 
 - Screenshots are named `<platform>-<screen>.png` (`web`, `android`, `ios`) and uploaded one by one with `archive: false`, so a link opens the image and not a zip. The links need a GitHub login.
 - `.github/scripts/pr-report/` holds the code: `collect.mjs` reads the runs of the commit, `render.mjs` builds the markdown, `comments.mjs` posts and deletes. Its tests run with the unit project and use no network.
+- Each screenshot is also uploaded as an asset of the `ci-screenshots` prerelease, named `pr-<number>-<commit>-<artifact id>-<file>`, so the comment embeds the image inline. The assets of earlier commits of the same pull request are deleted on each run, and a failed upload leaves the plain link. `contents: write` is granted to the report job only.
 - The report only deletes comments written by a bot that carry its marker, and only older ones, so two reports finishing together leave one.

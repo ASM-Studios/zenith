@@ -4,6 +4,8 @@ const ICONS = { passed: '✅', failed: '❌', cancelled: '⚪', skipped: '⏭️
 const PLATFORMS = { web: 'Web', android: 'Android', ios: 'iOS' };
 const SCREENSHOT = /^(web|android|ios)-[a-z0-9-]+\.png$/;
 
+export const isScreenshot = (name) => SCREENSHOT.test(name);
+
 const plain = (value) => value.replace(/[|\r\n[\]()<>`*_]/g, ' ').trim();
 
 export function jobState(job) {
@@ -36,7 +38,8 @@ function screenshotLinks(repo, workflows) {
       const platform = SCREENSHOT.exec(artifact.name)?.[1];
       if (platform === undefined) continue;
       const url = `https://github.com/${repo}/actions/runs/${workflow.runId}/artifacts/${artifact.id}`;
-      byPlatform.set(platform, [...(byPlatform.get(platform) ?? []), `- [${artifact.name}](${url})`]);
+      const image = artifact.imageUrl === undefined ? '' : `\n\n  ![${artifact.name}](${artifact.imageUrl})`;
+      byPlatform.set(platform, [...(byPlatform.get(platform) ?? []), `- [${artifact.name}](${url})${image}`]);
     }
   }
   return Object.entries(PLATFORMS)

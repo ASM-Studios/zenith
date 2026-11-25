@@ -66,6 +66,13 @@ describe('renderReport', () => {
     expect(report).not.toContain('coverage');
   });
 
+  it('embeds the screenshot image when it has a public url', () => {
+    const shot = { id: 5, name: 'web-home.png', imageUrl: 'https://assets.test/web-home.png' };
+    const report = render([{ name: 'CI', runId: 9, jobs: [], artifacts: [shot, artifact(6, 'web-home-fr.png')] }]);
+    expect(report).toContain('![web-home.png](https://assets.test/web-home.png)');
+    expect(report.match(/!\[/g)).toHaveLength(1);
+  });
+
   it('leaves out the screenshots section when there is none', () => {
     expect(render([{ name: 'CI', runId: 1, jobs: [], artifacts: [] }])).not.toContain('Screenshots');
   });
