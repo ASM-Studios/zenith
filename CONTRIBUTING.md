@@ -79,7 +79,7 @@ The API image is distroless: it has no shell, no package manager and no `curl`, 
 
 Only computation code is shared between the web and mobile apps, through `@zenith/core` (see `docs/project.md`, section Stack Technique). Ephemerides, indicators, types and weather providers go in `packages/core`. Screens, components, navigation and the HTTP client stay in each app, because the web renders DOM and mobile renders React Native views.
 
-Run the mobile app on an Android emulator with `npm run android:emulator`, or on a phone plugged in over USB with `npm run android:phone`. The emulator reaches the API on the host at `http://10.0.2.2:3000`; override it with `EXPO_PUBLIC_API_URL`. The tooling, the USB steps and the troubleshooting are in `docs/mobile-setup.md`. `npm run dev:mobile` starts Expo alone.
+Run the mobile app on an Android emulator with `npm run android:emulator`, or on a phone plugged in over USB with `npm run android:phone`. The emulator reaches the API on the host at `http://10.0.2.2:3000`; override it with `EXPO_PUBLIC_API_URL`. On a Mac, `npm run ios:simulator` runs the app in the iOS simulator, which reaches the API at `http://localhost:3000`. The tooling, the macOS and USB steps and the troubleshooting are in `docs/mobile-setup.md`. `npm run dev:mobile` starts Expo alone.
 
 ## Quality gates
 

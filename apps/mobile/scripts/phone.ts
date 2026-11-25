@@ -1,5 +1,6 @@
 import { choosePhone, parseAdbDevices } from '../src/dev/adb-devices.ts';
-import { requireAndroidTools, startExpo } from './android-tools.ts';
+import { requireAndroidTools } from './android-tools.ts';
+import { startExpo } from './expo.ts';
 import { capture, fail, run } from './shell.ts';
 
 const metroPort = '8081';
@@ -17,6 +18,7 @@ for (const port of [metroPort, apiPort]) {
   }
 }
 startExpo(
+  'android',
   {
     ANDROID_SERIAL: choice.serial,
     EXPO_PUBLIC_API_URL: `http://localhost:${apiPort}`,
