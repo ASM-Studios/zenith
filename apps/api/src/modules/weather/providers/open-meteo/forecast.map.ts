@@ -7,21 +7,20 @@ import {
   type WeatherMeasurements,
 } from '@zenith/core';
 import type { CurrentRow, DailyRow, HourlyRow, MeasurementsRow } from './forecast.schema.ts';
-import { OPEN_METEO_ID } from './identity.ts';
 import { conditionFromWmoCode } from './wmo.ts';
 
-function conditionOf(code: number): WeatherCondition {
+function conditionOf(providerId: string, code: number): WeatherCondition {
   const condition = conditionFromWmoCode(code);
   if (condition === null) {
-    throw new ProviderInvalidResponseError(OPEN_METEO_ID, `unknown WMO code ${code}`);
+    throw new ProviderInvalidResponseError(providerId, `unknown WMO code ${code}`);
   }
   return condition;
 }
 
-function mapMeasurements(row: MeasurementsRow): WeatherMeasurements {
+function mapMeasurements(providerId: string, row: MeasurementsRow): WeatherMeasurements {
   return {
     time: row.time,
-    condition: conditionOf(row.weather_code),
+    condition: conditionOf(providerId, row.weather_code),
     temperatureCelsius: row.temperature_2m,
     apparentTemperatureCelsius: row.apparent_temperature,
     relativeHumidityPercent: row.relative_humidity_2m,
@@ -37,13 +36,13 @@ function mapMeasurements(row: MeasurementsRow): WeatherMeasurements {
   };
 }
 
-export function mapCurrent(row: CurrentRow): CurrentConditions {
-  return { ...mapMeasurements(row), isDay: row.is_day === null ? null : row.is_day === 1 };
+export function mapCurrent(providerId: string, row: CurrentRow): CurrentConditions {
+  return { ...mapMeasurements(providerId, row), isDay: row.is_day === null ? null : row.is_day === 1 };
 }
 
-export function mapHour(row: HourlyRow): HourlyForecast {
+export function mapHour(providerId: string, row: HourlyRow): HourlyForecast {
   return {
-    ...mapMeasurements(row),
+    ...mapMeasurements(providerId, row),
     precipitationProbabilityPercent: row.precipitation_probability,
     cloudCoverLowPercent: row.cloud_cover_low,
     cloudCoverMidPercent: row.cloud_cover_mid,
@@ -51,10 +50,10 @@ export function mapHour(row: HourlyRow): HourlyForecast {
   };
 }
 
-export function mapDay(row: DailyRow): DailyForecast {
+export function mapDay(providerId: string, row: DailyRow): DailyForecast {
   return {
     date: row.time,
-    condition: conditionOf(row.weather_code),
+    condition: conditionOf(providerId, row.weather_code),
     temperatureMinCelsius: row.temperature_2m_min,
     temperatureMaxCelsius: row.temperature_2m_max,
     precipitationSumMm: row.precipitation_sum,
