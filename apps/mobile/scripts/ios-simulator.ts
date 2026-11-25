@@ -19,11 +19,9 @@ if (!choice.ok) {
   fail(choice.message);
 }
 const { simulator } = choice;
-if (!simulator.booted) {
-  process.stdout.write(`Booting the ${simulator.name} simulator...\n`);
-  if (run('xcrun', ['simctl', 'boot', simulator.udid]) !== 0) {
-    fail(`Could not boot the ${simulator.name} simulator.`);
-  }
+process.stdout.write(`Waiting for the ${simulator.name} simulator to boot...\n`);
+if (run('xcrun', ['simctl', 'bootstatus', simulator.udid, '-b'], { stdio: 'ignore' }) !== 0) {
+  fail(`Could not boot the ${simulator.name} simulator.`);
 }
 run('open', ['-a', 'Simulator']);
-startExpo('ios');
+startExpo('ios', {}, ['--localhost']);

@@ -57,7 +57,7 @@ The command checks that exactly one authorized phone is connected, then runs `ad
 4. Download the iOS platform: `xcodebuild -downloadPlatform iOS`.
 5. Install Watchman, which Expo recommends for file watching on macOS: `brew install watchman`.
 
-Then run `npm run ios:simulator`. The command works on macOS only and refuses Linux. It checks that Xcode is selected and that `xcrun simctl` runs, then lists the iPhone simulators. It reuses a booted one, or boots an iPhone of the newest iOS runtime. It opens the Simulator app, then runs `expo start --ios`, which installs Expo Go on the simulator and opens the app. The home screen shows "Core" with the version of `@zenith/core`. The app calls the API at `http://localhost:3000`, because the simulator shares the Mac network. `EXPO_PUBLIC_API_URL` overrides it.
+Then run `npm run ios:simulator`. The command works on macOS only and refuses Linux. It checks that Xcode is selected and that `xcrun simctl` runs, then lists the iPhone simulators. It reuses a booted one, or boots an iPhone of the newest iOS runtime and waits until it is ready. It opens the Simulator app, then runs `expo start --ios --localhost`, which installs Expo Go on the simulator and opens the app. The home screen shows "Core" with the version of `@zenith/core`. The app calls the API at `http://localhost:3000`, because the simulator shares the Mac network. `EXPO_PUBLIC_API_URL` overrides it.
 
 No Apple developer account, no Expo account and no tunnel service are needed. A real iPhone is out of scope.
 
