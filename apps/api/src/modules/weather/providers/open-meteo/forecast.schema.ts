@@ -41,10 +41,22 @@ export const DailyRowSchema = z.object({
 
 const ColumnsSchema = z.object({ time: z.array(z.unknown()) }).catchall(z.array(z.unknown()));
 
+type RawRow = Record<string, unknown>;
+
+function hasForecast(row: RawRow): boolean {
+  return Object.entries(row).some(([name, value]) => name !== 'time' && value !== null);
+}
+
+function withinHorizon(rows: RawRow[]): unknown[] {
+  return rows.slice(0, rows.findLastIndex(hasForecast) + 1);
+}
+
 function rowsOf<Row extends z.ZodType>(row: Row) {
   return ColumnsSchema.transform((columns) =>
-    columns.time.map((_, index): unknown =>
-      Object.fromEntries(Object.entries(columns).map(([name, values]) => [name, values[index]])),
+    withinHorizon(
+      columns.time.map((_, index) =>
+        Object.fromEntries(Object.entries(columns).map(([name, values]) => [name, values[index]])),
+      ),
     ),
   ).pipe(z.array(row).min(1));
 }
