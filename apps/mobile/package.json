@@ -8,9 +8,11 @@
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
+    "ios": "expo start --ios",
     "build": "tsc --noEmit && tsc --noEmit -p scripts",
     "android:emulator": "node scripts/emulator.ts",
-    "android:phone": "node scripts/phone.ts"
+    "android:phone": "node scripts/phone.ts",
+    "ios:simulator": "node scripts/ios-simulator.ts"
   },
   "dependencies": {
     "@react-navigation/native": "^7.5.2",

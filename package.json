@@ -37,7 +37,8 @@
     "check": "npm run lint && npm run lint:workflows && npm run format:check && npm run test:coverage && npm run build",
     "dev:mobile": "npm run start --workspace=@zenith/mobile",
     "android:emulator": "npm run android:emulator --workspace=@zenith/mobile",
-    "android:phone": "npm run android:phone --workspace=@zenith/mobile"
+    "android:phone": "npm run android:phone --workspace=@zenith/mobile",
+    "ios:simulator": "npm run ios:simulator --workspace=@zenith/mobile"
   },
   "devDependencies": {
     "@testcontainers/postgresql": "^12.2.2",

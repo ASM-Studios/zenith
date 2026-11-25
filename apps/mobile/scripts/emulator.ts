@@ -7,7 +7,8 @@ import { emulatorArgs } from '../src/dev/emulator-args.ts';
 import { withEmulatorLibraries } from '../src/dev/emulator-env.ts';
 import { kvmFix } from '../src/dev/kvm-fix.ts';
 import { systemImageFor } from '../src/dev/system-image.ts';
-import { requireAndroidTools, startExpo } from './android-tools.ts';
+import { requireAndroidTools } from './android-tools.ts';
+import { startExpo } from './expo.ts';
 import { capture, fail, run } from './shell.ts';
 
 const avdName = 'zenith';
@@ -87,4 +88,4 @@ if (headless) {
   process.stdout.write('The emulator booted.\n');
   process.exit(0);
 }
-startExpo();
+startExpo('android');

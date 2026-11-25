@@ -1,8 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-sdk="${ANDROID_HOME:-$HOME/Android/Sdk}"
-tools_zip="commandlinetools-linux-11076708_latest.zip"
+case "$(uname -s)" in
+  Darwin)
+    host_os="mac"
+    sdk="${ANDROID_HOME:-$HOME/Library/Android/sdk}"
+    ;;
+  *)
+    host_os="linux"
+    sdk="${ANDROID_HOME:-$HOME/Android/Sdk}"
+    ;;
+esac
+tools_zip="commandlinetools-${host_os}-11076708_latest.zip"
 
 case "$(uname -m)" in
   aarch64 | arm64) abi="arm64-v8a" ;;
