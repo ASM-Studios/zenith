@@ -65,6 +65,7 @@ services:
       PASSWORD_PEPPER: ${PASSWORD_PEPPER}
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL}
+      MET_NORWAY_CONTACT: ${MET_NORWAY_CONTACT:-https://github.com/ASM-Studios/zenith}
     ports:
       - "${API_PORT:-3000}:${API_PORT:-3000}"
     networks:

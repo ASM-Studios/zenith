@@ -12,7 +12,10 @@ interface FetchJsonRequest<Schema extends z.ZodType> {
   url: URL;
   schema: Schema;
   signal?: AbortSignal;
+  headers?: Record<string, string>;
 }
+
+type JsonResponse<Data> = { modified: true; data: Data; headers: Headers } | { modified: false; headers: Headers };
 
 function retryAfterSeconds(response: Response): number | undefined {
   const header = response.headers.get('retry-after') ?? '';
@@ -46,13 +49,16 @@ function parseJson(providerId: string, body: string): unknown {
   }
 }
 
-export async function fetchJson<Schema extends z.ZodType>(
+export async function fetchJsonResponse<Schema extends z.ZodType>(
   request: FetchJsonRequest<Schema>,
-): Promise<z.output<Schema>> {
-  const { providerId, url, schema, signal } = request;
-  const response = await fetch(url, { signal }).catch((cause: unknown) => {
+): Promise<JsonResponse<z.output<Schema>>> {
+  const { providerId, url, schema, signal, headers } = request;
+  const response = await fetch(url, { signal, headers }).catch((cause: unknown) => {
     throw transportError(providerId, cause, signal);
   });
+  if (response.status === 304) {
+    return { modified: false, headers: response.headers };
+  }
   if (!response.ok) {
     throw statusError(providerId, response);
   }
@@ -65,5 +71,15 @@ export async function fetchJson<Schema extends z.ZodType>(
       cause: parsed.error,
     });
   }
-  return parsed.data;
+  return { modified: true, data: parsed.data, headers: response.headers };
+}
+
+export async function fetchJson<Schema extends z.ZodType>(
+  request: FetchJsonRequest<Schema>,
+): Promise<z.output<Schema>> {
+  const result = await fetchJsonResponse(request);
+  if (!result.modified) {
+    throw new ProviderInvalidResponseError(request.providerId, 'unexpected HTTP 304');
+  }
+  return result.data;
 }

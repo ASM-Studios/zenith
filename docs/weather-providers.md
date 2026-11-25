@@ -55,7 +55,7 @@ Every error extends `ProviderError` and carries the `providerId`. The API reads 
 
 `apps/api/src/modules/weather` serves the providers to the clients. It depends only on `WeatherProvider`, so a new source needs no change there.
 
-- **Registration.** `buildApp` takes `weatherProviders`, the list built at app start in `server.ts`. The order of the list is the default order of selection. Open-Meteo is the only registered provider.
+- **Registration.** `buildApp` takes `weatherProviders`, the list built at app start in `server.ts`. The order of the list is the default order of selection. Open-Meteo is registered first, so it is the default, then MET Norway.
 - **Selection.** For each request, the first provider for which `offersDataType` holds wins, trying first the `provider` query parameter, then the signed-in user's source preference for the data type (`sourcePreferences.current`, `sourcePreferences.airQuality`...), then their `sourcePreferences.weather`, then the registration order. An unknown or unfit preference is skipped.
 - **Cache.** Entries live in the Redis cache under `weather:<provider id>:<data type>:<latitude>:<longitude>`, the location rounded to 2 decimals (about 1 km); the provider is queried at that rounded location. A second request in the same cell inside the freshness TTL does not call the provider.
 - **Freshness.** `current` 10 min, `hourly` 30 min, `daily` 3 h, `airQuality` 1 h, `pollen` 3 h, `alerts` 5 min. Redis keeps each entry 24 h longer so it can be served stale.
@@ -130,3 +130,14 @@ export function createExampleProvider(baseUrl: string): WeatherProvider {
 - `current`, `hourly`, `airQuality` and `pollen` are requested in GMT, `daily` in the local timezone of the location. Daily dates are read as they come, without applying a UTC offset.
 - The requested variables are the keys of the row schemas, so a field is added in one place.
 - WMO weather codes map to `WEATHER_CONDITIONS`. No code reports `sleet`, and an unknown code is an `invalid-response`.
+
+## MET Norway
+
+`createMetNorwayProvider` (`apps/api/src/modules/weather/providers/met-norway`) uses Locationforecast 2.0 (`complete`) and needs no API key. Its data is under CC BY 4.0.
+
+- Global coverage, data types `current`, `hourly` (48 hours) and `daily` (7 days). No air quality, pollen or alerts.
+- Every request carries `User-Agent: zenith/1.0 <contact>`, the contact being `MET_NORWAY_CONTACT` (an email or a URL, the repository URL by default). Coordinates are sent with at most 4 decimals.
+- One forecast document per location feeds the three data types. It is kept in memory (500 locations at most) until its `Expires` time, 1 minute when the header is missing. After that the request carries `If-Modified-Since`, and a `304` keeps the stored document.
+- Wind speeds are converted from m/s to km/h. `apparentTemperatureCelsius` and `visibilityMeters` are `null`, and `uvIndex` is the clear-sky index.
+- `symbol_code` maps to `WEATHER_CONDITIONS` without its `_day`, `_night` or `_polartwilight` suffix, which gives `isDay` (`null` for polar twilight). An unknown code is an `invalid-response`.
+- `daily` groups the 6-hour blocks (00, 06, 12 and 18 UTC) by UTC date, and takes the condition of the 12 UTC block. The first and the last day can be partial.

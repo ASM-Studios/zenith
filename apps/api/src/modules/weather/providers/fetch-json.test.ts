@@ -8,7 +8,7 @@ import { delay, http, HttpResponse } from 'msw';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
 import { server } from '../../../../../../test/msw-server.js';
-import { fetchJson } from './fetch-json.ts';
+import { fetchJson, fetchJsonResponse } from './fetch-json.ts';
 
 const url = new URL('https://provider.test/data');
 const schema = z.object({ value: z.number() });
@@ -48,6 +48,38 @@ describe('fetchJson', () => {
     server.use(http.get(url.href, () => HttpResponse.json({ value: 1, extra: true })));
 
     await expect(call()).resolves.toEqual({ value: 1 });
+  });
+
+  it('sends the given headers and exposes the response headers', async () => {
+    let received: string | null = null;
+    server.use(
+      http.get(url.href, ({ request }) => {
+        received = request.headers.get('user-agent');
+        return HttpResponse.json({ value: 1 }, { headers: { Expires: 'soon' } });
+      }),
+    );
+
+    const result = await fetchJsonResponse({
+      providerId: 'test',
+      url,
+      schema,
+      headers: { 'User-Agent': 'zenith-test' },
+    });
+
+    expect(received).toBe('zenith-test');
+    expect(result.headers.get('expires')).toBe('soon');
+  });
+
+  it('reports a not modified answer without a body', async () => {
+    server.use(http.get(url.href, () => new HttpResponse(null, { status: 304 })));
+
+    await expect(fetchJsonResponse({ providerId: 'test', url, schema })).resolves.toMatchObject({ modified: false });
+  });
+
+  it('rejects a not modified answer to an unconditional request', async () => {
+    const failure = await failureFor(() => new HttpResponse(null, { status: 304 }));
+
+    expect(failure).toBeInstanceOf(ProviderInvalidResponseError);
   });
 
   it('reports an aborted request as a timeout', async () => {
