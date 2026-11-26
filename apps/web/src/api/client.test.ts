@@ -41,6 +41,18 @@ describe('createApiClient', () => {
     });
   });
 
+  test('delete accepts an empty 204 answer', async () => {
+    const fetch = respondWith(new Response(null, { status: 204 }));
+    const client = createApiClient({ baseUrl: '', fetch });
+
+    await expect(client.delete('/api/me/locations/1', () => 'gone')).resolves.toBe('gone');
+    expect(fetch).toHaveBeenCalledWith('/api/me/locations/1', {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: { accept: 'application/json' },
+    });
+  });
+
   test('a non-2xx response rejects with an ApiError carrying the status and body', async () => {
     const client = createApiClient({ baseUrl: '', fetch: respondWith(new Response('nope', { status: 401 })) });
 

@@ -25,13 +25,14 @@ export function createApiClient({ baseUrl, fetch = defaultFetch }: ApiClientOpti
     if (!response.ok) {
       throw new ApiError(method, path, response.status, await response.text());
     }
-    const data: unknown = await response.json();
+    const data: unknown = response.status === 204 ? undefined : await response.json();
     return parse(data);
   }
 
   return {
     get: <T>(path: string, parse: Parse<T>) => request('GET', path, parse),
     post: <T>(path: string, body: unknown, parse: Parse<T>) => request('POST', path, parse, body),
+    delete: <T>(path: string, parse: Parse<T>) => request('DELETE', path, parse),
   };
 }
 
