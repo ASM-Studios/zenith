@@ -5,6 +5,15 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "platforms": ["android", "ios"],
-    "android": { "package": "org.zenith.mobile" }
+    "android": { "package": "org.zenith.mobile" },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Zenith uses your position to show the sky above you. It stays on your device."
+        }
+      ],
+      "expo-secure-store"
+    ]
   }
 }
