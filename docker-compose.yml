@@ -93,6 +93,8 @@ services:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
+      args:
+        VITE_SITE_URL: ${WEB_SITE_URL:-}
     image: zenith-web:latest
     restart: unless-stopped
     environment:
