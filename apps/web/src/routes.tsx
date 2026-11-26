@@ -3,6 +3,9 @@ import { LanguageRedirect } from './components/LanguageRedirect.tsx';
 import { LanguageRoute } from './components/LanguageRoute.tsx';
 import { Layout } from './components/Layout.tsx';
 import { NotFoundPage } from './components/NotFoundPage.tsx';
+import { SignInPage } from './features/auth/SignInPage.tsx';
+import { SignUpPage } from './features/auth/SignUpPage.tsx';
+import { VerifyEmailPage } from './features/auth/VerifyEmailPage.tsx';
 import { HomePage } from './features/home/HomePage.tsx';
 
 export const routes: RouteObject[] = [
@@ -14,6 +17,9 @@ export const routes: RouteObject[] = [
         element: <Layout />,
         children: [
           { index: true, element: <HomePage /> },
+          { path: 'sign-in', element: <SignInPage /> },
+          { path: 'sign-up', element: <SignUpPage /> },
+          { path: 'verify-email', element: <VerifyEmailPage /> },
           { path: '*', element: <NotFoundPage /> },
         ],
       },

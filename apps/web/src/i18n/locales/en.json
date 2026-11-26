@@ -12,5 +12,45 @@
   },
   "language": {
     "label": "Language"
+  },
+  "auth": {
+    "nav": {
+      "label": "Account",
+      "signIn": "Sign in",
+      "signUp": "Sign up"
+    },
+    "fields": {
+      "name": "Name",
+      "email": "Email",
+      "password": "Password"
+    },
+    "signUp": {
+      "title": "Create an account",
+      "submit": "Sign up",
+      "checkInbox": "Check your inbox: open the link we sent to confirm your address, then sign in.",
+      "haveAccount": "Already have an account? Sign in"
+    },
+    "signIn": {
+      "title": "Sign in",
+      "submit": "Sign in",
+      "noAccount": "No account yet? Sign up"
+    },
+    "session": {
+      "signedInAs": "Signed in as {{email}}",
+      "signOut": "Sign out"
+    },
+    "notice": {
+      "verifying": "Confirming your address...",
+      "verified": "Your address is confirmed, you can sign in.",
+      "expired": "This link has expired. Sign in to receive a new one.",
+      "invalid": "This link is not valid. Sign in to receive a new one."
+    },
+    "errors": {
+      "invalidEmail": "This email address is not valid.",
+      "passwordTooShort": "The password needs at least 8 characters.",
+      "invalidCredentials": "Wrong email or password.",
+      "emailNotVerified": "Confirm your address first: we sent you a new link.",
+      "generic": "Something went wrong, try again."
+    }
   }
 }

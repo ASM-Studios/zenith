@@ -16,12 +16,12 @@ const signUp = (body: object = credentials) =>
     headers: { origin: 'http://localhost:3000' },
   });
 
-const signIn = (password: string) =>
+const signIn = (password: string, origin = 'http://localhost:3000') =>
   app.inject({
     method: 'POST',
     url: '/api/auth/sign-in/email',
     payload: { email: credentials.email, password },
-    headers: { origin: 'http://localhost:3000' },
+    headers: { origin },
   });
 
 beforeEach(resetDb);
@@ -57,5 +57,21 @@ describe('auth routes', () => {
 
     expect(response.statusCode).toBe(401);
     expect(response.headers['set-cookie']).toBeUndefined();
+  });
+
+  it('accepts a request from a web origin listed in BETTER_AUTH_TRUSTED_ORIGINS', async () => {
+    await signUp();
+    await confirmEmail(app, credentials.email);
+
+    const response = await signIn(credentials.password, 'http://localhost:5173');
+
+    expect(response.statusCode).toBe(200);
+  });
+
+  it('rejects a request from an origin that is not trusted', async () => {
+    const response = await signIn(credentials.password, 'http://evil.example');
+
+    expect(response.statusCode).toBe(403);
+    expect(response.json()).toMatchObject({ code: 'INVALID_ORIGIN' });
   });
 });

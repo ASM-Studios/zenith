@@ -15,10 +15,19 @@ export const redisEnv = z.object({
   REDIS_URL: z.url(),
 });
 
+const isOrigin = (value: string) => URL.canParse(value) && new URL(value).origin === value;
+
 export const authEnv = z.object({
   PASSWORD_PEPPER: z.string().min(32),
   BETTER_AUTH_SECRET: z.string().min(32),
   BETTER_AUTH_URL: z.url(),
+  BETTER_AUTH_TRUSTED_ORIGINS: z
+    .string()
+    .refine(
+      (value) => value === '' || value.split(',').every(isOrigin),
+      'expected comma-separated origins such as http://localhost:5173',
+    )
+    .optional(),
 });
 
 export const weatherEnv = z.object({
