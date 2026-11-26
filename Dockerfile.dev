@@ -1,0 +1,10 @@
+FROM docker.io/library/node:24-slim@sha256:873f586f3794f52281bd039bf02c048a0be08fde619338f9941bad1eb6b34530
+WORKDIR /app
+RUN chown node:node /app
+USER node
+COPY --chown=node:node package.json package-lock.json ./
+COPY --chown=node:node apps/api/package.json apps/api/
+COPY --chown=node:node apps/web/package.json apps/web/
+COPY --chown=node:node packages/core/package.json packages/core/
+COPY --chown=node:node packages/weather/package.json packages/weather/
+RUN npm ci --workspace=@zenith/api --workspace=@zenith/web --include-workspace-root
