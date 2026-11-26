@@ -1,6 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { username } from 'better-auth/plugins';
+import { bearer, username } from 'better-auth/plugins';
 import { db } from '../db/index.ts';
 import * as schema from '../db/schema/index.ts';
 import { hashPassword, verifyPassword } from './password.ts';
@@ -15,5 +15,5 @@ export const auth = betterAuth({
     },
   },
   user: { deleteUser: { enabled: true } },
-  plugins: [username()],
+  plugins: [username(), bearer()],
 });
