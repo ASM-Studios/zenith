@@ -2,7 +2,7 @@
 
 ## Workflow
 
-AI agent guidelines live in [CLAUDE.md](CLAUDE.md) and `.claude/`.
+AI agent guidelines live in [CLAUDE.md](CLAUDE.md) and `.claude/`. AI agents consult the advisor (`/advisor`) on hard calls, see the Advisor rule there.
 
 1. Every unit of work is a GitHub issue on the **Zenith** project board. Open one (feature, bug or task template) before starting.
 2. Create one branch per issue.

@@ -15,6 +15,7 @@ These guidelines replace the `lucy-guidelines` plugin, which is disabled for thi
 - **Never push** to `master` or `dev`, force-push, or skip hooks (`--no-verify`). Open a PR from your own branch and let the user run any force-push.
 - **Draft first.** `pr_open.py` opens every PR as a draft. At the hand-over, ask the user whether they reviewed it by hand and want it ready; only a yes runs `pr_open.py --ready`.
 - **Repo and PR links** are full URLs (`https://github.com/ASM-Studios/zenith/pull/<n>`). Only `Closes #<issue>` stays bare.
+- **Advisor.** The main model consults the advisor (`/advisor`, set to Opus) when blocked, before a sensitive or hard-to-reverse choice, and when a delegated part failed twice. Its advice is an input: verify it against the code, then decide. Mechanical work never needs it.
 
 ## Naming
 
