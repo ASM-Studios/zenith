@@ -55,3 +55,35 @@ describe('createApiClient', () => {
     await expect(client.get('/api/space/kp', parseKp)).rejects.toThrow('kp must be a number');
   });
 });
+
+describe('createApiClient with a token', () => {
+  test('requests carry the bearer token the getter returns', async () => {
+    const fetch = respondWith(Response.json({ kp: 5 }));
+    const client = createApiClient({ baseUrl: '', fetch, getToken: async () => 'abc' });
+
+    await client.get('/api/me', asIs);
+    expect(fetch.mock.calls[0]?.[1].headers).toEqual({ accept: 'application/json', authorization: 'Bearer abc' });
+  });
+
+  test('requests carry no authorization header while the getter returns no token', async () => {
+    const fetch = respondWith(Response.json({}));
+    const client = createApiClient({ baseUrl: '', fetch, getToken: async () => null });
+
+    await client.get('/api/me', asIs);
+    expect(fetch.mock.calls[0]?.[1].headers).toEqual({ accept: 'application/json' });
+  });
+
+  test('delete sends a DELETE request and resolves without reading a body', async () => {
+    const fetch = respondWith(new Response(null, { status: 204 }));
+    const client = createApiClient({ baseUrl: '', fetch, getToken: async () => 'abc' });
+
+    await expect(client.delete('/api/me/locations/7')).resolves.toBeUndefined();
+    expect(fetch.mock.calls[0]?.[1]).toMatchObject({ method: 'DELETE' });
+  });
+
+  test('delete rejects with an ApiError on a non-2xx response', async () => {
+    const client = createApiClient({ baseUrl: '', fetch: respondWith(new Response('gone', { status: 404 })) });
+
+    await expect(client.delete('/api/me/locations/7')).rejects.toMatchObject({ status: 404, method: 'DELETE' });
+  });
+});

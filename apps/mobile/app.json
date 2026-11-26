@@ -12,7 +12,8 @@
         {
           "locationWhenInUsePermission": "Zenith uses your position to show the sky above you. It stays on your device."
         }
-      ]
+      ],
+      "expo-secure-store"
     ]
   }
 }
