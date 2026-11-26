@@ -60,16 +60,20 @@ Every error extends `ProviderError` and carries the `providerId`. The API reads 
 - **Cache.** Entries live in the Redis cache under `weather:<provider id>:<data type>:<latitude>:<longitude>`, the location rounded to 2 decimals (about 1 km); the provider is queried at that rounded location. A second request in the same cell inside the freshness TTL does not call the provider.
 - **Freshness.** `current` 10 min, `hourly` 30 min, `daily` 3 h, `airQuality` 1 h, `pollen` 3 h, `alerts` 5 min. Redis keeps each entry 24 h longer so it can be served stale.
 - **Timeout.** Each provider call gets an `AbortSignal` that fires after 10 s.
+- **Retries.** A `timeout` or `unavailable` error is retried twice, after 200 ms then 400 ms, each attempt with its own 10 s signal. Other kinds are never retried. Only then does the stale entry serve, or the source count as unavailable.
+- **Quota.** A `quota` error blocks the provider for its `retryAfterSeconds` (60 s when it gives none). While blocked no call leaves for it: the stale entry serves, or the answer is `quota` with the remaining seconds. The block lives in the cache, so every instance shares it.
+- **Usage.** Each upstream call counts toward a daily counter per provider, and a warning is logged when it reaches 8000.
+- **Status.** A reading is `fresh` or `stale`, and an unavailable source is an error carrying `status: "unavailable"`.
 
 ### Routes
 
 `GET /api/weather/{current,hourly,daily,air-quality,pollen,alerts}?latitude=&longitude=[&provider=]`, open to anonymous clients. The answer is:
 
 ```json
-{ "data": {}, "provider": { "id": "open-meteo", "attribution": {} }, "updatedAt": "2026-11-24T12:00:00.000Z", "stale": false }
+{ "data": {}, "provider": { "id": "open-meteo", "attribution": {} }, "updatedAt": "2026-11-24T12:00:00.000Z", "status": "fresh" }
 ```
 
-`data` follows the schema of the data type. `updatedAt` is when the provider answered, not when the client asked.
+`data` follows the schema of the data type. `updatedAt` is when the provider answered, not when the client asked. `status` is `fresh`, or `stale` when the provider failed and the cached value is served instead.
 
 ### Errors
 
@@ -77,11 +81,17 @@ Every error extends `ProviderError` and carries the `providerId`. The API reads 
 |---|---|
 | Missing or out of range `latitude` / `longitude`, empty `provider` | `400 { error: "invalid_query", message: "latitude: ...", issues }` |
 | No registered provider offers the data type at the location | `404 { error: "no_provider", dataType }` |
-| `timeout`, `unavailable`, `quota`, `invalid-response` with a cached entry | `200` with the cached data, its `updatedAt` and `stale: true` |
-| `timeout`, `unavailable`, `quota`, `invalid-response` without a cached entry | `503 { error: "source_unavailable", provider, reason: <kind> }`, plus `Retry-After` on a quota error that gives one |
+| `timeout`, `unavailable`, `quota`, `invalid-response` with a cached entry | `200` with the cached data, its `updatedAt` and `status: "stale"` |
+| `timeout`, `unavailable`, `quota`, `invalid-response` without a cached entry | `503 { error: "source_unavailable", provider, reason: <kind>, status: "unavailable" }`, plus `Retry-After` on a quota error that gives one |
 | `unsupported`, cached or not | `404 { error: "not_supported", provider }`: the source says it does not serve this, so an old value is not served |
 
 A provider response that does not match the data schema counts as `invalid-response` and is never cached.
+
+### Clients without the server
+
+`createWeatherClient({ apiBaseUrl, direct })` asks the API first. On a network error, a non-2xx answer or a body it cannot read, it calls `direct`, a `WeatherService` built in the app over the same providers, with the same timeout, retries, quota block and stale rules. The reading has the same shape either way: `data`, `provider`, `updatedAt`, `status`.
+
+`createStorageStore(storage)` turns a `getItem`/`setItem` storage (`localStorage` on web, AsyncStorage on mobile) into the `CacheStore` that `direct` needs, with expiry. Readings fetched through `direct` stay in that storage, so the last data survives with its `updatedAt` while every source is down.
 
 ## Example provider
 

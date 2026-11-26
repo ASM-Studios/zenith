@@ -1,14 +1,4 @@
-import type { WeatherDataType } from '@zenith/core';
 import { z } from 'zod';
-
-export const WEATHER_ROUTE_PATHS: Record<WeatherDataType, string> = {
-  current: '/api/weather/current',
-  hourly: '/api/weather/hourly',
-  daily: '/api/weather/daily',
-  airQuality: '/api/weather/air-quality',
-  pollen: '/api/weather/pollen',
-  alerts: '/api/weather/alerts',
-};
 
 function coordinate(min: number, max: number) {
   return z.string().trim().min(1).transform(Number).pipe(z.number().min(min).max(max));

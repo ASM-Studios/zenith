@@ -45,7 +45,7 @@ describe('weather service on a provider error', () => {
     expect(reading).toMatchObject({
       data: weatherDataSchemas.hourly.parse(stubHourlyForecast),
       updatedAt: cachedAt,
-      stale: true,
+      status: 'stale',
     });
     expect(logger.warn).toHaveBeenCalledWith(
       expect.objectContaining({ providerId: 'stub', dataType: 'hourly' }),
@@ -104,6 +104,6 @@ describe('weather service on a provider error', () => {
       createStubWeatherProvider({ error: new ProviderUnavailableError('stub', 'HTTP 503') }),
     ]);
 
-    await expect(failing.get('hourly', paris)).resolves.toMatchObject({ stale: false });
+    await expect(failing.get('hourly', paris)).resolves.toMatchObject({ status: 'fresh' });
   });
 });

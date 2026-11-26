@@ -3,6 +3,8 @@ import { vi } from 'vitest';
 import { createCache, type CacheStore } from '../cache.ts';
 import { createWeatherService, type WeatherServiceOptions } from '../service.ts';
 
+const noSleep = () => Promise.resolve();
+
 export const paris = { latitude: 48.8566, longitude: 2.3522 };
 
 export function testClock(start = new Date('2026-11-24T12:00:00.000Z')) {
@@ -56,6 +58,13 @@ export function weatherSetup() {
   const logger = { warn: vi.fn<(obj: object, msg: string) => void>() };
   const cache = createCache(memory.store, { logger, now: clock.now });
   const serviceWith = (providers: WeatherProvider[], options: Partial<WeatherServiceOptions> = {}) =>
-    createWeatherService({ cache, providers, logger, now: clock.now, ...options });
+    createWeatherService({
+      cache,
+      providers,
+      logger,
+      now: clock.now,
+      ...options,
+      retry: { sleep: noSleep, ...options.retry },
+    });
   return { ...memory, cache, clock, logger, serviceWith };
 }

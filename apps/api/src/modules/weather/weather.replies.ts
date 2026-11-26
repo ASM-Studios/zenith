@@ -6,7 +6,7 @@ export function readingBody(reading: WeatherReading) {
     data: reading.data,
     provider: reading.provider,
     updatedAt: reading.updatedAt.toISOString(),
-    stale: reading.stale,
+    status: reading.status,
   };
 }
 
@@ -23,5 +23,7 @@ export function sendWeatherError(reply: FastifyReply, error: unknown) {
   if (error.retryAfterSeconds !== null) {
     void reply.header('retry-after', String(error.retryAfterSeconds));
   }
-  return reply.status(503).send({ error: 'source_unavailable', provider: error.providerId, reason: error.kind });
+  return reply
+    .status(503)
+    .send({ error: 'source_unavailable', provider: error.providerId, reason: error.kind, status: error.status });
 }

@@ -4,7 +4,7 @@ import Fastify from 'fastify';
 import { afterEach, describe, expect, it } from 'vitest';
 import { weatherDataSchemas } from '@zenith/weather';
 import { weatherRoutes } from '../../src/modules/weather/weather.routes.ts';
-import { WEATHER_ROUTE_PATHS } from '../../src/modules/weather/weather.schema.ts';
+import { WEATHER_ROUTE_PATHS } from '@zenith/weather';
 import { buildTestApp } from '../helpers/build-test-app.ts';
 import { weatherSetup } from '@zenith/weather/testing';
 
@@ -41,7 +41,7 @@ describe('weather routes', () => {
     expect(body).toMatchObject({
       provider: { id: 'stub', attribution: stubAttribution },
       updatedAt: clock.now().toISOString(),
-      stale: false,
+      status: 'fresh',
     });
   });
 
@@ -91,6 +91,6 @@ describe('weather routes', () => {
     const response = await app.inject({ method: 'GET', url: '/api/weather/alerts?latitude=48.85&longitude=2.35' });
 
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toMatchObject({ provider: { id: 'stub' }, stale: false });
+    expect(response.json()).toMatchObject({ provider: { id: 'stub' }, status: 'fresh' });
   });
 });
