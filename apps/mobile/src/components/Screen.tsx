@@ -1,9 +1,10 @@
+import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider.tsx';
 
-type ScreenProps = { title: string; caption?: string };
+type ScreenProps = { title: string; caption?: string; children?: ReactNode };
 
-export function Screen({ title, caption }: ScreenProps) {
+export function Screen({ title, caption, children }: ScreenProps) {
   const theme = useTheme();
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -11,6 +12,7 @@ export function Screen({ title, caption }: ScreenProps) {
         {title}
       </Text>
       {caption === undefined ? null : <Text style={[styles.caption, { color: theme.mutedText }]}>{caption}</Text>}
+      {children}
     </View>
   );
 }

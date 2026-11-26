@@ -1,17 +1,19 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { AccountScreen } from '../features/account/AccountScreen.tsx';
-import { FavoritesScreen } from '../features/favorites/FavoritesScreen.tsx';
-import { HomeScreen } from '../features/home/HomeScreen.tsx';
-import { initialRoute, type TabParamList } from './routes.ts';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { LocationSearchScreen } from '../features/location/LocationSearchScreen.tsx';
+import type { RootStackParamList } from './routes.ts';
+import { TabsNavigator } from './TabsNavigator.tsx';
 
-const Tabs = createBottomTabNavigator<TabParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function RootNavigator() {
   return (
-    <Tabs.Navigator initialRouteName={initialRoute}>
-      <Tabs.Screen name="Home" component={HomeScreen} />
-      <Tabs.Screen name="Favorites" component={FavoritesScreen} />
-      <Tabs.Screen name="Account" component={AccountScreen} />
-    </Tabs.Navigator>
+    <Stack.Navigator>
+      <Stack.Screen name="Tabs" component={TabsNavigator} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="LocationSearch"
+        component={LocationSearchScreen}
+        options={{ title: 'Choose a place', presentation: 'modal' }}
+      />
+    </Stack.Navigator>
   );
 }
