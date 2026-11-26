@@ -7,6 +7,9 @@ import { SignInPage } from './features/auth/SignInPage.tsx';
 import { SignUpPage } from './features/auth/SignUpPage.tsx';
 import { VerifyEmailPage } from './features/auth/VerifyEmailPage.tsx';
 import { HomePage } from './features/home/HomePage.tsx';
+import { DeleteAccountPage } from './features/settings/DeleteAccountPage.tsx';
+import { RequireSession } from './features/settings/RequireSession.tsx';
+import { SettingsPage } from './features/settings/SettingsPage.tsx';
 
 export const routes: RouteObject[] = [
   {
@@ -20,6 +23,13 @@ export const routes: RouteObject[] = [
           { path: 'sign-in', element: <SignInPage /> },
           { path: 'sign-up', element: <SignUpPage /> },
           { path: 'verify-email', element: <VerifyEmailPage /> },
+          {
+            element: <RequireSession />,
+            children: [
+              { path: 'settings', element: <SettingsPage /> },
+              { path: 'settings/delete-account', element: <DeleteAccountPage /> },
+            ],
+          },
           { path: '*', element: <NotFoundPage /> },
         ],
       },

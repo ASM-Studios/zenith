@@ -37,11 +37,11 @@
     },
     "session": {
       "signedInAs": "Signed in as {{email}}",
-      "signOut": "Sign out"
+      "openSettings": "Open settings"
     },
     "notice": {
       "verifying": "Confirming your address...",
-      "verified": "Your address is confirmed, you can sign in.",
+      "verified": "Your address is confirmed.",
       "expired": "This link has expired. Sign in to receive a new one.",
       "invalid": "This link is not valid. Sign in to receive a new one."
     },
@@ -50,7 +50,32 @@
       "passwordTooShort": "The password needs at least 8 characters.",
       "invalidCredentials": "Wrong email or password.",
       "emailNotVerified": "Confirm your address first: we sent you a new link.",
+      "wrongPassword": "Wrong password.",
       "generic": "Something went wrong, try again."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "account": {
+      "title": "Account",
+      "name": "Name",
+      "email": "Email",
+      "verified": "Verified",
+      "unverified": "Not verified"
+    },
+    "session": {
+      "title": "Session",
+      "signOut": "Sign out"
+    },
+    "danger": {
+      "title": "Danger zone",
+      "deleteAccount": "Delete account"
+    },
+    "delete": {
+      "title": "Delete your account",
+      "warning": "This permanently deletes your account, your places and your preferences. This cannot be undone.",
+      "submit": "Delete my account",
+      "cancel": "Cancel"
     }
   }
 }

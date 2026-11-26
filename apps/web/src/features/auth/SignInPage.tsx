@@ -1,12 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { signIn } from '../../api/auth.ts';
 import { AuthAltLink } from './AuthAltLink.tsx';
 import { AuthCard } from './AuthCard.tsx';
 import { AuthForm } from './AuthForm.tsx';
 import { AuthMessage } from './AuthMessage.tsx';
 import { textValue } from './form-text.ts';
-import { SessionPanel } from './SessionPanel.tsx';
 import { TextField } from './TextField.tsx';
 import { useAuthAction } from './useAuthAction.ts';
 import { useSession } from './useSession.ts';
@@ -32,7 +31,14 @@ export function SignInPage() {
       <h1>{t('auth.signIn.title')}</h1>
       {notice && <AuthMessage tone={verificationNoticeTone(notice)}>{t(`auth.notice.${notice}`)}</AuthMessage>}
       {user ? (
-        <SessionPanel user={user} onSignedOut={() => setUser(null)} />
+        <>
+          <AuthMessage tone="ok" role="status">
+            {t('auth.session.signedInAs', { email: user.email })}
+          </AuthMessage>
+          <Link className="button button--secondary" to={`/${i18n.language}/settings`}>
+            {t('auth.session.openSettings')}
+          </Link>
+        </>
       ) : (
         <AuthForm action={action} submitLabel={t('auth.signIn.submit')} onSubmit={submit}>
           <TextField label={t('auth.fields.email')} name="email" type="email" autoComplete="email" />

@@ -15,8 +15,8 @@ Mail is sent with nodemailer over SMTP, so any provider's relay works. Tests moc
 ## Flow
 
 1. `POST /api/auth/sign-up/email` creates the user, unverified, and mails a link. With an absolute `callbackURL` the link opens that web page with the token; without one it opens `GET /api/auth/verify-email?token=...`.
-2. `GET /api/auth/verify-email?token=...` marks the address verified. Without `callbackURL` it answers `200`, or `401` with the code `TOKEN_EXPIRED` or `INVALID_TOKEN`.
-3. `POST /api/auth/sign-in/email` answers `200` with the session cookie.
+2. `GET /api/auth/verify-email?token=...` marks the address verified and signs the user in (`autoSignInAfterVerification`): the `200` answer carries the session cookie. It answers `401` with the code `TOKEN_EXPIRED` or `INVALID_TOKEN` and no cookie for a bad token.
+3. Later visits use `POST /api/auth/sign-in/email`, which answers `200` with the session cookie.
 
 A sign-in before step 2 is refused with `403`, sets no cookie and mails a fresh link.
 
@@ -43,7 +43,7 @@ Accounts created before this change and never verified cannot sign in until they
 
 ## Try it in the web app
 
-The web app has plain test pages at `/<lang>/sign-up` and `/<lang>/sign-in`. Both send a `callbackURL` of `<web origin>/<lang>/verify-email`. The API mails a link to that page with the token (`<web origin>/<lang>/verify-email?token=...`), so the link never opens the API. The page sends the token to `GET /api/auth/verify-email` and moves to the sign-in page, which reports a confirmed, expired or invalid link. A client that sends no `callbackURL`, or a relative one, still gets the API link.
+The web app has plain test pages at `/<lang>/sign-up` and `/<lang>/sign-in`. Both send a `callbackURL` of `<web origin>/<lang>/verify-email`. The API mails a link to that page with the token (`<web origin>/<lang>/verify-email?token=...`), so the link never opens the API. The page sends the token to `GET /api/auth/verify-email`, reads the session the API just opened, and moves to the sign-in page, which reports a confirmed, expired or invalid link and shows the signed-in user. The settings page (`/<lang>/settings`) badges the email as verified. A client that sends no `callbackURL`, or a relative one, still gets the API link.
 
 1. Start Mailpit: `docker run --rm -p 1025:1025 -p 8025:8025 axllent/mailpit`.
 2. Keep `BETTER_AUTH_TRUSTED_ORIGINS=http://localhost:5173,http://localhost:8080` in `.env` (see `.env.example`). Better Auth rejects auth requests from any other origin with `403 INVALID_ORIGIN`, and refuses a `callbackURL` outside these origins with `403 INVALID_CALLBACK_URL`, so a mailed link only ever points to a trusted web page.

@@ -5,6 +5,7 @@ import { user } from '../../src/db/schema/index.ts';
 import { buildTestApp } from '../helpers/build-test-app.ts';
 import { lastLink, mailsTo } from '../helpers/outbox.ts';
 import { resetDb } from '../helpers/reset-db.ts';
+import { cookiesOf } from '../helpers/session.ts';
 
 const app = buildTestApp();
 const email = 'ada@example.com';
@@ -36,6 +37,24 @@ describe('verification link to the web app', () => {
     expect(response.statusCode).toBe(200);
     const [row] = await db.select().from(user).where(eq(user.email, email));
     expect(row?.emailVerified).toBe(true);
+  });
+
+  it('signs the user in when the link is verified, with a session that is served', async () => {
+    await signUp('http://localhost:5173/en/verify-email');
+    const token = new URL(lastLink(email)).searchParams.get('token') ?? '';
+
+    const verified = await app.inject({ method: 'GET', url: `/api/auth/verify-email?token=${token}` });
+    const cookie = cookiesOf(verified);
+
+    expect(cookie).toContain('session_token');
+    const session = await app.inject({ method: 'GET', url: '/api/auth/get-session', headers: { cookie } });
+    expect(session.json().user).toMatchObject({ email, emailVerified: true });
+  });
+
+  it('does not sign anyone in when the token is forged', async () => {
+    const response = await app.inject({ method: 'GET', url: '/api/auth/verify-email?token=forged' });
+
+    expect(response.headers['set-cookie']).toBeUndefined();
   });
 
   it('refuses a callbackURL outside the trusted origins and mails nothing', async () => {

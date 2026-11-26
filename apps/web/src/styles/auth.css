@@ -58,8 +58,18 @@
   cursor: pointer;
 }
 
-.button--primary {
+a.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.auth-form > .button {
   margin-top: 8px;
+}
+
+.button--primary {
   background: var(--text-primary);
   color: var(--page);
 }
@@ -68,6 +78,12 @@
   border-color: var(--border);
   background: var(--card);
   color: var(--text-primary);
+}
+
+.button--danger {
+  border-color: var(--danger);
+  background: var(--card);
+  color: var(--danger);
 }
 
 .button:disabled {
