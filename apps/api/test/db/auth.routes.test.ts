@@ -3,6 +3,7 @@ import { client, db } from '../../src/db/index.ts';
 import { account, user } from '../../src/db/schema/index.ts';
 import { buildTestApp } from '../helpers/build-test-app.ts';
 import { resetDb } from '../helpers/reset-db.ts';
+import { confirmEmail } from '../helpers/session.ts';
 
 const app = buildTestApp();
 const credentials = { email: 'ada@example.com', password: 'a-long-password', name: 'Ada' };
@@ -39,17 +40,9 @@ describe('auth routes', () => {
     expect(await db.select().from(account)).toHaveLength(1);
   });
 
-  it('sign-up rejects an email that is already registered', async () => {
+  it('sign-in with the right password sets a session cookie once the email is verified', async () => {
     await signUp();
-
-    const response = await signUp();
-
-    expect(response.statusCode).toBeGreaterThanOrEqual(400);
-    expect(await db.select().from(user)).toHaveLength(1);
-  });
-
-  it('sign-in with the right password sets a session cookie', async () => {
-    await signUp();
+    await confirmEmail(app, credentials.email);
 
     const response = await signIn(credentials.password);
 

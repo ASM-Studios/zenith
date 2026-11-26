@@ -66,6 +66,8 @@ services:
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL}
       MET_NORWAY_CONTACT: ${MET_NORWAY_CONTACT:-https://github.com/ASM-Studios/zenith}
+      SMTP_URL: ${SMTP_URL:-smtp://localhost:1025}
+      MAIL_FROM: "${MAIL_FROM:-Zenith <no-reply@localhost>}"
     ports:
       - "${API_PORT:-3000}:${API_PORT:-3000}"
     networks:

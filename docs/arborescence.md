@@ -11,7 +11,7 @@ zenith/
 │   │   │   │   └── notifications/        # rules, devices, push delivery
 │   │   │   ├── jobs/                     # scheduled jobs (BullMQ)
 │   │   │   ├── db/                       # Drizzle schema, migrations, demo seed
-│   │   │   ├── lib/                      # Redis cache, config, logger
+│   │   │   ├── lib/                      # Redis cache, config, logger, mailer, auth mail texts
 │   │   │   ├── app.ts                    # Fastify app factory (buildApp)
 │   │   │   ├── server.ts                 # API entry point
 │   │   │   └── worker.ts                 # worker entry point

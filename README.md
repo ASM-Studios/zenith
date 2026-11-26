@@ -62,7 +62,7 @@ Prerequisites: [Docker](https://docs.docker.com/get-docker/) with the Compose pl
 cp .env.example .env
 ```
 
-Fill `PASSWORD_PEPPER` and `BETTER_AUTH_SECRET` with `openssl rand -hex 32`; the API refuses to start without them. Then:
+Fill `PASSWORD_PEPPER` and `BETTER_AUTH_SECRET` with `openssl rand -hex 32`; the API refuses to start without them. `SMTP_URL` and `MAIL_FROM` point to an SMTP server (Mailpit locally, a provider relay in production), where sign-up sends its verification link. Then:
 
 ```sh
 docker compose up -d --build
