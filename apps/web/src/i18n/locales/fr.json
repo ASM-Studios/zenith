@@ -12,5 +12,45 @@
   },
   "language": {
     "label": "Langue"
+  },
+  "auth": {
+    "nav": {
+      "label": "Compte",
+      "signIn": "Se connecter",
+      "signUp": "Créer un compte"
+    },
+    "fields": {
+      "name": "Nom",
+      "email": "E-mail",
+      "password": "Mot de passe"
+    },
+    "signUp": {
+      "title": "Créer un compte",
+      "submit": "Créer le compte",
+      "checkInbox": "Consultez votre boîte mail : ouvrez le lien envoyé pour confirmer votre adresse, puis connectez-vous.",
+      "haveAccount": "Déjà un compte ? Se connecter"
+    },
+    "signIn": {
+      "title": "Se connecter",
+      "submit": "Se connecter",
+      "noAccount": "Pas encore de compte ? En créer un"
+    },
+    "session": {
+      "signedInAs": "Connecté en tant que {{email}}",
+      "signOut": "Se déconnecter"
+    },
+    "notice": {
+      "verifying": "Confirmation de votre adresse...",
+      "verified": "Votre adresse est confirmée, vous pouvez vous connecter.",
+      "expired": "Ce lien a expiré. Connectez-vous pour en recevoir un nouveau.",
+      "invalid": "Ce lien n'est pas valide. Connectez-vous pour en recevoir un nouveau."
+    },
+    "errors": {
+      "invalidEmail": "Cette adresse e-mail n'est pas valide.",
+      "passwordTooShort": "Le mot de passe doit faire au moins 8 caractères.",
+      "invalidCredentials": "E-mail ou mot de passe incorrect.",
+      "emailNotVerified": "Confirmez d'abord votre adresse : un nouveau lien vous a été envoyé.",
+      "generic": "Une erreur est survenue, réessayez."
+    }
   }
 }

@@ -7,7 +7,7 @@ export function LanguageSwitcher() {
   const { t, i18n } = useTranslation();
   const { pathname, search, hash } = useLocation();
   return (
-    <nav aria-label={t('language.label')}>
+    <nav className="language-switcher" aria-label={t('language.label')}>
       {supportedLanguages.map((code) => (
         <Link
           key={code}

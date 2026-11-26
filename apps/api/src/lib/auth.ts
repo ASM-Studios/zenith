@@ -6,6 +6,7 @@ import * as schema from '../db/schema/index.ts';
 import { existingAccountMail, verificationMail } from './auth.mail.ts';
 import { sendMail } from './mailer.ts';
 import { hashPassword, verifyPassword } from './password.ts';
+import { webVerificationLink } from './web-verification-link.ts';
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: 'pg', schema }),
@@ -21,8 +22,9 @@ export const auth = betterAuth({
   emailVerification: {
     sendOnSignUp: true,
     sendOnSignIn: true,
-    sendVerificationEmail: ({ user, url }) => sendMail(verificationMail(user, url)),
+    sendVerificationEmail: ({ user, url }) => sendMail(verificationMail(user, webVerificationLink(url))),
   },
   user: { deleteUser: { enabled: true } },
+  advanced: { disableOriginCheck: false },
   plugins: [username()],
 });

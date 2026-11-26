@@ -66,6 +66,19 @@ describe('loadConfig', () => {
     expect(() => loadConfig({ ...validEnv, LOG_LEVEL: 'verbose' })).toThrow(/LOG_LEVEL/);
   });
 
+  it.each(['http://localhost:5173,https://zenith.example', ''])('accepts BETTER_AUTH_TRUSTED_ORIGINS=%s', (origins) => {
+    expect(() => loadConfig({ ...validEnv, BETTER_AUTH_TRUSTED_ORIGINS: origins })).not.toThrow();
+  });
+
+  it.each(['http://localhost:5173/', 'http://localhost:5173, http://localhost:8080', 'localhost:5173'])(
+    'rejects BETTER_AUTH_TRUSTED_ORIGINS=%s',
+    (origins) => {
+      expect(() => loadConfig({ ...validEnv, BETTER_AUTH_TRUSTED_ORIGINS: origins })).toThrow(
+        /BETTER_AUTH_TRUSTED_ORIGINS/,
+      );
+    },
+  );
+
   it('rejects a short password pepper', () => {
     expect(() => loadConfig({ ...validEnv, PASSWORD_PEPPER: 'short' })).toThrow(/PASSWORD_PEPPER/);
   });
