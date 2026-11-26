@@ -36,4 +36,8 @@ bash "$here/install-sdk.sh"
 export PATH="$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator"
 
 cd "$repo"
-node apps/mobile/scripts/emulator.ts --headless
+if [[ -n "${SCREENSHOT:-}" ]]; then
+  bash "$here/android-check.sh" "$SCREENSHOT"
+else
+  node apps/mobile/scripts/emulator.ts --headless
+fi

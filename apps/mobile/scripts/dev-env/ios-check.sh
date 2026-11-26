@@ -15,11 +15,11 @@ fail() {
   exit 1
 }
 
-deadline=$((SECONDS + 600))
+deadline=$((SECONDS + 1200))
 until grep -q 'iOS Bundled' "$log"; do
   grep -q 'Bundling failed' "$log" && fail 'Expo could not bundle the app.'
   kill -0 "$pid" 2>/dev/null || fail 'npm run ios:simulator stopped before Expo opened the app.'
-  ((SECONDS < deadline)) || fail 'Expo did not open the app in 10 minutes.'
+  ((SECONDS < deadline)) || fail 'Expo did not open the app in 20 minutes.'
   sleep 5
 done
 
