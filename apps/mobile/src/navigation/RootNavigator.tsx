@@ -1,13 +1,17 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { AccountScreen } from '../features/account/AccountScreen.tsx';
+import { FavoritesScreen } from '../features/favorites/FavoritesScreen.tsx';
 import { HomeScreen } from '../features/home/HomeScreen.tsx';
-import { initialRoute, type RootStackParamList } from './routes.ts';
+import { initialRoute, type TabParamList } from './routes.ts';
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Tabs = createBottomTabNavigator<TabParamList>();
 
 export function RootNavigator() {
   return (
-    <Stack.Navigator initialRouteName={initialRoute}>
-      <Stack.Screen name="Home" component={HomeScreen} />
-    </Stack.Navigator>
+    <Tabs.Navigator initialRouteName={initialRoute}>
+      <Tabs.Screen name="Home" component={HomeScreen} />
+      <Tabs.Screen name="Favorites" component={FavoritesScreen} />
+      <Tabs.Screen name="Account" component={AccountScreen} />
+    </Tabs.Navigator>
   );
 }
