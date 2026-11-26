@@ -8,8 +8,8 @@ export function json(status: number, body: unknown): Reply {
 }
 
 export function stubApi(replies: Record<string, Reply>) {
-  const fetch = vi.fn<Fetch>(async (input) => {
-    const reply = replies[input];
+  const fetch = vi.fn<Fetch>(async (input, init) => {
+    const reply = replies[`${init.method} ${input}`] ?? replies[input];
     return reply ? reply() : new Response('not stubbed', { status: 404 });
   });
   vi.stubGlobal('fetch', fetch);
@@ -17,6 +17,6 @@ export function stubApi(replies: Record<string, Reply>) {
 }
 
 export function sentBody(fetch: ReturnType<typeof stubApi>, path: string): unknown {
-  const body = fetch.mock.calls.find(([input]) => input === path)?.[1].body;
+  const body = fetch.mock.calls.find(([input, init]) => input === path && init.body !== undefined)?.[1].body;
   return typeof body === 'string' ? JSON.parse(body) : undefined;
 }

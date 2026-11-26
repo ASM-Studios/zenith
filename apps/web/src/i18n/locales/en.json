@@ -13,6 +13,10 @@
   "language": {
     "label": "Language"
   },
+  "nav": {
+    "label": "Main",
+    "locations": "Locations"
+  },
   "auth": {
     "nav": {
       "label": "Account",
@@ -76,6 +80,33 @@
       "warning": "This permanently deletes your account, your places and your preferences. This cannot be undone.",
       "submit": "Delete my account",
       "cancel": "Cancel"
+    }
+  },
+  "locations": {
+    "title": "Favorite locations",
+    "listLabel": "Favorite locations",
+    "empty": "No favorite location yet. Add one below.",
+    "coordinates": "{{latitude}}, {{longitude}}",
+    "open": "Open",
+    "remove": "Remove",
+    "removeNamed": "Remove {{name}}",
+    "defaultName": "My position",
+    "form": {
+      "title": "Add a location",
+      "name": "Name",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "submit": "Add",
+      "usePosition": "Use my position",
+      "locating": "Locating..."
+    },
+    "errors": {
+      "invalidName": "Enter a name of 1 to 200 characters.",
+      "invalidCoordinates": "Latitude must be between -90 and 90 and longitude between -180 and 180.",
+      "positionUnsupported": "Your browser cannot give your position.",
+      "positionDenied": "Position access was refused.",
+      "positionUnavailable": "Your position is not available right now.",
+      "generic": "Something went wrong, try again."
     }
   }
 }

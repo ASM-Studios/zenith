@@ -13,6 +13,10 @@
   "language": {
     "label": "Langue"
   },
+  "nav": {
+    "label": "Principale",
+    "locations": "Lieux"
+  },
   "auth": {
     "nav": {
       "label": "Compte",
@@ -76,6 +80,33 @@
       "warning": "Cette action supprime définitivement votre compte, vos lieux et vos préférences. Elle est irréversible.",
       "submit": "Supprimer définitivement",
       "cancel": "Annuler"
+    }
+  },
+  "locations": {
+    "title": "Lieux favoris",
+    "listLabel": "Lieux favoris",
+    "empty": "Aucun lieu favori pour l'instant. Ajoutez-en un ci-dessous.",
+    "coordinates": "{{latitude}}, {{longitude}}",
+    "open": "Ouvrir",
+    "remove": "Supprimer",
+    "removeNamed": "Supprimer {{name}}",
+    "defaultName": "Ma position",
+    "form": {
+      "title": "Ajouter un lieu",
+      "name": "Nom",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "submit": "Ajouter",
+      "usePosition": "Utiliser ma position",
+      "locating": "Localisation..."
+    },
+    "errors": {
+      "invalidName": "Saisissez un nom de 1 à 200 caractères.",
+      "invalidCoordinates": "La latitude doit être comprise entre -90 et 90, et la longitude entre -180 et 180.",
+      "positionUnsupported": "Votre navigateur ne peut pas obtenir votre position.",
+      "positionDenied": "L'accès à votre position a été refusé.",
+      "positionUnavailable": "Votre position n'est pas disponible pour le moment.",
+      "generic": "Une erreur est survenue, réessayez."
     }
   }
 }
