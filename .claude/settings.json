@@ -3,6 +3,7 @@
     "lucy-guidelines@lucy-robotics": false
   },
   "enabledMcpjsonServers": ["zenith-gh"],
+  "advisorModel": "opus",
   "hooks": {
     "PreToolUse": [
       {
