@@ -75,6 +75,21 @@ The `worker` service runs the scheduled jobs (`apps/api/src/jobs/`) on a BullMQ 
 
 The API image is distroless: it has no shell, no package manager and no `curl`, so `docker compose exec api sh` fails. Read logs with `docker compose logs api`. To get a shell, run the debug variant next to the stack: `docker run --rm -it --entrypoint sh gcr.io/distroless/nodejs24-debian13:debug-nonroot`. The `api` healthcheck is a Node `fetch` of `/ping` for the same reason.
 
+## Development stack with hot reload
+
+`docker-compose.dev.yml` runs the same services as `docker-compose.yml` from the sources of your checkout, so no rebuild is needed after a code change:
+
+```
+npm run dev:stack
+```
+
+- `api` and `worker` restart on a change in `apps/api/src` or `packages/*/src` (`node --watch`).
+- `web` runs the Vite dev server on `http://localhost:8080` (`WEB_PORT`) with hot module reload, and forwards `/api` and `/ping` to the API.
+- `migrate` runs once before `api`, as in production.
+- The stack uses its own project name (`zenith-dev`) and database volume, and the same ports as the production stack, so run one at a time.
+- `node_modules` lives in the containers. After changing a dependency, run `docker compose -f docker-compose.dev.yml up --build -V` to replace it.
+- If a change does not reach the container, set `WATCH_POLLING=true` in `.env`. It makes Vite poll; `node --watch` has no polling mode. On Windows, keep the checkout in the WSL filesystem. Only Linux has been tested.
+
 ## Web and mobile
 
 Only computation code is shared between the web and mobile apps, through `@zenith/core` (see `docs/project.md`, section Stack Technique). Ephemerides, indicators, types and weather providers go in `packages/core`. Screens, components, navigation and the HTTP client stay in each app, because the web renders DOM and mobile renders React Native views.

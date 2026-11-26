@@ -70,6 +70,14 @@ docker compose up -d --build
 
 The web app is served on `http://localhost:8080` and the API listens on `http://localhost:3000`. Rebuild after every code change. Stop with `docker compose down` (add `-v` to wipe the database).
 
+To work on the code without rebuilding after every change, start the dev stack instead. It mounts the sources and reloads the API, the worker and the web app on change:
+
+```sh
+npm run dev:stack
+```
+
+It serves the same ports (`WEB_PORT`, `API_PORT`) as the production stack, so stop one before starting the other.
+
 For development tooling, install the dependencies once:
 
 ```sh
@@ -82,6 +90,7 @@ npm ci
 | --- | --- |
 | `npm run dev` | Start the API in watch mode (needs Postgres and Redis) |
 | `npm run dev:web` | Start the web app on `http://localhost:5173` |
+| `npm run dev:stack` | Start the whole stack in Docker with hot reload |
 | `npm run lint` | Lint with oxlint |
 | `npm run format:check` | Check formatting with Prettier |
 | `npm test` | Run the tests |
