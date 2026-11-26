@@ -22,6 +22,7 @@ export const auth = betterAuth({
   emailVerification: {
     sendOnSignUp: true,
     sendOnSignIn: true,
+    autoSignInAfterVerification: true,
     sendVerificationEmail: ({ user, url }) => sendMail(verificationMail(user, webVerificationLink(url))),
   },
   user: { deleteUser: { enabled: true } },

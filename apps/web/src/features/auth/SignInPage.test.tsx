@@ -25,7 +25,7 @@ describe('sign-in page', () => {
   test('the verification redirect shows that the address is confirmed', async () => {
     stubApi({ '/api/auth/get-session': noSession });
     renderRoute('/en/sign-in?verified=1');
-    expect(await screen.findByText('Your address is confirmed, you can sign in.')).toBeTruthy();
+    expect(await screen.findByText('Your address is confirmed.')).toBeTruthy();
   });
 
   test('an expired verification link says a new one comes with the next sign-in', async () => {
@@ -76,23 +76,11 @@ describe('sign-in page', () => {
     );
   });
 
-  test('a successful sign-in shows the user, and signing out brings the form back', async () => {
-    const fetch = signInWith(json(200, { token: 't', user }));
+  test('a successful sign-in shows the user and a link to the settings, where signing out lives', async () => {
+    signInWith(json(200, { token: 't', user }));
+
     expect((await screen.findByRole('status')).textContent).toBe('Signed in as ada@example.com');
-
-    stubApi({ '/api/auth/sign-out': json(200, { success: true }) });
-    fireEvent.click(screen.getByRole('button', { name: 'Sign out' }));
-
-    expect(await screen.findByRole('button', { name: 'Sign in' })).toBeTruthy();
-    expect(fetch).toHaveBeenCalledTimes(2);
-  });
-
-  test('a failed sign-out keeps the session and shows the error', async () => {
-    stubApi({ '/api/auth/get-session': json(200, { session: {}, user }) });
-    renderRoute('/en/sign-in');
-    fireEvent.click(await screen.findByRole('button', { name: 'Sign out' }));
-
-    expect((await screen.findByRole('alert')).textContent).toBe('Something went wrong, try again.');
-    expect(screen.getByRole('status').textContent).toBe('Signed in as ada@example.com');
+    expect(screen.getByRole('link', { name: 'Open settings' }).getAttribute('href')).toBe('/en/settings');
+    expect(screen.queryByRole('button', { name: 'Sign out' })).toBeNull();
   });
 });

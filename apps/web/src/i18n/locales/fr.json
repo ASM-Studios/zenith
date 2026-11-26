@@ -37,11 +37,11 @@
     },
     "session": {
       "signedInAs": "Connecté en tant que {{email}}",
-      "signOut": "Se déconnecter"
+      "openSettings": "Ouvrir les réglages"
     },
     "notice": {
       "verifying": "Confirmation de votre adresse...",
-      "verified": "Votre adresse est confirmée, vous pouvez vous connecter.",
+      "verified": "Votre adresse est confirmée.",
       "expired": "Ce lien a expiré. Connectez-vous pour en recevoir un nouveau.",
       "invalid": "Ce lien n'est pas valide. Connectez-vous pour en recevoir un nouveau."
     },
@@ -50,7 +50,32 @@
       "passwordTooShort": "Le mot de passe doit faire au moins 8 caractères.",
       "invalidCredentials": "E-mail ou mot de passe incorrect.",
       "emailNotVerified": "Confirmez d'abord votre adresse : un nouveau lien vous a été envoyé.",
+      "wrongPassword": "Mot de passe incorrect.",
       "generic": "Une erreur est survenue, réessayez."
+    }
+  },
+  "settings": {
+    "title": "Réglages",
+    "account": {
+      "title": "Compte",
+      "name": "Nom",
+      "email": "E-mail",
+      "verified": "Vérifié",
+      "unverified": "Non vérifié"
+    },
+    "session": {
+      "title": "Session",
+      "signOut": "Se déconnecter"
+    },
+    "danger": {
+      "title": "Zone sensible",
+      "deleteAccount": "Supprimer mon compte"
+    },
+    "delete": {
+      "title": "Supprimer votre compte",
+      "warning": "Cette action supprime définitivement votre compte, vos lieux et vos préférences. Elle est irréversible.",
+      "submit": "Supprimer définitivement",
+      "cancel": "Annuler"
     }
   }
 }

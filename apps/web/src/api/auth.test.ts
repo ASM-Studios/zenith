@@ -35,6 +35,7 @@ describe('auth client', () => {
     await expect(signIn(credentials)).resolves.toEqual({
       name: 'Ada',
       email: 'ada@example.com',
+      emailVerified: true,
     });
   });
 
@@ -51,7 +52,13 @@ describe('auth client', () => {
     await expect(currentUser()).resolves.toBeNull();
 
     stubApi({ '/api/auth/get-session': json(200, { session: { id: 's1' }, user }) });
-    await expect(currentUser()).resolves.toEqual({ name: 'Ada', email: 'ada@example.com' });
+    await expect(currentUser()).resolves.toEqual({ name: 'Ada', email: 'ada@example.com', emailVerified: true });
+  });
+
+  test('a session user whose address the API does not call verified is reported unverified', async () => {
+    stubApi({ '/api/auth/get-session': json(200, { session: {}, user: { name: 'Ada', email: 'ada@example.com' } }) });
+
+    await expect(currentUser()).resolves.toMatchObject({ emailVerified: false });
   });
 
   test('sign-out posts an empty body', async () => {

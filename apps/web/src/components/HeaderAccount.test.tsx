@@ -55,7 +55,8 @@ describe('header account', () => {
     expect(await screen.findByRole('link', { name: 'Ada' })).toBeTruthy();
     expect(screen.queryByRole('link', { name: 'Sign up' })).toBeNull();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Sign out' }));
+    fireEvent.click(screen.getByRole('link', { name: 'Ada' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Sign out' }));
     expect(await screen.findByRole('link', { name: 'Sign up' })).toBeTruthy();
     expect(screen.queryByRole('link', { name: 'Ada' })).toBeNull();
   });

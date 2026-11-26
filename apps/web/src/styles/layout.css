@@ -21,6 +21,11 @@
   gap: 24px;
 }
 
+.site-header__actions > * + * {
+  padding-left: 24px;
+  border-left: 1px solid var(--border);
+}
+
 .site-nav {
   display: flex;
   gap: 24px;

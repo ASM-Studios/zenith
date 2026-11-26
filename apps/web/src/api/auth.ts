@@ -4,6 +4,7 @@ import { api } from './api.ts';
 export type SessionUser = {
   name: string;
   email: string;
+  emailVerified: boolean;
 };
 
 export type SignInInput = {
@@ -21,7 +22,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function parseUserOf(data: unknown): SessionUser {
   const user = isRecord(data) ? data.user : undefined;
   if (isRecord(user) && typeof user.name === 'string' && typeof user.email === 'string') {
-    return { name: user.name, email: user.email };
+    return { name: user.name, email: user.email, emailVerified: user.emailVerified === true };
   }
   throw new TypeError('the user must have a name and an email');
 }
@@ -50,6 +51,10 @@ export function verifyEmail(token: string): Promise<void> {
 
 export function signOut(): Promise<void> {
   return api.post('/api/auth/sign-out', {}, ignoreBody);
+}
+
+export function deleteAccount(password: string): Promise<void> {
+  return api.post('/api/auth/delete-user', { password }, ignoreBody);
 }
 
 export function authErrorCode(error: unknown): string | undefined {

@@ -27,12 +27,5 @@ export async function signUpWithCookie(app: TestApp, email: string) {
     payload: { email, password, name: 'Test' },
     headers: { origin },
   });
-  await confirmEmail(app, email);
-  const response = await app.inject({
-    method: 'POST',
-    url: '/api/auth/sign-in/email',
-    payload: { email, password },
-    headers: { origin },
-  });
-  return cookiesOf(response);
+  return cookiesOf(await confirmEmail(app, email));
 }

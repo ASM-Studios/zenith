@@ -5,11 +5,12 @@ import type { AuthAction } from './useAuthAction.ts';
 type AuthFormProps = {
   action: AuthAction;
   submitLabel: string;
+  tone?: 'primary' | 'danger';
   onSubmit: (form: FormData) => Promise<void>;
   children: ReactNode;
 };
 
-export function AuthForm({ action, submitLabel, onSubmit, children }: AuthFormProps) {
+export function AuthForm({ action, submitLabel, tone = 'primary', onSubmit, children }: AuthFormProps) {
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
@@ -19,7 +20,7 @@ export function AuthForm({ action, submitLabel, onSubmit, children }: AuthFormPr
   return (
     <form className="auth-form" onSubmit={submit}>
       {children}
-      <button className="button button--primary" type="submit" disabled={action.state.status === 'pending'}>
+      <button className={`button button--${tone}`} type="submit" disabled={action.state.status === 'pending'}>
         {submitLabel}
       </button>
       <AuthError state={action.state} />

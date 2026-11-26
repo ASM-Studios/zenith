@@ -5,6 +5,7 @@ const messageKeys = {
   PASSWORD_TOO_SHORT: 'auth.errors.passwordTooShort',
   INVALID_EMAIL_OR_PASSWORD: 'auth.errors.invalidCredentials',
   EMAIL_NOT_VERIFIED: 'auth.errors.emailNotVerified',
+  INVALID_PASSWORD: 'auth.errors.wrongPassword',
 } as const;
 
 type KnownCode = keyof typeof messageKeys;
