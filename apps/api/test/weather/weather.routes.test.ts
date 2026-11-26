@@ -2,11 +2,11 @@ import { WEATHER_DATA_TYPES, type WeatherProvider } from '@zenith/core';
 import { createStubWeatherProvider, stubAttribution } from '@zenith/core/testing';
 import Fastify from 'fastify';
 import { afterEach, describe, expect, it } from 'vitest';
-import { weatherDataSchemas } from '../../src/modules/weather/weather.data.ts';
+import { weatherDataSchemas } from '@zenith/weather';
 import { weatherRoutes } from '../../src/modules/weather/weather.routes.ts';
 import { WEATHER_ROUTE_PATHS } from '../../src/modules/weather/weather.schema.ts';
 import { buildTestApp } from '../helpers/build-test-app.ts';
-import { weatherSetup } from '../helpers/weather.ts';
+import { weatherSetup } from '@zenith/weather/testing';
 
 const apps: { close(): Promise<unknown> }[] = [];
 

@@ -8,10 +8,10 @@ import {
 } from '@zenith/core';
 import { createStubWeatherProvider, stubHourlyForecast } from '@zenith/core/testing';
 import { describe, expect, it } from 'vitest';
-import { FRESH_TTL_SECONDS } from '../../src/modules/weather/weather.cache-policy.ts';
-import { weatherDataSchemas } from '../../src/modules/weather/weather.data.ts';
-import { WeatherSourceError } from '../../src/modules/weather/weather.errors.ts';
-import { paris, weatherSetup } from '../helpers/weather.ts';
+import { FRESH_TTL_SECONDS } from '../src/cache-policy.ts';
+import { weatherDataSchemas } from '../src/data.ts';
+import { WeatherSourceError } from '../src/errors.ts';
+import { paris, weatherSetup } from '../src/testing/weather-setup.ts';
 
 const transientErrors: [string, ProviderError][] = [
   ['timeout', new ProviderTimeoutError('stub', 'timed out')],

@@ -17,6 +17,7 @@
   },
   "workspaces": [
     "packages/core",
+    "packages/weather",
     "apps/api",
     "apps/web",
     "apps/mobile"

@@ -3,7 +3,7 @@ import { createProcessor } from './jobs/processor.ts';
 import { QUEUE_NAME, queueOptions, workerOptions } from './jobs/queue.ts';
 import { jobs } from './jobs/registry.ts';
 import { scheduleJobs } from './jobs/scheduler.ts';
-import { createCache } from './lib/cache.ts';
+import { createCache } from '@zenith/weather';
 import { loadWorkerConfig } from './lib/env.ts';
 import { createLogger } from './lib/logger.ts';
 import { createRedis } from './lib/redis.ts';

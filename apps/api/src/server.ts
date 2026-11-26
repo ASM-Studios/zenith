@@ -1,11 +1,9 @@
 import { config } from './lib/config.ts';
 import { client } from './db/index.ts';
 import { buildApp } from './app.ts';
-import { createCache } from './lib/cache.ts';
 import { createLogger } from './lib/logger.ts';
 import { createRedis } from './lib/redis.ts';
-import { createMetNorwayProvider } from './modules/weather/providers/met-norway/provider.ts';
-import { createOpenMeteoProvider } from './modules/weather/providers/open-meteo/provider.ts';
+import { createCache, createMetNorwayProvider, createOpenMeteoProvider } from '@zenith/weather';
 
 const logger = createLogger({ level: config.server.logLevel });
 const redis = createRedis(config.redis.url, logger);

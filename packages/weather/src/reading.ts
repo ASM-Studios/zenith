@@ -1,5 +1,5 @@
 import type { ProviderAttribution, WeatherProvider } from '@zenith/core';
-import type { CacheEntry } from '../../lib/cache.ts';
+import type { CacheEntry } from './cache.ts';
 
 export interface WeatherReading {
   data: unknown;

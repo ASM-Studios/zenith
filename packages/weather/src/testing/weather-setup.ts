@@ -1,7 +1,7 @@
 import type { WeatherProvider, WeatherQuery } from '@zenith/core';
 import { vi } from 'vitest';
-import { createCache, type CacheStore } from '../../src/lib/cache.ts';
-import { createWeatherService, type WeatherServiceOptions } from '../../src/modules/weather/weather.service.ts';
+import { createCache, type CacheStore } from '../cache.ts';
+import { createWeatherService, type WeatherServiceOptions } from '../service.ts';
 
 export const paris = { latitude: 48.8566, longitude: 2.3522 };
 

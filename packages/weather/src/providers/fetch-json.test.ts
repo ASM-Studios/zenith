@@ -7,7 +7,7 @@ import {
 import { delay, http, HttpResponse } from 'msw';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
-import { server } from '../../../../../../test/msw-server.js';
+import { server } from '../../../../test/msw-server.js';
 import { fetchJson, fetchJsonResponse } from './fetch-json.ts';
 
 const url = new URL('https://provider.test/data');

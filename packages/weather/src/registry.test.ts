@@ -1,6 +1,6 @@
 import { createStubWeatherProvider } from '@zenith/core/testing';
 import { describe, expect, it } from 'vitest';
-import { createWeatherRegistry } from './weather.registry.ts';
+import { createWeatherRegistry } from './registry.ts';
 
 const paris = { latitude: 48.85, longitude: 2.35 };
 const tokyo = { latitude: 35.68, longitude: 139.69 };

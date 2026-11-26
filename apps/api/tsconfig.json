@@ -9,6 +9,9 @@
   "references": [
     {
       "path": "../../packages/core"
+    },
+    {
+      "path": "../../packages/weather"
     }
   ],
   "exclude": ["src/**/*.test.ts"]

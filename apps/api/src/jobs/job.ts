@@ -1,4 +1,4 @@
-import type { Cache } from '../lib/cache.ts';
+import type { Cache } from '@zenith/weather';
 
 export interface JobLogger {
   info(obj: object, msg: string): void;

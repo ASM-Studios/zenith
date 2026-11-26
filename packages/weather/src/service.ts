@@ -1,12 +1,12 @@
 import type { GeoPoint, WeatherDataType, WeatherProvider } from '@zenith/core';
-import type { Cache } from '../../lib/cache.ts';
-import { isFresh, retentionSeconds, roundLocation, weatherCacheKey } from './weather.cache-policy.ts';
-import { weatherDataSchemas } from './weather.data.ts';
-import { NoWeatherProviderError } from './weather.errors.ts';
-import { fetchWeatherData } from './weather.fetch.ts';
-import { recoverFromProviderError } from './weather.recovery.ts';
-import { toWeatherReading, type WeatherReading } from './weather.reading.ts';
-import { createWeatherRegistry } from './weather.registry.ts';
+import type { Cache } from './cache.ts';
+import { isFresh, retentionSeconds, roundLocation, weatherCacheKey } from './cache-policy.ts';
+import { weatherDataSchemas } from './data.ts';
+import { NoWeatherProviderError } from './errors.ts';
+import { fetchWeatherData } from './fetch.ts';
+import { recoverFromProviderError } from './recovery.ts';
+import { toWeatherReading, type WeatherReading } from './reading.ts';
+import { createWeatherRegistry } from './registry.ts';
 
 export const DEFAULT_PROVIDER_TIMEOUT_MS = 10_000;
 

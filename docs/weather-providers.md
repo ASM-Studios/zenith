@@ -53,7 +53,7 @@ Every error extends `ProviderError` and carries the `providerId`. The API reads 
 
 ## Serving weather data
 
-`apps/api/src/modules/weather` serves the providers to the clients. It depends only on `WeatherProvider`, so a new source needs no change there.
+`packages/weather` holds the providers, the cache and the stale logic, and `apps/api/src/modules/weather` serves them to the clients. It depends only on `WeatherProvider`, so a new source needs no change there.
 
 - **Registration.** `buildApp` takes `weatherProviders`, the list built at app start in `server.ts`. The order of the list is the default order of selection. Open-Meteo is registered first, so it is the default, then MET Norway.
 - **Selection.** For each request, the first provider for which `offersDataType` holds wins, trying first the `provider` query parameter, then the signed-in user's source preference for the data type (`sourcePreferences.current`, `sourcePreferences.airQuality`...), then their `sourcePreferences.weather`, then the registration order. An unknown or unfit preference is skipped.
@@ -118,11 +118,11 @@ export function createExampleProvider(baseUrl: string): WeatherProvider {
 }
 ```
 
-`fetchJson` (`apps/api/src/modules/weather/providers/fetch-json.ts`) validates the body with the schema and turns every failure into the errors above, an unexpected 4xx being an `invalid-response`. `mapCurrent` converts the validated response to `CurrentConditions`. Tests mock the HTTP calls with msw (see [testing.md](testing.md)).
+`fetchJson` (`packages/weather/src/providers/fetch-json.ts`) validates the body with the schema and turns every failure into the errors above, an unexpected 4xx being an `invalid-response`. `mapCurrent` converts the validated response to `CurrentConditions`. Tests mock the HTTP calls with msw (see [testing.md](testing.md)).
 
 ## Open-Meteo
 
-`createOpenMeteoProvider` (`apps/api/src/modules/weather/providers/open-meteo`) needs no API key. Its data is under CC BY 4.0.
+`createOpenMeteoProvider` (`packages/weather/src/providers/open-meteo`) needs no API key. Its data is under CC BY 4.0.
 
 - Global coverage, data types `current`, `hourly` (48 hours), `daily` (7 days), `airQuality` and `pollen`.
 - `airQuality` gives the European index, else the US index, else `null`.
@@ -133,7 +133,7 @@ export function createExampleProvider(baseUrl: string): WeatherProvider {
 
 ## MET Norway
 
-`createMetNorwayProvider` (`apps/api/src/modules/weather/providers/met-norway`) uses Locationforecast 2.0 (`complete`) and needs no API key. Its data is under CC BY 4.0.
+`createMetNorwayProvider` (`packages/weather/src/providers/met-norway`) uses Locationforecast 2.0 (`complete`) and needs no API key. Its data is under CC BY 4.0.
 
 - Global coverage, data types `current`, `hourly` (48 hours) and `daily` (7 days). No air quality, pollen or alerts.
 - Every request carries `User-Agent: zenith/1.0 <contact>`, the contact being `MET_NORWAY_CONTACT` (an email or a URL, the repository URL by default). Coordinates are sent with at most 4 decimals.

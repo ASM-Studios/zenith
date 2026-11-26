@@ -3,7 +3,7 @@ import type { FastifyPluginAsync } from 'fastify';
 import { preferredProviderIds, type SourcePreferencesLookup } from './weather.preferences.ts';
 import { readingBody, sendWeatherError } from './weather.replies.ts';
 import { describeIssues, WEATHER_ROUTE_PATHS, weatherQuery } from './weather.schema.ts';
-import type { WeatherService } from './weather.service.ts';
+import type { WeatherService } from '@zenith/weather';
 
 export interface WeatherRoutesOptions {
   service: WeatherService;

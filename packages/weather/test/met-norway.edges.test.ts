@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { describe, expect, it } from 'vitest';
 import { server } from '../../../test/msw-server.js';
-import { createMetNorwayProvider } from '../src/modules/weather/providers/met-norway/provider.ts';
+import { createMetNorwayProvider } from '../src/providers/met-norway/provider.ts';
 import { metNorwayForecast, metNorwayForecastUrl } from './mocks/met-norway.handlers.ts';
 
 const location = { latitude: 59.9139, longitude: 10.7522 };

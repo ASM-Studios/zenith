@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createCache, type CacheStore } from '../lib/cache.ts';
+import { createCache, type CacheStore } from '@zenith/weather';
 import { HEARTBEAT_KEY, heartbeat } from './heartbeat.ts';
 
 const now = new Date('2026-11-23T12:00:00.000Z');

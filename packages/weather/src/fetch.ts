@@ -6,7 +6,7 @@ import {
   type WeatherProvider,
   type WeatherQuery,
 } from '@zenith/core';
-import { weatherDataSchemas } from './weather.data.ts';
+import { weatherDataSchemas } from './data.ts';
 
 export async function fetchWeatherData(
   provider: WeatherProvider,
